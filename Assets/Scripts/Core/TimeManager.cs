@@ -13,7 +13,7 @@ namespace PlinkoPinball.Services
     /// 
     /// - OnTimeChanged를 시간 간격으로 제어해 직관적으로 구현
     /// </ummary>
-    public sealed class Timer : ITickable
+    public sealed class TimeManager : ITickable
     {
         public event Action<float> OnTimeChanged;
         public event Action OnTimeOver;
@@ -28,7 +28,7 @@ namespace PlinkoPinball.Services
         private readonly float _notifyIntervalSeconds;
         private float _notifyAccumulator;
 
-        public Timer(float notifyIntervalSeconds = 0f)
+        public TimeManager(float notifyIntervalSeconds = 0f)
         {
             _notifyIntervalSeconds = Mathf.Max(0f, notifyIntervalSeconds);
         }
@@ -115,8 +115,8 @@ namespace PlinkoPinball.Services
             }
             else
             {
-               _notifyAccumulator += deltaTime;
-               if (_notifyAccumulator >= _notifyIntervalSeconds)
+                _notifyAccumulator += deltaTime;
+                if (_notifyAccumulator >= _notifyIntervalSeconds)
                 {
                     // 누적이 간격을 넘으면 broadcast, 누적을 남겨서 드리프트를 줄임
                     _notifyAccumulator -= _notifyIntervalSeconds;

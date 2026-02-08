@@ -27,7 +27,7 @@ namespace PlinkoPinball.Core
 
         public GameState State { get; private set; } = GameState.Boot;
 
-        public Timer Time { get; private set; }
+        public TimeManager Time { get; private set; }
 
         public event System.Action<GameState, GameState> OnStateChanged;
 
@@ -50,7 +50,7 @@ namespace PlinkoPinball.Core
         private void Bootstrap()
         {
             // Service 생성
-            Time = new Timer(notifyIntervalSeconds: timeChangedNotifyIntervalSeconds);
+            Time = new TimeManager(notifyIntervalSeconds: timeChangedNotifyIntervalSeconds);
             Time.OnTimeOver += HandleTimeOver;
 
             SetState(GameState.MainMenu);
