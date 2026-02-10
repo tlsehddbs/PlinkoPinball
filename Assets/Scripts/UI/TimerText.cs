@@ -13,7 +13,7 @@ namespace PlinkoPinball.UI
     /// ! Game 로직과 UI 결합도 최소
     /// ! 모바일에서도 안정적인 프레임 유지에 유리하도록
     /// </summary>
-    public class TimeHUDPresenter : MonoBehaviour
+    public class TimerText: MonoBehaviour
     {
         [Header("UI")]
         [SerializeField] private TMP_Text timeText;
