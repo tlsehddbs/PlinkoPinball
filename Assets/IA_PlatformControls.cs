@@ -120,6 +120,15 @@ namespace PlinkoPinball.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Launch"",
+                    ""type"": ""Button"",
+                    ""id"": ""5328ea6e-f490-4fea-ac52-83a46b511b76"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -188,6 +197,17 @@ namespace PlinkoPinball.Input
                     ""action"": ""Restart"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""493c093f-f6b5-4f4f-a10b-d1aa8dd1411a"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Launch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -199,6 +219,7 @@ namespace PlinkoPinball.Input
             m_GamePlay_StartRound = m_GamePlay.FindAction("StartRound", throwIfNotFound: true);
             m_GamePlay_Pause = m_GamePlay.FindAction("Pause", throwIfNotFound: true);
             m_GamePlay_Restart = m_GamePlay.FindAction("Restart", throwIfNotFound: true);
+            m_GamePlay_Launch = m_GamePlay.FindAction("Launch", throwIfNotFound: true);
         }
 
         ~@PlatformControls()
@@ -282,6 +303,7 @@ namespace PlinkoPinball.Input
         private readonly InputAction m_GamePlay_StartRound;
         private readonly InputAction m_GamePlay_Pause;
         private readonly InputAction m_GamePlay_Restart;
+        private readonly InputAction m_GamePlay_Launch;
         /// <summary>
         /// Provides access to input actions defined in input action map "GamePlay".
         /// </summary>
@@ -305,6 +327,10 @@ namespace PlinkoPinball.Input
             /// Provides access to the underlying input action "GamePlay/Restart".
             /// </summary>
             public InputAction @Restart => m_Wrapper.m_GamePlay_Restart;
+            /// <summary>
+            /// Provides access to the underlying input action "GamePlay/Launch".
+            /// </summary>
+            public InputAction @Launch => m_Wrapper.m_GamePlay_Launch;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -340,6 +366,9 @@ namespace PlinkoPinball.Input
                 @Restart.started += instance.OnRestart;
                 @Restart.performed += instance.OnRestart;
                 @Restart.canceled += instance.OnRestart;
+                @Launch.started += instance.OnLaunch;
+                @Launch.performed += instance.OnLaunch;
+                @Launch.canceled += instance.OnLaunch;
             }
 
             /// <summary>
@@ -360,6 +389,9 @@ namespace PlinkoPinball.Input
                 @Restart.started -= instance.OnRestart;
                 @Restart.performed -= instance.OnRestart;
                 @Restart.canceled -= instance.OnRestart;
+                @Launch.started -= instance.OnLaunch;
+                @Launch.performed -= instance.OnLaunch;
+                @Launch.canceled -= instance.OnLaunch;
             }
 
             /// <summary>
@@ -421,6 +453,13 @@ namespace PlinkoPinball.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnRestart(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Launch" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnLaunch(InputAction.CallbackContext context);
         }
     }
 }

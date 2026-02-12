@@ -27,10 +27,11 @@ namespace PlinkoPinball.UI
 
         private GameManager _gameManager;
 
+
         private void OnEnable()
         {
             _gameManager = GameManager.Instance;
-            
+
             //TODO: 추후 상태변화도 감지할 수 있게
             _gameManager.Time.OnTimeChanged += HandleTimeChanged;
 
@@ -40,8 +41,8 @@ namespace PlinkoPinball.UI
 
         private void OnDisable()
         {
-            if(_gameManager.Time != null)
-            _gameManager.Time.OnTimeChanged -= HandleTimeChanged;
+            if (_gameManager.Time != null)
+                _gameManager.Time.OnTimeChanged -= HandleTimeChanged;
         }
 
         private void HandleTimeChanged(float remainingSeconds)
@@ -50,12 +51,42 @@ namespace PlinkoPinball.UI
             float denom = Mathf.Max(0.001f, referenceStartSeconds);
             float normalized = Mathf.Clamp01(remainingSeconds / denom);
 
-            if(fillImage != null)
+            if (fillImage != null)
                 fillImage.fillAmount = normalized;
 
             //임박 구간 연출은 추후에 (훅만 달아두고)
             // normalized 는 추후에 사운드/진동/펄스 같은 연출을 붙일 때 유용하게 사용할 수 있음
             // 
+
+
+            bool nowCritical = normalized <= criticalTimeThresholdNormalized;
+
+            if (nowCritical != _isCriticalTime)
+            {
+                _isCriticalTime = nowCritical;
+
+                if (_isCriticalTime)
+                    OnCriticalTimeEntered();    // 진입 시 1회만 호출(호출 스팸 방지)
+                else
+                    OnCriticalTimeExited();
+            }
+        }
+
+        /// <summary>
+        /// 시간이 임박했을 때 호출
+        /// - 펄스 이펙트, 사운드, 화명 효과 등
+        /// </summary>
+        private void OnCriticalTimeEntered()
+        {
+            //TODO: 연출 연결
+        }
+
+        /// <summary>
+        /// 시간 임박 상태에서 벗어났을 때(시간 추가 등의 상황) 호출
+        /// </summary>
+        private void OnCriticalTimeExited()
+        {
+            //TODO: 연출 해제
         }
     }
 }

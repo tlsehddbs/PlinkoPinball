@@ -28,6 +28,7 @@ namespace PlinkoPinball.Services
         private readonly float _notifyIntervalSeconds;
         private float _notifyAccumulator;
 
+
         public TimeManager(float notifyIntervalSeconds = 0f)
         {
             _notifyIntervalSeconds = Mathf.Max(0f, notifyIntervalSeconds);

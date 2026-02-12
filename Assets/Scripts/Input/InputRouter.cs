@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using PlinkoPinball.Core;
 using PlinkoPinball.Input;
+using PlinkoPinball.Gameplay;
 
 namespace PlinkoPinball.InputRuntime
 {
@@ -25,6 +26,10 @@ namespace PlinkoPinball.InputRuntime
         private System.Action<InputAction.CallbackContext> _onPause;
         private System.Action<InputAction.CallbackContext> _onRestart;
 
+        [SerializeField] private PlinkoPinball.Gameplay.PlungerLauncher launcher;
+        private System.Action<InputAction.CallbackContext> _onLaunchPerformed;
+        private System.Action<InputAction.CallbackContext> _onLaunchCanceled;
+
 
         // 추후 Awake로 변경 예정
         private void Awake()
@@ -37,6 +42,9 @@ namespace PlinkoPinball.InputRuntime
             _onStart = ctx => HandleStartRound();
             _onPause = ctx => HandlePause();
             _onRestart = ctx => HandleRestart();
+
+            _onLaunchPerformed = ctx => { if (launcher != null) launcher.BeginCharge(); };
+            _onLaunchCanceled = ctx => { if (launcher != null) launcher.Release(); };
         }
 
         private void OnEnable()
@@ -47,6 +55,9 @@ namespace PlinkoPinball.InputRuntime
             _controls.GamePlay.StartRound.performed += _onStart;
             _controls.GamePlay.Pause.performed += _onPause;
             _controls.GamePlay.Restart.performed += _onRestart;
+
+            _controls.GamePlay.Launch.performed += _onLaunchPerformed;
+            _controls.GamePlay.Launch.canceled += _onLaunchCanceled;
 
             _controls.GamePlay.Enable();
         }
@@ -60,12 +71,16 @@ namespace PlinkoPinball.InputRuntime
             _controls.GamePlay.Pause.performed -= _onPause;
             _controls.GamePlay.Restart.performed -= _onRestart;
 
+            _controls.GamePlay.Launch.performed -= _onLaunchPerformed;
+            _controls.GamePlay.Launch.canceled -= _onLaunchCanceled;
+
             _controls.GamePlay.Disable();
         }
 
 
         private void HandleStartRound()
         {
+            Debug.Log($"[Input] StartRound performed. GameState={_gameManager?.State}");
             if (_gameManager == null) return;
 
             // MainMenu / RoundEnded 상태에서 시작 가능하도록
