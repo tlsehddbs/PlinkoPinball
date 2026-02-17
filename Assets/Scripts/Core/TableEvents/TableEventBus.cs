@@ -14,7 +14,7 @@ namespace PlinkoPinball.Core.TableEvents
         // 테이블 이벤트가 발생하 때마다 호출됨
         public static event Action<TableEvent> OnEvent; 
 
-        public static void Publish(TableEvent e)
+        public static void Publish(in TableEvent e)
         {
             OnEvent?.Invoke(e);
         }
