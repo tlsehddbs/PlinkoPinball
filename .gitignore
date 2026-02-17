@@ -46,5 +46,8 @@ Thumbs.db
 *.editorconfig
 *.history/
 
-# Unity 메타파일 제외하면 안 됨(메타파일 반드시 포함!)
+# Unity 메타파일 제외하면 안 됨
 !*.meta
+
+# 기타 제외 
+Assets/FolderColor
