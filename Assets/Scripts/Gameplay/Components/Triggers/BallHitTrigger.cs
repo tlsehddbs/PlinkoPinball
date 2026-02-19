@@ -31,6 +31,7 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
         private float _nextAllowedTime;
         private ITableEventReaction[] _reactions;
 
+
         private void Awake()
         {
             // 로컬 옵저버 캐싱(성능, 가독 향상)
@@ -42,14 +43,14 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
             if (cooldownSeconds > 0f && Time.time < _nextAllowedTime) return;
 
             // 공 판별 (RigidBody가 있어야 함. (설정 시) 레이어가 맞아야 함)
-            var rb = collision.rigidbody;
-            if (rb == null) return;
+            var ballRb = collision.rigidbody;
+            if (ballRb == null) return;
 
-            if (ballLayer >= 0 && rb.gameObject.layer != ballLayer) return;
+            if (ballLayer >= 0 && ballRb.gameObject.layer != ballLayer) return;
 
             _nextAllowedTime = Time.time + cooldownSeconds;
 
-            var pos = collision.contactCount > 0 ? collision.GetContact(0).point : rb.worldCenterOfMass;
+            var pos = collision.contactCount > 0 ? collision.GetContact(0).point : ballRb.worldCenterOfMass;
 
             var e = new TableEvent
             {
@@ -59,7 +60,8 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
                 tags = tags,
                 source = transform,
                 position = pos,
-                time = Time.time
+                time = Time.time,
+                ball = ballRb
             };
 
             // global publish(for 규칙, 점수 등)

@@ -26,41 +26,18 @@ namespace PlinkoPinball.Gameplay.Components.Reactions
             if (onlyOnHitType && e.eventType != TableEventType.Hit)
                 return;
 
-            // source(트리거 오브젝트) 기준으로 주변의 Rigidbody(공)를 찾아 임펄스 적용.
-            // 현재 이벤트 구조에는 ball 참조가 없으므로, 가장 단순/안전한 방식으로 구현:
-            // - 실제 공 Rigidbody는 충돌에서만 확실히 알 수 있으므로,
-            //   추후 개선 버전에서는 TableEvent에 ball Transform/Rigidbody를 포함시키는 것이 좋다.
-            //
-            // MVP 단계에서는 “범퍼 오브젝트 주변의 Rigidbody”를 찾아 적용하거나,
-            // Trigger가 ball 정보를 포함하도록 확장(권장)하면 된다.
-
-            // ---- MVP 간단 구현(권장 개선: TableEvent에 ballRb 포함) ----
-            // 여기서는 e.position 근처에서 Rigidbody를 검색해 가장 가까운 것을 공으로 간주한다.
-            const float searchRadius = 0.25f;
-            var hits = Physics.OverlapSphere(e.position, searchRadius);
-
-            Rigidbody ballRb = null;
-            float best = float.MaxValue;
-
-            for (int i = 0; i < hits.Length; i++)
-            {
-                var rb = hits[i].attachedRigidbody;
-                if (rb == null) continue;
-
-                float d = (rb.worldCenterOfMass - e.position).sqrMagnitude;
-                if (d < best)
-                {
-                    best = d;
-                    ballRb = rb;
-                }
-            }
-
+            // Trigger에서 주입해 둔 ball Rigidbody를 사용
+            var ballRb = e.ball;
             if (ballRb == null) return;
 
-            // 방향: 범퍼 중심 -> 공 위치 방향으로 밀어냄
+            // 방향: 범퍼 중심에서 공 위치 방향으로 밀어냄
             Vector3 dir = (ballRb.worldCenterOfMass - transform.position).normalized;
-            if (upBias != 0f) dir = (dir + Vector3.up * upBias).normalized;
-
+            if (dir.sqrMagnitude < 0.0001f)
+                dir = transform.up;     // 완전히 겹쳤을 경우를 대비
+                
+            if (upBias != 0f)
+                dir = (dir + Vector3.up * upBias).normalized;
+                
             ballRb.AddForce(dir * impulseStrength, ForceMode.Impulse);
         }
     }

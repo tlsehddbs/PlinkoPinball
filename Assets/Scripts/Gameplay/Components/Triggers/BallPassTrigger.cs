@@ -50,10 +50,10 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
         {
             if (cooldownSeconds > 0f && Time.time < _nextAllowedTime) return;
 
-            var rb = other.attachedRigidbody;
-            if (rb == null) return;
+            var ballRb = other.attachedRigidbody;
+            if (ballRb == null) return;
 
-            if (ballLayer >= 0 && rb.gameObject.layer != ballLayer) return;
+            if (ballLayer >= 0 && ballRb.gameObject.layer != ballLayer) return;
 
             _nextAllowedTime = Time.time + cooldownSeconds;
 
@@ -65,7 +65,8 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
                 tags = tags,
                 source = transform,
                 position = other.ClosestPoint(transform.position),
-                time = Time.time
+                time = Time.time,
+                ball = ballRb
             };
 
             TableEventBus.Publish(in e);

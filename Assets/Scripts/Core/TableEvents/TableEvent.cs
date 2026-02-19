@@ -14,7 +14,13 @@ namespace PlinkoPinball.Core.TableEvents
 
         public Transform source;    // 이벤트를 발생시키게한 오브젝트 (모듈 내부 요소 추적 등에 사용 예정) + 연출 + 디버그 등에도 사용 예정
         public Vector3 position;    // 이벤트 발생 위치 (연출 + 디버그)
-        public float time;          // 이벤트 발생 시각(ITickable Time tick 기준)
+        public float time;          // 이벤트 발생 시각 (ITickable Time tick 기준)
+
+        /// <summary>
+        /// 이벤트를 발생시킨 공의 rb
+        /// Trigger가 감지 시점에 주입하며, Reaction에서 물리/연출 타겟 지정을 확실히 하는데 사용
+        /// </summary>
+        public Rigidbody ball;
 
         public bool HasTag(string tag)
         {
