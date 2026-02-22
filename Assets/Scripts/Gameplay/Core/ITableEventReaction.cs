@@ -1,6 +1,6 @@
 using PlinkoPinball.Core.TableEvents;
 
-namespace PlinkoPinball.Gameplay.Components.Reactions
+namespace PlinkoPinball.Gameplay.Core
 {
     /// <summary>
     /// 로컬 반응자(옵저버 패턴)

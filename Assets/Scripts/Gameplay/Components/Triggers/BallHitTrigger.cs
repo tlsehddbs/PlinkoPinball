@@ -1,6 +1,6 @@
 using UnityEngine;
 using PlinkoPinball.Core.TableEvents;
-using PlinkoPinball.Gameplay.Components.Reactions;
+using PlinkoPinball.Gameplay.Core;
 
 namespace PlinkoPinball.Gameplay.Components.Triggers
 {

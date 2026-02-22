@@ -1,6 +1,6 @@
 using UnityEngine;
 using PlinkoPinball.Core.TableEvents;
-using PlinkoPinball.Gameplay.Components.Reactions;
+using PlinkoPinball.Gameplay.Core;
 
 namespace PlinkoPinball.Gameplay.Components.Triggers
 {
@@ -79,7 +79,7 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
             if (_reactions == null || _reactions.Length == 0) return;
 
             Debug.Log($"reaction count = {_reactions.Length}");
-            
+
             for (int i = 0; i < _reactions.Length; i++)
                 _reactions[i].OnTableEvent(in e);
         }

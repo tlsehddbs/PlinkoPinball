@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace PlinkoPinball.Gameplay.Components.Utility
+namespace PlinkoPinball.Gameplay.Utility
 {
     public static class BallRigidbodyUnility
     {
