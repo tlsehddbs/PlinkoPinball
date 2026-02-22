@@ -50,7 +50,7 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
             int id = ballRb.GetInstanceID();
             if (!_inside.Remove(id)) return;    // ball 추적이 안될 경우 exit 무시
 
-            Emit(enterEventType, eventId, ballRb);
+            Emit(exitEventType, eventId, ballRb);
         }
 
         private void Emit(TableEventType type, string id, Rigidbody ballRb)
@@ -69,6 +69,10 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
 
             TableEventBus.Publish(in e);
 
+            if (_reactions == null || _reactions.Length == 0) return;
+
+            Debug.Log($"reaction count = {_reactions.Length}");
+            
             // for Local Reactions
             for (int i = 0; i < _reactions.Length; i++)
                 _reactions[i].OnTableEvent(in e);
