@@ -16,7 +16,7 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
     public sealed class BallPassTrigger : MonoBehaviour
     {
         [Header("Event")]
-        [SerializeField] private string eventId = "unset.hit";
+        [SerializeField] private string eventId = "unset.pass";
         [SerializeField] private int baseValue = 1;
         [SerializeField] private string[] tags;
 
