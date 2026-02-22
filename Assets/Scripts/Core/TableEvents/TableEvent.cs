@@ -1,5 +1,4 @@
 using System;
-using UnityEditor.EditorTools;
 using UnityEngine;
 
 namespace PlinkoPinball.Core.TableEvents
@@ -9,10 +8,10 @@ namespace PlinkoPinball.Core.TableEvents
     {
         public string eventId;
         public TableEventType eventType;
-        public int baseValue;   // 점수 계산에 활용
-        public string[] tags;   // score, gate, bonus, timebonus, penalty 등을 위한 tag
+        public int baseValue;       // 점수 계산에 활용할 각 요소별 기본 점수   
+        public string[] tags;       // score, gate, bonus, timebonus, penalty 등을 위한 tag
 
-        public Transform source;    // 이벤트를 발생시키게한 오브젝트 (모듈 내부 요소 추적 등에 사용 예정) + 연출 + 디버그 등에도 사용 예정
+        public Transform source;    // 이벤트를 발생시키게 한 오브젝트 (모듈 내부 요소 추적 등에 사용 예정) + 연출 + 디버그 등에도 사용 예정
         public Vector3 position;    // 이벤트 발생 위치 (연출 + 디버그)
         public float time;          // 이벤트 발생 시각 (ITickable Time tick 기준)
 
