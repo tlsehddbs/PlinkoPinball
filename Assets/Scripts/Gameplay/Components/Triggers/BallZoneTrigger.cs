@@ -11,7 +11,7 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
     public class BallZoneTrigger : MonoBehaviour
     {
         [Header("Event")]
-        [SerializeField] private string eventId = "unset.zone.enter";
+        [SerializeField] private string eventId = "zone.none";
         [SerializeField] private TableEventType enterEventType = TableEventType.Custom;
         [SerializeField] private TableEventType exitEventType = TableEventType.Custom;
         [SerializeField] private int baseValue = 0;
@@ -21,13 +21,13 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
         [SerializeField] private bool fireEnter = true;
         [SerializeField] private bool fireExit = true;
 
-        private ITableEventReaction[] _reactions;
+        private ITableEventReaction[] _localReactions;
         private readonly HashSet<int> _inside = new HashSet<int>(8);
 
 
         private void Awake()
         {
-            _reactions = GetComponents<ITableEventReaction>();
+            _localReactions = GetComponents<ITableEventReaction>();
         }
 
         private void OnTriggerEnter(Collider other)
@@ -68,13 +68,13 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
 
             TableEventBus.Publish(in e);
 
-            if (_reactions == null || _reactions.Length == 0) return;
+            if (_localReactions == null || _localReactions.Length == 0) return;
 
-            Debug.Log($"reaction count = {_reactions.Length}");
+            Debug.Log($"reaction count = {_localReactions.Length}");
 
             // for Local Reactions
-            for (int i = 0; i < _reactions.Length; i++)
-                _reactions[i].OnTableEvent(in e);
+            for (int i = 0; i < _localReactions.Length; i++)
+                _localReactions[i].OnTableEvent(in e);
         }
     }
 }

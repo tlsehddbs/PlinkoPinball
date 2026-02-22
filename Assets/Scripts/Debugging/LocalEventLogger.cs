@@ -15,7 +15,7 @@ namespace PlinkoPinball.Debugging
         public void OnTableEvent(in TableEvent e)
         {
             if (!logEnabled) return;
-            Debug.Log($"[LocalReaction:{name}] {e}");
+            // Debug.Log($"[LocalReaction:{name}] {e}");
         }
     }
 }
