@@ -1,7 +1,8 @@
 using UnityEngine;
 using PlinkoPinball.Core.TableEvents;
+using PlinkoPinball.Gameplay.Core;
 
-namespace PlinkoPinball.Gameplay.Components.Reactions
+namespace PlinkoPinball.Debugging
 {
     /// <summary>
     /// 로컬 옵저버 호출이 정상적인지 확인하는 반응자(개발용)
@@ -14,7 +15,7 @@ namespace PlinkoPinball.Gameplay.Components.Reactions
         public void OnTableEvent(in TableEvent e)
         {
             if (!logEnabled) return;
-            Debug.Log($"[LocalReaction:{name}] {e}");
+            // Debug.Log($"[LocalReaction:{name}] {e}");
         }
     }
 }
