@@ -16,7 +16,7 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
     public sealed class BallPassTrigger : MonoBehaviour
     {
         [Header("Event")]
-        [SerializeField] private string eventId = "unset.pass";
+        [SerializeField] private string eventId = "pass.none";
         [SerializeField] private int baseValue = 1;
         [SerializeField] private string[] tags;
 
@@ -25,11 +25,12 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
         [SerializeField] private int ballLayer = -1;
 
         [Header("Rate Limit")]
+        [Tooltip("연타 방지 쿨다운(s). 0이면 제한 없음")]
         [Min(0f)]
         [SerializeField] private float cooldownSeconds = 0.10f;
 
         private float _nextAllowedTime;
-        private ITableEventReaction[] _reactions;
+        private ITableEventReaction[] _localReactions;
 
         private void Reset()
         {
@@ -43,7 +44,7 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
             if (c != null && !c.isTrigger)
                 c.isTrigger = true;
 
-            _reactions = GetComponents<ITableEventReaction>();
+            _localReactions = GetComponents<ITableEventReaction>();
         }
 
         private void OnTriggerEnter(Collider other)
@@ -76,12 +77,12 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
 
         private void NotifyLocal(in TableEvent e)
         {
-            if (_reactions == null || _reactions.Length == 0) return;
+            if (_localReactions == null || _localReactions.Length == 0) return;
 
-            Debug.Log($"reaction count = {_reactions.Length}");
+            Debug.Log($"reaction count = {_localReactions.Length}");
 
-            for (int i = 0; i < _reactions.Length; i++)
-                _reactions[i].OnTableEvent(in e);
+            for (int i = 0; i < _localReactions.Length; i++)
+                _localReactions[i].OnTableEvent(in e);
         }
     }
 }
