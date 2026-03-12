@@ -303,6 +303,7 @@ PlinkoPinball의 테이블은 고정형이 아니라
 ```text
 PlinkoPinball/
 ├─ Assets/
+│  ├─ docs/
 │  ├─ Animations/
 │  ├─ Materials/
 │  ├─ Textures/
