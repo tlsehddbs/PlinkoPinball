@@ -29,6 +29,7 @@ Thumbs.db
 *.iws
 *.dotSettings
 *.sln
+*.slnx
 *.sln.docstates
 *.csproj
 *.unityproj
