@@ -54,7 +54,7 @@ namespace PlinkoPinball.Gameplay.Systems
         }
 
         /// <summary>
-        /// 라운드 시작 시 점수 초기화.
+        /// 라운드 시작 시 점수를 초기화합니다.
         /// </summary>
         public void ResetScore()
         {
@@ -63,7 +63,7 @@ namespace PlinkoPinball.Gameplay.Systems
         }
 
         /// <summary>
-        /// 배수 설정(업그레이드 등에서 사용할 예정)
+        /// 배수를 설정합니다. (업그레이드 등에서 사용할 예정)
         /// </summary>
         public void SetMultiplier(float value)
         {
@@ -75,7 +75,7 @@ namespace PlinkoPinball.Gameplay.Systems
         }
 
         /// <summary>
-        /// 배수 증감 (예 : 램프 성공 시 +0.2)
+        /// 배수 증감을 적용합니다. (예 : 램프 성공 시 +0.2)
         /// </summary>
         public void AddMultiplier(float value)
         {
@@ -83,7 +83,7 @@ namespace PlinkoPinball.Gameplay.Systems
         }
 
         /// <summary>
-        /// 라운드 종료 시 최고기록 갱신 판별 및 저장
+        /// 라운드 종료 시 최고기록 갱신 판별을 하고 저장합니다.
         /// </summary>
         public void CommitBestScoreIfNeeded()
         {
