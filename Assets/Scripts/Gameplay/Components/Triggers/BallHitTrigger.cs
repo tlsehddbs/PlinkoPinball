@@ -19,6 +19,9 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
         [SerializeField] private int baseValue = 1;
         [SerializeField] private string[] tags;
 
+        // 모듈에 포함되어 있는 트리거의 경우 모듈의 source 위치를 파악하기 위해 사용함
+        [SerializeField] private Transform eventSourceOverride;
+
         [Header("Ball Filter")]
         [Tooltip("공 레이어. -1이면 레이어 필터를 사용하지 않음")]
         [SerializeField] private int ballLayer = -1;
@@ -58,7 +61,7 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
                 eventType = TableEventType.Hit,
                 baseValue = baseValue,
                 tags = tags,
-                source = transform,
+                source = (eventSourceOverride != null) ? eventSourceOverride : transform,
                 position = pos,
                 time = Time.time,
                 ball = ballRb
