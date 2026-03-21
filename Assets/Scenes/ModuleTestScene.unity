@@ -246,6 +246,16 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1 &163160648 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7430023637041184352, guid: e888e643d298b1a4693942ca5f7bf195, type: 3}
+  m_PrefabInstance: {fileID: 1087178179}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &371507984 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7430023637041184352, guid: e888e643d298b1a4693942ca5f7bf195, type: 3}
+  m_PrefabInstance: {fileID: 1599810553}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &396472481
 GameObject:
   m_ObjectHideFlags: 0
@@ -371,6 +381,8 @@ GameObject:
   - component: {fileID: 556649439}
   - component: {fileID: 556649438}
   - component: {fileID: 556649437}
+  - component: {fileID: 556649442}
+  - component: {fileID: 556649441}
   m_Layer: 0
   m_Name: TestModuleBase
   m_TagString: Untagged
@@ -473,6 +485,34 @@ Transform:
   - {fileID: 1087178180}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &556649441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 556649436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a423ed60132e44d26a970a4757e63629, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Modules.ModuleState
+  collectOnAwake: 1
+--- !u!114 &556649442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 556649436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 833a9426d314b4cbdbb580941e83d090, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Modules.ModuleRoot
+  moduleId: module
+  baseMultiplier: 1
+  groupRules: []
 --- !u!1001 &607674292
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -525,11 +565,63 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2631998667298213232, guid: 1ae5f2198ed8d7044ab6a177260cbf2b, type: 3}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1ae5f2198ed8d7044ab6a177260cbf2b, type: 3}
+--- !u!1 &805486271
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 805486273}
+  - component: {fileID: 805486272}
+  m_Layer: 0
+  m_Name: Systems
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &805486272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 805486271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea563c1cd19b7e7419932a0960f63380, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Systems.ScoreSystem
+  scoreTag: score
+  baseMultiplier: 1
+  maxMultiplier: 20
+  enableScoreDebugLog: 1
+--- !u!4 &805486273
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 805486271}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 72.34814, y: 0, z: -2.89589}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1087178179
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -538,6 +630,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 556649440}
     m_Modifications:
+    - target: {fileID: 1598793109583244760, guid: e888e643d298b1a4693942ca5f7bf195, type: 3}
+      propertyPath: eventId
+      value: hit.test
+      objectReference: {fileID: 0}
     - target: {fileID: 2516781997313802911, guid: e888e643d298b1a4693942ca5f7bf195, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.29265577
@@ -593,13 +689,36 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7430023637041184352, guid: e888e643d298b1a4693942ca5f7bf195, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1087178181}
   m_SourcePrefab: {fileID: 100100000, guid: e888e643d298b1a4693942ca5f7bf195, type: 3}
 --- !u!4 &1087178180 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2516781997313802911, guid: e888e643d298b1a4693942ca5f7bf195, type: 3}
   m_PrefabInstance: {fileID: 1087178179}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1087178181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 163160648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 866da38f522db40a19998c5c16912cfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Components.Reactions.SwitchState
+  switchId: TestBumper (1)
+  groupId: test
+  initialOn: 0
+  requiredEventIdExact: 
+  requiredEventIdPrefix: hit.
+  requiredTag: 
+  latchOnOnly: 0
+  cooldownSeconds: 0.05
 --- !u!1001 &1599810553
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -608,6 +727,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 556649440}
     m_Modifications:
+    - target: {fileID: 1598793109583244760, guid: e888e643d298b1a4693942ca5f7bf195, type: 3}
+      propertyPath: eventId
+      value: hit.test
+      objectReference: {fileID: 0}
     - target: {fileID: 2516781997313802911, guid: e888e643d298b1a4693942ca5f7bf195, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.29265577
@@ -660,16 +783,43 @@ PrefabInstance:
       propertyPath: m_Name
       value: TestBumper
       objectReference: {fileID: 0}
+    - target: {fileID: 8539648652224343645, guid: e888e643d298b1a4693942ca5f7bf195, type: 3}
+      propertyPath: impulseStrength
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7430023637041184352, guid: e888e643d298b1a4693942ca5f7bf195, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1599810555}
   m_SourcePrefab: {fileID: 100100000, guid: e888e643d298b1a4693942ca5f7bf195, type: 3}
 --- !u!4 &1599810554 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2516781997313802911, guid: e888e643d298b1a4693942ca5f7bf195, type: 3}
   m_PrefabInstance: {fileID: 1599810553}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1599810555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 371507984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 866da38f522db40a19998c5c16912cfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Components.Reactions.SwitchState
+  switchId: TestBumper
+  groupId: test
+  initialOn: 0
+  requiredEventIdExact: 
+  requiredEventIdPrefix: hit.
+  requiredTag: 
+  latchOnOnly: 0
+  cooldownSeconds: 0.05
 --- !u!1 &1917187725
 GameObject:
   m_ObjectHideFlags: 0
@@ -816,3 +966,4 @@ SceneRoots:
   - {fileID: 396472485}
   - {fileID: 556649440}
   - {fileID: 607674292}
+  - {fileID: 805486273}

@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using PlinkoPinball.Core.TableEvents;
-using Unity.VisualScripting;
-using System.Data;
-// 모듈 네임스페이스 추가
+using PlinkoPinball.Gameplay.Core;
+using PlinkoPinball.Gameplay.Modules;
 
 namespace PlinkoPinball.Gameplay.Systems
 {
@@ -27,6 +26,10 @@ namespace PlinkoPinball.Gameplay.Systems
         [Header("Multiplier")]
         [Min(0.1f)][SerializeField] private float baseMultiplier = 1.0f;   // 전역 기본 배수(업그레이드 관련 부분도 이 것에 영향을 받도록 구상중)
         [Min(1.0f)][SerializeField] private float maxMultiplier = 20.0f;
+
+        [Header("Debug")]
+        [Tooltip("개발 중 이벤트별 점수 계산 로그를 출력한다.")]
+        [SerializeField] private bool enableScoreDebugLog = true;
 
         public int CurrentScore { get; private set; }
         public int BestScore { get; private set; }
@@ -101,9 +104,31 @@ namespace PlinkoPinball.Gameplay.Systems
 
         private void HandleTableEvent(TableEvent e)
         {
-            if(!ShouldScore(e)) return;
+            if (!ShouldScore(e))
+                return;
 
-            //TODO: Module 기능을 개발 한 이후 로그가 정상적으로 나타나는지 확인하고 진행할 것
+            ModuleRoot module = ModuleRootLookupCache.GetOrFind(e.source);
+            float moduleMultiplier = module != null ? module.GetScoreMultiplier() : 1f;
+
+            int add = CalculateScoreResult(e.baseValue, Multiplier, moduleMultiplier);
+            if (add <= 0)
+                return;
+
+            CurrentScore += add;
+            OnScoreChanged?.Invoke(CurrentScore);
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (enableScoreDebugLog)
+            {
+                string sourceName = e.source != null ? e.source.name : "null";
+                string moduleName = module != null ? module.ModuleId : "None";
+
+                Debug.Log(
+                    $"[ScoreSystem] +{add} " +
+                    $"(base={e.baseValue}, globalMul={Multiplier:0.00}, moduleMul={moduleMultiplier:0.00}) " +
+                    $"from {e.eventId} | source={sourceName} | module={moduleName}");
+            }
+#endif
         }
 
         /// <summary>
