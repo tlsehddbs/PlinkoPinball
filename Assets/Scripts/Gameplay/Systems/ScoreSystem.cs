@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using PlinkoPinball.Core.TableEvents;
 using Unity.VisualScripting;
+using System.Data;
+// 모듈 네임스페이스 추가
 
 namespace PlinkoPinball.Gameplay.Systems
 {
@@ -23,7 +25,7 @@ namespace PlinkoPinball.Gameplay.Systems
         [SerializeField] private string scoreTag = "score";
 
         [Header("Multiplier")]
-        [Min(0.1f)][SerializeField] private float baseMultiplier = 1.0f;   // 기본 배수
+        [Min(0.1f)][SerializeField] private float baseMultiplier = 1.0f;   // 전역 기본 배수(업그레이드 관련 부분도 이 것에 영향을 받도록 구상중)
         [Min(1.0f)][SerializeField] private float maxMultiplier = 20.0f;
 
         public int CurrentScore { get; private set; }
@@ -99,20 +101,33 @@ namespace PlinkoPinball.Gameplay.Systems
 
         private void HandleTableEvent(TableEvent e)
         {
-            // score Tag가 없으면 점수 처리하지 않음
-            if (!e.HasTag(scoreTag)) return;
+            if(!ShouldScore(e)) return;
 
-            // baseValue가 0 이하이면 점수 없음
-            if (e.baseValue <= 0) return;
+            //TODO: Module 기능을 개발 한 이후 로그가 정상적으로 나타나는지 확인하고 진행할 것
+        }
 
-            // 점수 계산
-            int add = Mathf.RoundToInt(e.baseValue * Multiplier);
-            if (add <= 0) return;
+        /// <summary>
+        /// 해당 이벤트가 점수 반영 대상인지 판별합니다.
+        /// </summary>
+        /// <returns></returns>
+        private bool ShouldScore(TableEvent e)
+        {
+            if (!string.IsNullOrEmpty(scoreTag) && !e.HasTag(scoreTag))
+                return false;
 
-            CurrentScore += add;
-            OnScoreChanged?.Invoke(CurrentScore);
+            if (e.baseValue <= 0)
+                return false;
 
-            Debug.Log($"[ScoreSystem] +{add} (base={e.baseValue}, mul={Multiplier:0.00}) from {e.eventId}");
+            return true;
+        }
+
+        /// <summary>
+        /// 최종 점수를 계산합니다.
+        /// </summary>
+        private int CalculateScoreResult(int baseValue, float globalMultiplier, float moduleMultiplier)
+        {
+            float result = baseValue * globalMultiplier * moduleMultiplier;
+            return Mathf.RoundToInt(result);
         }
     }
 }
