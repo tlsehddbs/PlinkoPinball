@@ -142,7 +142,7 @@ namespace PlinkoPinball.Gameplay.Modules
                 if (sw != null && sw.IsOn)
                     count++;
             }
-
+            // Debug.Log($"모듈 내 활성화 된 스위치의 개수 : {count} / 총 스위치의 개수 : {list.Count}");
             return count;
         }
 

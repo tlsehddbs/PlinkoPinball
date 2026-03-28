@@ -108,8 +108,11 @@ namespace PlinkoPinball.Gameplay.Systems
                 return;
 
             ModuleRoot module = ModuleRootLookupCache.GetOrFind(e.source);
+
+            // TODO: 이 부분에서 모듈별로 어떤 트리거에 배율을 적용할 것인지를 자동적으로 정해야 할 것 같음.
             float moduleMultiplier = module != null ? module.GetScoreMultiplier() : 1f;
 
+            // 실제 점수를 계산하는 로직
             int add = CalculateScoreResult(e.baseValue, Multiplier, moduleMultiplier);
             if (add <= 0)
                 return;
@@ -127,6 +130,7 @@ namespace PlinkoPinball.Gameplay.Systems
                     $"[ScoreSystem] +{add} " +
                     $"(base={e.baseValue}, globalMul={Multiplier:0.00}, moduleMul={moduleMultiplier:0.00}) " +
                     $"from {e.eventId} | source={sourceName} | module={moduleName}");
+                Debug.Log($"[ScoreSystem]CurrentScore: {CurrentScore}");
             }
 #endif
         }
@@ -142,7 +146,7 @@ namespace PlinkoPinball.Gameplay.Systems
 
             if (e.baseValue <= 0)
                 return false;
-
+            //Debug.Log("점수 반영 대상입니다.");
             return true;
         }
 

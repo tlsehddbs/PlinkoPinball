@@ -43,10 +43,15 @@ namespace PlinkoPinball.Gameplay.Modules
         [SerializeField] private SwitchGroupRule[] groupRules = Array.Empty<SwitchGroupRule>();
 
         public string ModuleId => moduleId;
+
         public ModuleState State { get; private set; }
+
 
         private void Awake()
         {
+            // 모듈의 ID 를 프리팹(하이어라키에 올라간 이름)으로 초기화
+            moduleId = gameObject.name;
+
             State = GetComponent<ModuleState>();
         }
 
@@ -68,10 +73,14 @@ namespace PlinkoPinball.Gameplay.Modules
 
                 if (State.IsGroupComplete(rule.groupId, rule.requireAllOn))
                     result += rule.completedMultiplierBonus;
+
+                // Debug.Log(State.GetOnCount(rule.groupId));
             }
 
             return result;
         }
+
+        // 아래의 Get 함수들은 외부에서 사용될 때를 가정하여 제작한 부분임. ex) ScoreSystem
 
         /// <summary>
         /// 특정 그룹의 ON 개수를 반환한다.

@@ -89,7 +89,7 @@ namespace PlinkoPinball.Gameplay.Components.Reactions
             if (!isActiveAndEnabled)
                 return;
 
-            // 현재 설계에서는 Hit 입력만 스위치에 반응시킨다.
+            // 현재 설계에서는 Hit 입력만 스위치에 반응시킨다
             if (e.eventType != TableEventType.Hit)
                 return;
 
@@ -110,7 +110,9 @@ namespace PlinkoPinball.Gameplay.Components.Reactions
                 return;
             }
 
-            SetStateInternal(!IsOn, notify: true);
+            //Debug.Log($"[SwitchState:{switchId}] Toggle requested.", this);
+            Toggle(notify: true);
+            //Debug.Log($"switchstate: {IsOn}");
         }
 
         /// <summary>

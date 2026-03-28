@@ -76,12 +76,18 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
 
         private void NotifyLocal(in TableEvent e)
         {
-            if (_localReactions == null || _localReactions.Length == 0) return;
-
-            Debug.Log($"reaction count = {_localReactions.Length}");
+            if (_localReactions == null || _localReactions.Length == 0)
+            {
+                Debug.Log($"[BallHitTrigger:{name}] No local reactions.");
+                return;
+            }
+            Debug.Log($"[BallHitTrigger:{name}] reaction count={_localReactions.Length}");
 
             for (int i = 0; i < _localReactions.Length; i++)
+            {
+                // Debug.Log($"[BallHitTrigger:{name}] calling {_localReactions[i].GetType().Name}");
                 _localReactions[i].OnTableEvent(in e);
+            }
         }
     }
 }
