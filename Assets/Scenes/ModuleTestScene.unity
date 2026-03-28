@@ -420,6 +420,52 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1ae5f2198ed8d7044ab6a177260cbf2b, type: 3}
+--- !u!1 &789664213
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 789664215}
+  - component: {fileID: 789664214}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &789664214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 789664213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddd74bf951a747b48a6239dc60fba084, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Core.GameManager
+  startTimeSeconds: 60
+  timeChangedNotifyIntervalSeconds: 0.1
+--- !u!4 &789664215
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 789664213}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.45853, y: 0.99175, z: 0.92}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &805486271
 GameObject:
   m_ObjectHideFlags: 0
@@ -431,7 +477,7 @@ GameObject:
   - component: {fileID: 805486273}
   - component: {fileID: 805486272}
   m_Layer: 0
-  m_Name: Systems
+  m_Name: ScoreSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -739,7 +785,8 @@ SceneRoots:
   - {fileID: 1917187728}
   - {fileID: 15215196}
   - {fileID: 396472485}
+  - {fileID: 789664215}
+  - {fileID: 805486273}
   - {fileID: 9042779506152057517}
   - {fileID: 607674292}
-  - {fileID: 805486273}
   - {fileID: 1337699634}

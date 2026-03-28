@@ -30,6 +30,8 @@ namespace PlinkoPinball.Gameplay.Modules
             public float completedMultiplierBonus = 0f;
         }
 
+        // 단발성 보너스 점수를 주는 규칙을 효환가능하게 제작하여야 함
+
         [Header("Identity")]
         [Tooltip("디버그/데이터 식별용 모듈 ID.")]
         [SerializeField] private string moduleId = "module";

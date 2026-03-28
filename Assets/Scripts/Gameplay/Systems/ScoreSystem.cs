@@ -107,6 +107,7 @@ namespace PlinkoPinball.Gameplay.Systems
             if (!ShouldScore(e))
                 return;
 
+            // ModuleRoot가 있는 오브젝트를 찾고 캐싱한다. (없으면 찾고, 있으면 가져옴)
             ModuleRoot module = ModuleRootLookupCache.GetOrFind(e.source);
 
             // TODO: 이 부분에서 모듈별로 어떤 트리거에 배율을 적용할 것인지를 자동적으로 정해야 할 것 같음.

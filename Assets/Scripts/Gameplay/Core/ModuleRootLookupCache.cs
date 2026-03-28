@@ -22,13 +22,28 @@ namespace PlinkoPinball.Gameplay.Core
             }
 
             var found = source.GetComponentInParent<ModuleRoot>();
+            
             Cache[source] = found;
+
             return found;
+        }
+
+        public static void Invalidate(Transform source)
+        {
+            if (source == null)
+                return;
+
+            Cache.Remove(source);
         }
 
         public static void Clear()
         {
             Cache.Clear();
+        }
+
+        public static int GetCacheCount()
+        {
+            return Cache.Count;
         }
     }
 }
