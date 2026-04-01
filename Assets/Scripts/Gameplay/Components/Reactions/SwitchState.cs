@@ -1,28 +1,20 @@
 using System;
 using UnityEngine;
 using PlinkoPinball.Core.TableEvents;
+using PlinkoPinball.Core.Utility;
 using PlinkoPinball.Gameplay.Core;
 
 namespace PlinkoPinball.Gameplay.Components.Reactions
 {
     /// <summary>
     /// Hit 이벤트를 입력으로 받아 ON/OFF 상태를 유지하는 스위치 컴포넌트.
-    ///
-    /// 책임:
-    /// - 로컬 Hit 이벤트를 입력으로 받는다.
-    /// - 스위치 상태(IsOn)를 변경한다.
-    /// - 상태 변경 시 StateChanged 이벤트를 발생시킨다.
-    ///
-    /// 비책임:
-    /// - 점수 계산
-    /// - TableEvent 재발행
-    /// - 그룹 완료 판정
-    /// - 전역 시스템 직접 호출
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class SwitchState : MonoBehaviour, ITableEventReaction
     {
         [Header("Identity")]
+        [SerializeField] private bool autoGenerateSwitchId = true;
+
         [Tooltip("모듈 내부에서 이 스위치를 식별하는 고유 ID.")]
         [SerializeField] private string switchId = "switch";
 
@@ -110,7 +102,6 @@ namespace PlinkoPinball.Gameplay.Components.Reactions
                 return;
             }
 
-            //Debug.Log($"[SwitchState:{switchId}] Toggle requested.", this);
             Toggle(notify: true);
             //Debug.Log($"switchstate: {IsOn}");
         }
@@ -125,26 +116,26 @@ namespace PlinkoPinball.Gameplay.Components.Reactions
         }
 
         /// <summary>
-        /// 외부에서 스위치 상태를 강제로 설정한다.
+        /// 외부에서 스위치 상태를 강제로 설정합니다.
         /// </summary>
-        /// <param name="value">설정할 상태</param>
-        /// <param name="notify">true면 StateChanged를 호출한다</param>
+        /// <param name="value">설정할 상태를 입력합니다.</param>
+        /// <param name="notify">true면 StateChanged를 호출합니다.</param>
         public void SetState(bool value, bool notify = true)
         {
             SetStateInternal(value, notify);
         }
 
         /// <summary>
-        /// 외부에서 현재 상태를 토글한다.
+        /// 외부에서 현재 상태를 토글합니다.
         /// </summary>
-        /// <param name="notify">true면 StateChanged를 호출한다</param>
+        /// <param name="notify">true면 StateChanged를 호출합니다.</param>
         public void Toggle(bool notify = true)
         {
             SetStateInternal(!IsOn, notify);
         }
 
         /// <summary>
-        /// 현재 이벤트가 이 스위치의 입력 조건을 만족하는지 판정한다.
+        /// 현재 이벤트가 이 스위치의 입력 조건을 만족하는지 판정합니다.
         /// </summary>
         private bool PassesEventFilter(in TableEvent e)
         {
@@ -181,10 +172,10 @@ namespace PlinkoPinball.Gameplay.Components.Reactions
         }
 
         /// <summary>
-        /// 내부 상태를 변경한다.
+        /// 내부 상태를 변경합니다.
         /// </summary>
-        /// <param name="value">새 상태</param>
-        /// <param name="notify">true면 상태 변경 이벤트를 발생시킨다</param>
+        /// <param name="value">설정할 새 상태를 입력합니다.</param>
+        /// <param name="notify">true면 상태 변경 이벤트를 발생시킵니다.</param>
         private void SetStateInternal(bool value, bool notify)
         {
             if (IsOn == value)
@@ -199,8 +190,11 @@ namespace PlinkoPinball.Gameplay.Components.Reactions
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            if (string.IsNullOrWhiteSpace(switchId))
-                switchId = gameObject.name;
+            if (autoGenerateSwitchId)
+                switchId = TableIdentityGenerator.CreateSwitchId(transform);
+
+            if (autoGenerateSwitchId && string.IsNullOrWhiteSpace(groupId))
+                groupId = TableIdentityGenerator.CreateParentBasedGroupId(transform);
         }
 #endif
     }

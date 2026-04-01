@@ -1,5 +1,6 @@
 using UnityEngine;
 using PlinkoPinball.Core.TableEvents;
+using PlinkoPinball.Core.Utility;
 using PlinkoPinball.Gameplay.Core;
 
 namespace PlinkoPinball.Gameplay.Components.Triggers
@@ -15,6 +16,7 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
     public sealed class BallHitTrigger : MonoBehaviour
     {
         [Header("Event")]
+        [SerializeField] private bool autoGenerateEventId = true;
         [SerializeField] private string eventId = "hit.none";
         [SerializeField] private int baseValue = 1;
         [SerializeField] private string[] tags;
@@ -43,13 +45,16 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (cooldownSeconds > 0f && Time.time < _nextAllowedTime) return;
+            if (cooldownSeconds > 0f && Time.time < _nextAllowedTime)
+                return;
 
             // 공 판별 (RigidBody가 있어야 함. (설정 시) 레이어가 맞아야 함)
             var ballRb = collision.rigidbody;
-            if (ballRb == null) return;
+            if (ballRb == null)
+                return;
 
-            if (ballLayer >= 0 && ballRb.gameObject.layer != ballLayer) return;
+            if (ballLayer >= 0 && ballRb.gameObject.layer != ballLayer)
+                return;
 
             _nextAllowedTime = Time.time + cooldownSeconds;
 
@@ -78,16 +83,30 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
         {
             if (_localReactions == null || _localReactions.Length == 0)
             {
-                Debug.Log($"[BallHitTrigger:{name}] No local reactions.");
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                //Debug.Log($"[BallHitTrigger:{name}] No local reactions.", this);
+#endif
                 return;
             }
-            Debug.Log($"[BallHitTrigger:{name}] reaction count={_localReactions.Length}");
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            //Debug.Log($"[BallHitTrigger:{name}] reaction count={_localReactions.Length}");
+#endif
 
             for (int i = 0; i < _localReactions.Length; i++)
             {
-                // Debug.Log($"[BallHitTrigger:{name}] calling {_localReactions[i].GetType().Name}");
                 _localReactions[i].OnTableEvent(in e);
             }
         }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (autoGenerateEventId)
+            {
+                eventId = TableIdentityGenerator.CreateEventId("hit", transform);
+            }
+        }
+#endif
     }
 }

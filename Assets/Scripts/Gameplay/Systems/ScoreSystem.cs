@@ -169,8 +169,7 @@ namespace PlinkoPinball.Gameplay.Systems
             Debug.Log(
                 $"[ScoreSystem] +{add} " +
                 $"(base={e.baseValue}, globalMul={Multiplier:0.00}, moduleMul={moduleMultiplier:0.00}) " +
-                $" | {e.eventId}" +
-                $" | type={e.eventType}" +
+                $" | eventType={e.eventType} ({e.eventId})" +
                 $" | source={sourceName}" +
                 $" | module={moduleName}",
                 this
