@@ -24,7 +24,8 @@ namespace PlinkoPinball.Gameplay.Systems
         [SerializeField] private string scoreTag = "score";
 
         [Header("Multiplier")]
-        [Min(0.1f)][SerializeField] private float baseMultiplier = 1.0f;   // 전역 기본 배수(업그레이드 관련 부분도 이 것에 영향을 받도록 구상중)
+        // 전역 기본 배수(업그레이드/모드/크리티컬 등 관련 부분도 이것에 영향을 받도록 구상중)
+        [Min(0.1f)][SerializeField] private float baseMultiplier = 1.0f;
         [Min(1.0f)][SerializeField] private float maxMultiplier = 20.0f;
 
         [Header("Debug")]
@@ -73,7 +74,8 @@ namespace PlinkoPinball.Gameplay.Systems
         public void SetMultiplier(float value)
         {
             float clamped = Mathf.Clamp(value, 0.1f, maxMultiplier);
-            if (Mathf.Abs(clamped - Multiplier) < 0.0001f) return;
+            if (Mathf.Abs(clamped - Multiplier) < 0.0001f)
+                return;
 
             Multiplier = clamped;
             OnMultiplierChanged?.Invoke(Multiplier);
@@ -124,14 +126,7 @@ namespace PlinkoPinball.Gameplay.Systems
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (enableScoreDebugLog)
             {
-                string sourceName = e.source != null ? e.source.name : "null";
-                string moduleName = module != null ? module.ModuleId : "None";
-
-                Debug.Log(
-                    $"[ScoreSystem] +{add} " +
-                    $"(base={e.baseValue}, globalMul={Multiplier:0.00}, moduleMul={moduleMultiplier:0.00}) " +
-                    $"from {e.eventId} | source={sourceName} | module={moduleName}");
-                Debug.Log($"[ScoreSystem]CurrentScore: {CurrentScore}");
+                DebugLog(in e, module, moduleMultiplier, add);
             }
 #endif
         }
@@ -147,19 +142,42 @@ namespace PlinkoPinball.Gameplay.Systems
 
             if (e.baseValue <= 0)
                 return false;
-            
-            //Debug.Log("점수 반영 대상입니다.");
+
             return true;
         }
 
         /// <summary>
-        /// 최종 점수를 계산합니다.
+        /// 추가할 최종 점수를 계산합니다.
         /// </summary>
+        /// <param name="baseValue">기본 점수</param>
+        /// <param name="globalMultiplier">전역 배수</param>
+        /// <param name="moduleMultiplier">모듈 배수</param>
+        /// <returns></returns>
         private int CalculateScoreResult(int baseValue, float globalMultiplier, float moduleMultiplier)
         {
             float result = baseValue * globalMultiplier * moduleMultiplier;
-            
+
             return Mathf.RoundToInt(result);
         }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private void DebugLog(in TableEvent e, ModuleRoot module, float moduleMultiplier, int add)
+        {
+            string sourceName = e.source != null ? e.source.name : "null";
+            string moduleName = module != null ? module.ModuleId : "None";
+
+            Debug.Log(
+                $"[ScoreSystem] +{add} " +
+                $"(base={e.baseValue}, globalMul={Multiplier:0.00}, moduleMul={moduleMultiplier:0.00}) " +
+                $" | {e.eventId}" +
+                $" | type={e.eventType}" +
+                $" | source={sourceName}" +
+                $" | module={moduleName}",
+                this
+            );
+
+            Debug.Log($"[ScoreSystem]CurrentScore: {CurrentScore}");
+        }
+#endif
     }
 }
