@@ -147,6 +147,7 @@ namespace PlinkoPinball.Gameplay.Systems
 
             if (e.baseValue <= 0)
                 return false;
+            
             //Debug.Log("점수 반영 대상입니다.");
             return true;
         }
@@ -157,6 +158,7 @@ namespace PlinkoPinball.Gameplay.Systems
         private int CalculateScoreResult(int baseValue, float globalMultiplier, float moduleMultiplier)
         {
             float result = baseValue * globalMultiplier * moduleMultiplier;
+            
             return Mathf.RoundToInt(result);
         }
     }

@@ -110,6 +110,7 @@ namespace PlinkoPinball.Core
         {
             //TODO: 정산/기록 저장/결과 등으로 연결
             Debug.Log("[GameManager] Time Over");
+            
             EndRound();
         }
 
