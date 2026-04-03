@@ -29,6 +29,7 @@ Thumbs.db
 *.iws
 *.dotSettings
 *.sln
+*.slnx
 *.sln.docstates
 *.csproj
 *.unityproj
@@ -49,6 +50,3 @@ Thumbs.db
 # Unity 메타파일 제외하면 안 됨
 !*.meta
 
-# 기타 제외 
-Assets/FolderColor
-Assets/FolderColor.meta
