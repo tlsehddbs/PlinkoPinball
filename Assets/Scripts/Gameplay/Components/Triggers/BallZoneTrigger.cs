@@ -58,7 +58,7 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
                 return;
 
             string enterEventId = TableIdentityGenerator.CreateDerivedEventId(eventId, "enter");
-            Emit(enterEventType, eventId, ballRb);
+            Emit(enterEventType, enterEventId, ballRb);
         }
 
         private void OnTriggerExit(Collider other)
@@ -76,7 +76,7 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
                 return;
 
             string exitEventId = TableIdentityGenerator.CreateDerivedEventId(eventId, "exit");
-            Emit(exitEventType, eventId, ballRb);
+            Emit(exitEventType, exitEventId, ballRb);
         }
 
         private void Emit(TableEventType type, string id, Rigidbody ballRb)
