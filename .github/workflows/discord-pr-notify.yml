@@ -1,0 +1,134 @@
+name: Discord PR Notifications
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed, ready_for_review]
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+
+jobs:
+  notify-pr:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send PR event to Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          ACTION="${{ github.event.action }}"
+          REPO="${{ github.repository }}"
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          PR_URL="${{ github.event.pull_request.html_url }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          AUTHOR="${{ github.event.pull_request.user.login }}"
+          IS_MERGED="${{ github.event.pull_request.merged }}"
+
+          if [ "$ACTION" = "opened" ]; then
+            STATUS="PR 생성"
+          elif [ "$ACTION" = "reopened" ]; then
+            STATUS="PR 재오픈"
+          elif [ "$ACTION" = "synchronize" ]; then
+            STATUS="PR 업데이트"
+          elif [ "$ACTION" = "ready_for_review" ]; then
+            STATUS="Draft 해제"
+          elif [ "$ACTION" = "closed" ] && [ "$IS_MERGED" = "true" ]; then
+            STATUS="PR 머지됨"
+          elif [ "$ACTION" = "closed" ]; then
+            STATUS="PR 닫힘"
+          else
+            STATUS="PR 이벤트"
+          fi
+
+          PAYLOAD=$(jq -n \
+            --arg title "[$REPO] $STATUS #$PR_NUMBER" \
+            --arg url "$PR_URL" \
+            --arg desc "$PR_TITLE\n작성자: $AUTHOR" \
+            '{
+              embeds: [
+                {
+                  title: $title,
+                  url: $url,
+                  description: $desc
+                }
+              ]
+            }')
+
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "$PAYLOAD" \
+               "$DISCORD_WEBHOOK_URL"
+
+  notify-pr-comment:
+    if: github.event_name == 'issue_comment' && github.event.issue.pull_request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send PR comment event to Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          REPO="${{ github.repository }}"
+          PR_TITLE="${{ github.event.issue.title }}"
+          PR_URL="${{ github.event.comment.html_url }}"
+          PR_NUMBER="${{ github.event.issue.number }}"
+          AUTHOR="${{ github.event.comment.user.login }}"
+          COMMENT_BODY="${{ github.event.comment.body }}"
+
+          SHORT_BODY=$(printf "%s" "$COMMENT_BODY" | head -c 200)
+
+          PAYLOAD=$(jq -n \
+            --arg title "[$REPO] PR 댓글 #$PR_NUMBER" \
+            --arg url "$PR_URL" \
+            --arg desc "$PR_TITLE\n댓글 작성자: $AUTHOR\n\n$SHORT_BODY" \
+            '{
+              embeds: [
+                {
+                  title: $title,
+                  url: $url,
+                  description: $desc
+                }
+              ]
+            }')
+
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "$PAYLOAD" \
+               "$DISCORD_WEBHOOK_URL"
+
+  notify-review-comment:
+    if: github.event_name == 'pull_request_review_comment'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send review comment event to Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          REPO="${{ github.repository }}"
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          PR_URL="${{ github.event.comment.html_url }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          AUTHOR="${{ github.event.comment.user.login }}"
+          PATH_NAME="${{ github.event.comment.path }}"
+          COMMENT_BODY="${{ github.event.comment.body }}"
+
+          SHORT_BODY=$(printf "%s" "$COMMENT_BODY" | head -c 200)
+
+          PAYLOAD=$(jq -n \
+            --arg title "[$REPO] 리뷰 댓글 #$PR_NUMBER" \
+            --arg url "$PR_URL" \
+            --arg desc "$PR_TITLE\n작성자: $AUTHOR\n파일: $PATH_NAME\n\n$SHORT_BODY" \
+            '{
+              embeds: [
+                {
+                  title: $title,
+                  url: $url,
+                  description: $desc
+                }
+              ]
+            }')
+
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "$PAYLOAD" \
+               "$DISCORD_WEBHOOK_URL"
