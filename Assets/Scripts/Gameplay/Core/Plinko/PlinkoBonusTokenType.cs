@@ -1,17 +1,14 @@
 namespace PlinkoPinball.Gameplay.Core.Plinko
 {
     /// <summary>
-    /// 핀볼 라운드에서 획득 후 플링코 보드에 주입하는 보너스 토큰 유형
-    /// 토큰은 플링코 시작 전에 해석되어 개별 핀에 적용됨
+    /// 핀볼 페이즈에서 획득하여 플링코 시작 시 보드에 주입되는 보너스 토큰 유형
     /// </summary>
     public enum PlinkoBonusTokenType
     {
-        StartBall,
-        GloabalCurrencyPerPinHit,
-        RandomPinFlatCurrencyBonus,
-        RandomPinHitMultuplier,
-        RandomPinExtraBonusReward,
-        RandomSlotFlatCurrencyBonus,
-        RandomSlotJackpotMultiplier
+        RandomPinFlatCurrencyBonus = 0,
+        RandomPinHitMultiplier = 1,
+        RandomPinExtraBounceReward = 2,
+        RandomSlotFlatCurrencyBonus = 3,
+        RandomSlotJackpotMultiplier = 4
     }
 }

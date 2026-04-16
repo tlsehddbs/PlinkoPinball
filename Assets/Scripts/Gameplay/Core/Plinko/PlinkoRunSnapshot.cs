@@ -3,20 +3,19 @@ using System.Collections.Generic;
 namespace PlinkoPinball.Gameplay.Core.Plinko
 {
     /// <summary>
-    /// 핀볼 라운드 종료 시점에 확정된 플링코 런 입력값
-    /// 글로벌 보너스와 보드 주입 토큰을 함께 보관
+    /// 핀볼 라운드 종료 시 확정된 플링코 입력 스냅샷입니다.
     /// </summary>
     public readonly struct PlinkoRunSnapshot
     {
         public readonly int StartBalls;
-        public readonly int GloabalCurrencyPerPinHit;
+        public readonly int GlobalCurrencyPerPinHit;
         public readonly IReadOnlyList<PlinkoBonusToken> Tokens;
-        public readonly int BoardSeed;      // 같은 스냅샷인 경우 보드 배치 결과를 재현할 수 있는 이점이 있음
+        public readonly int BoardSeed;
 
-        public PlinkoRunSnapshot(int startBalls, int gloabalCurrencyPerPinHit, IReadOnlyList<PlinkoBonusToken> tokens, int boardSeed)
+        public PlinkoRunSnapshot(int startBalls, int globalCurrencyPerPinHit, IReadOnlyList<PlinkoBonusToken> tokens, int boardSeed)
         {
             StartBalls = startBalls;
-            GloabalCurrencyPerPinHit = gloabalCurrencyPerPinHit;
+            GlobalCurrencyPerPinHit = globalCurrencyPerPinHit;
             Tokens = tokens;
             BoardSeed = boardSeed;
         }

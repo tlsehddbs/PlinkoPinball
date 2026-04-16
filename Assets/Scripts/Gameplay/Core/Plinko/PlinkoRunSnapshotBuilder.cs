@@ -5,7 +5,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 {
     /// <summary>
     /// 핀볼 플레이 중 획득한 플링코 특전을 누적
-    /// 라운드 종료 시 플링코 런 스냅샷을 생성
+    /// 라운드 종료 시 스냅샷을 생성
     /// </summary>
     public sealed class PlinkoRunSnapshotBuilder : MonoBehaviour
     {
@@ -15,41 +15,46 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         private readonly List<PlinkoBonusToken> _tokens = new List<PlinkoBonusToken>(32);
 
         /// <summary>
-        /// 시작할 볼의 개수를 추가
+        /// 플링코 시작 볼 수를 추가
         /// </summary>
         public void AddStartBalls(int amount)
         {
             if (amount <= 0)
+            {
                 return;
+            }
 
             startBalls += amount;
         }
 
         /// <summary>
-        /// 모든 핀에 공통 적용되는 핀 히트 재화 보너스 추가
+        /// 모든 핀 히트에 공통 적용되는 재화 보너스를 추가
         /// </summary>
         public void AddGlobalCurrencyPerPinHit(int amount)
         {
-            if(amount <= 0)
+            if (amount <= 0)
+            {
                 return;
+            }
 
             globalCurrencyPerPinHit += amount;
         }
 
         /// <summary>
-        /// 개별 핀 또는 슬록에 주입할 토큰을 추가
+        /// 개별 핀/슬롯 주입용 토큰을 추가
         /// </summary>
         public void AddToken(PlinkoBonusTokenType tokenType, int amount = 1, int stackCount = 1)
         {
             if (amount <= 0 || stackCount <= 0)
+            {
                 return;
+            }
 
             _tokens.Add(new PlinkoBonusToken(tokenType, amount, stackCount));
         }
 
-
         /// <summary>
-        /// 누적 상태를 바탕으로 플링코 런 스냅샷을 생성
+        /// 현재 누적 상태를 바탕으로 스냅샷을 생성
         /// </summary>
         public PlinkoRunSnapshot BuildSnapshot()
         {
@@ -59,8 +64,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                 startBalls,
                 globalCurrencyPerPinHit,
                 new List<PlinkoBonusToken>(_tokens),
-                seed
-            );
+                seed);
         }
 
         /// <summary>
