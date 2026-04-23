@@ -13,7 +13,15 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
         [SerializeField] private int flatCurrencyBonus;
         [SerializeField, Min(1f)] private float jackpotMultiplier = 1f;
 
+
+        /// <summary>
+        /// 현재 슬롯의 고유 ID
+        /// </summary>
         public string SlotId => slotId;
+
+        /// <summary>
+        /// 슬롯 기본 보상
+        /// </summary>
         public int BaseReward => baseReward;
 
         /// <summary>
@@ -44,6 +52,24 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
                 FlatCurrencyBonus = flatCurrencyBonus,
                 JackpotMultiplier = jackpotMultiplier
             };
+        }
+
+        /// <summary>
+        /// Authoring 단계에서 슬롯 ID를 설정
+        /// </summary>
+        /// <param name="newSlotId">설정할 슬롯 ID</param>
+        public void SetSlotIdForAuthoring(string newSlotId)
+        {
+            slotId = newSlotId;
+        }
+
+        /// <summary>
+        /// Authoring 단계에서 슬롯 기본 보상을 설정
+        /// </summary>
+        /// <param name="newBaseReward">설정할 기본 보상</param>
+        public void SetBaseRewardForAuthoring(int newBaseReward)
+        {
+            baseReward = Mathf.Max(0, newBaseReward);
         }
     }
 }

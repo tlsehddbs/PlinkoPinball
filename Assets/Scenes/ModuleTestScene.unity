@@ -531,7 +531,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &946885577
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -604,8 +604,16 @@ PrefabInstance:
       value: testmodulebase2
       objectReference: {fileID: 0}
     - target: {fileID: 5144039724835999873, guid: 6d3dae8c9f52b427dbada35999ffe323, type: 3}
+      propertyPath: switchId
+      value: aaa
+      objectReference: {fileID: 0}
+    - target: {fileID: 5144039724835999873, guid: 6d3dae8c9f52b427dbada35999ffe323, type: 3}
       propertyPath: autoGenerateSwitchId
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515141038581843735, guid: 6d3dae8c9f52b427dbada35999ffe323, type: 3}
+      propertyPath: eventId
+      value: hit.aaa
       objectReference: {fileID: 0}
     - target: {fileID: 8515141038581843735, guid: 6d3dae8c9f52b427dbada35999ffe323, type: 3}
       propertyPath: baseValue
@@ -667,8 +675,47 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 1019089029588107185, guid: 6d3dae8c9f52b427dbada35999ffe323, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8785119320411753247, guid: 6d3dae8c9f52b427dbada35999ffe323, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1337699637}
+    - targetCorrespondingSourceObject: {fileID: 8785119320411753247, guid: 6d3dae8c9f52b427dbada35999ffe323, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1337699636}
   m_SourcePrefab: {fileID: 100100000, guid: 6d3dae8c9f52b427dbada35999ffe323, type: 3}
+--- !u!1 &1337699635 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8785119320411753247, guid: 6d3dae8c9f52b427dbada35999ffe323, type: 3}
+  m_PrefabInstance: {fileID: 1337699634}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1337699636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1337699635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8db9ac0b936074c2db7ac7963440eb91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Modules.ModuleRoot
+  moduleId: module
+  baseMultiplier: 1
+  groupRules: []
+--- !u!114 &1337699637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1337699635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c51b87299fdf411fb4b5d0b99105f55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Modules.ModuleState
+  collectOnAwake: 1
 --- !u!1 &1917187725
 GameObject:
   m_ObjectHideFlags: 0
@@ -823,7 +870,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2002519368
 MonoBehaviour:
   m_ObjectHideFlags: 0

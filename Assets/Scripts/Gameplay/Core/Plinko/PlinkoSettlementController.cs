@@ -1,7 +1,7 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using PlinkoPinball.Gameplay.Core.Meta;
 using PlinkoPinball.UI.Presenters;
+using PlinkoPinball.Core;
 
 namespace PlinkoPinball.Gameplay.Core.Plinko
 {
@@ -46,12 +46,10 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         /// </summary>
         public void ReturnToPinballScene()
         {
-            if (!_hasPendingReturn || string.IsNullOrWhiteSpace(returnSceneName))
+            if (GameManager.Instance != null)
             {
-                return;
+                GameManager.Instance.CompletePlinkoAndReturnToPinball();
             }
-
-            SceneManager.LoadScene(returnSceneName);
         }
     }
 }

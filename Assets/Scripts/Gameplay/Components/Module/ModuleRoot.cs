@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using PlinkoPinball.Gameplay.Core.Modules;
 
 namespace PlinkoPinball.Gameplay.Modules
 {
@@ -44,9 +45,17 @@ namespace PlinkoPinball.Gameplay.Modules
         [Header("Switch Group Rules")]
         [SerializeField] private SwitchGroupRule[] groupRules = Array.Empty<SwitchGroupRule>();
 
+        private bool _wasCompletedLastFrame;
+
         public string ModuleId => moduleId;
 
         public ModuleState State { get; private set; }
+
+
+        /// <summary>
+        /// 모듈 보상 상태 변화가 발생했을 때 알림(event 발행 x)
+        /// </summary>
+        public event Action<string, ModuleRewardState> RewardStateChanged;
 
 
         private void Awake()
@@ -109,7 +118,7 @@ namespace PlinkoPinball.Gameplay.Modules
         }
 
         /// <summary>
-        /// 모듈 상태를 초기화한다.
+        /// 모듈 상태 초기화
         /// </summary>
         public void ResetModuleState()
         {
@@ -127,5 +136,23 @@ namespace PlinkoPinball.Gameplay.Modules
                 baseMultiplier = 0f;
         }
 #endif
+
+        /// <summary>
+        /// 현재 모듈 완료 상태를 평가하고, 상태 변화가 있을 경우 알립니다.
+        /// </summary>
+        /// <param name="isCompletedNow">현재 프레임의 완료 상태</param>
+        public void EvaluateRewardState(bool isCompletedNow)
+        {
+            if (!_wasCompletedLastFrame && isCompletedNow)
+            {
+                RewardStateChanged?.Invoke(moduleId, ModuleRewardState.Completed);
+            }
+            else if (_wasCompletedLastFrame && !isCompletedNow)
+            {
+                RewardStateChanged?.Invoke(moduleId, ModuleRewardState.Deactivated);
+            }
+            
+            _wasCompletedLastFrame = isCompletedNow;
+        }
     }
 }

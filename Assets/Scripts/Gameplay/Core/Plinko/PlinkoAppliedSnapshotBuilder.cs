@@ -1,21 +1,25 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
+using UnityEngine;
+using PlinkoPinball.Gameplay.Components.Plinko;
 
 namespace PlinkoPinball.Gameplay.Core.Plinko
 {
-    /// <summary>
-    /// 핀볼에서 전달된 런 스냅샷을 실제 핀/슬롯 적용 결과로 해석
-    /// </summary>
     public static class PlinkoAppliedSnapshotBuilder
     {
-        public static PlinkoBoardAppliedSnapshot Build(PlinkoBoardDefinition boardDefinition, in PlinkoRunSnapshot runSnapshot)
+        public static PlinkoBoardAppliedSnapshot Build(PlinkoPinRuntime[] pinRuntimes, PlinkoSlotRuntime[] slotRuntimes, in PlinkoRunSnapshot runSnapshot)
         {
-            var rng = new Random(runSnapshot.BoardSeed);
+            var rng = new System.Random(runSnapshot.BoardSeed);
 
-            var pinStates = CreateDefaultPinStates(boardDefinition);
-            var slotStates = CreateDefaultSlotStates(boardDefinition);
+            List<PlinkoPinStateSnapshot> pinStates = CreateDefaultPinStates(pinRuntimes);
+            List<PlinkoSlotStateSnapshot> slotStates = CreateDefaultSlotStates(slotRuntimes);
 
             ApplyTokens(runSnapshot.Tokens, pinStates, slotStates, rng);
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            LogAppliedState(runSnapshot, pinStates, slotStates);
+#endif
 
             return new PlinkoBoardAppliedSnapshot(
                 runSnapshot.StartBalls,
@@ -24,14 +28,24 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                 slotStates);
         }
 
-        private static List<PlinkoPinStateSnapshot> CreateDefaultPinStates(PlinkoBoardDefinition boardDefinition)
+        private static List<PlinkoPinStateSnapshot> CreateDefaultPinStates(PlinkoPinRuntime[] pinRuntimes)
         {
-            var result = new List<PlinkoPinStateSnapshot>(boardDefinition.Pins.Count);
+            var result = new List<PlinkoPinStateSnapshot>(pinRuntimes != null ? pinRuntimes.Length : 0);
 
-            for (int i = 0; i < boardDefinition.Pins.Count; i++)
+            if (pinRuntimes == null)
             {
+                return result;
+            }
+
+            for (int i = 0; i < pinRuntimes.Length; i++)
+            {
+                if (pinRuntimes[i] == null || string.IsNullOrWhiteSpace(pinRuntimes[i].PinId))
+                {
+                    continue;
+                }
+
                 result.Add(new PlinkoPinStateSnapshot(
-                    boardDefinition.Pins[i].PinId,
+                    pinRuntimes[i].PinId,
                     0,
                     1f,
                     0));
@@ -40,14 +54,24 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             return result;
         }
 
-        private static List<PlinkoSlotStateSnapshot> CreateDefaultSlotStates(PlinkoBoardDefinition boardDefinition)
+        private static List<PlinkoSlotStateSnapshot> CreateDefaultSlotStates(PlinkoSlotRuntime[] slotRuntimes)
         {
-            var result = new List<PlinkoSlotStateSnapshot>(boardDefinition.Slots.Count);
+            var result = new List<PlinkoSlotStateSnapshot>(slotRuntimes != null ? slotRuntimes.Length : 0);
 
-            for (int i = 0; i < boardDefinition.Slots.Count; i++)
+            if (slotRuntimes == null)
             {
+                return result;
+            }
+
+            for (int i = 0; i < slotRuntimes.Length; i++)
+            {
+                if (slotRuntimes[i] == null || string.IsNullOrWhiteSpace(slotRuntimes[i].SlotId))
+                {
+                    continue;
+                }
+
                 result.Add(new PlinkoSlotStateSnapshot(
-                    boardDefinition.Slots[i].SlotId,
+                    slotRuntimes[i].SlotId,
                     0,
                     1f));
             }
@@ -55,7 +79,11 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             return result;
         }
 
-        private static void ApplyTokens(IReadOnlyList<PlinkoBonusToken> tokens, List<PlinkoPinStateSnapshot> pinStates, List<PlinkoSlotStateSnapshot> slotStates, Random rng)
+        private static void ApplyTokens(
+            IReadOnlyList<PlinkoBonusToken> tokens,
+            List<PlinkoPinStateSnapshot> pinStates,
+            List<PlinkoSlotStateSnapshot> slotStates,
+            System.Random rng)
         {
             if (tokens == null)
             {
@@ -94,12 +122,9 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             }
         }
 
-        private static void ApplyRandomPinFlatCurrency(List<PlinkoPinStateSnapshot> pinStates, int amount, Random rng)
+        private static void ApplyRandomPinFlatCurrency(List<PlinkoPinStateSnapshot> pinStates, int amount, System.Random rng)
         {
-            if (pinStates.Count == 0)
-            {
-                return;
-            }
+            if (pinStates.Count == 0) return;
 
             int index = rng.Next(0, pinStates.Count);
             PlinkoPinStateSnapshot state = pinStates[index];
@@ -111,12 +136,9 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                 state.ExtraBounceReward);
         }
 
-        private static void ApplyRandomPinHitMultiplier(List<PlinkoPinStateSnapshot> pinStates, int amount, Random rng)
+        private static void ApplyRandomPinHitMultiplier(List<PlinkoPinStateSnapshot> pinStates, int amount, System.Random rng)
         {
-            if (pinStates.Count == 0)
-            {
-                return;
-            }
+            if (pinStates.Count == 0) return;
 
             int index = rng.Next(0, pinStates.Count);
             PlinkoPinStateSnapshot state = pinStates[index];
@@ -128,12 +150,9 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                 state.ExtraBounceReward);
         }
 
-        private static void ApplyRandomPinExtraBounceReward(List<PlinkoPinStateSnapshot> pinStates, int amount, Random rng)
+        private static void ApplyRandomPinExtraBounceReward(List<PlinkoPinStateSnapshot> pinStates, int amount, System.Random rng)
         {
-            if (pinStates.Count == 0)
-            {
-                return;
-            }
+            if (pinStates.Count == 0) return;
 
             int index = rng.Next(0, pinStates.Count);
             PlinkoPinStateSnapshot state = pinStates[index];
@@ -145,12 +164,9 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                 state.ExtraBounceReward + amount);
         }
 
-        private static void ApplyRandomSlotFlatCurrency(List<PlinkoSlotStateSnapshot> slotStates, int amount, Random rng)
+        private static void ApplyRandomSlotFlatCurrency(List<PlinkoSlotStateSnapshot> slotStates, int amount, System.Random rng)
         {
-            if (slotStates.Count == 0)
-            {
-                return;
-            }
+            if (slotStates.Count == 0) return;
 
             int index = rng.Next(0, slotStates.Count);
             PlinkoSlotStateSnapshot state = slotStates[index];
@@ -161,12 +177,9 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                 state.JackpotMultiplier);
         }
 
-        private static void ApplyRandomSlotJackpotMultiplier(List<PlinkoSlotStateSnapshot> slotStates, int amount, Random rng)
+        private static void ApplyRandomSlotJackpotMultiplier(List<PlinkoSlotStateSnapshot> slotStates, int amount, System.Random rng)
         {
-            if (slotStates.Count == 0)
-            {
-                return;
-            }
+            if (slotStates.Count == 0) return;
 
             int index = rng.Next(0, slotStates.Count);
             PlinkoSlotStateSnapshot state = slotStates[index];
@@ -176,5 +189,46 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                 state.FlatCurrencyBonus,
                 state.JackpotMultiplier + amount);
         }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private static void LogAppliedState(
+            in PlinkoRunSnapshot runSnapshot,
+            List<PlinkoPinStateSnapshot> pinStates,
+            List<PlinkoSlotStateSnapshot> slotStates)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("[PlinkoAppliedSnapshotBuilder] Applied Snapshot");
+            sb.AppendLine($"  Seed = {runSnapshot.BoardSeed}");
+            sb.AppendLine($"  StartBalls = {runSnapshot.StartBalls}");
+            sb.AppendLine($"  GlobalCurrencyPerPinHit = {runSnapshot.GlobalCurrencyPerPinHit}");
+
+            for (int i = 0; i < pinStates.Count; i++)
+            {
+                PlinkoPinStateSnapshot pin = pinStates[i];
+                if (pin.FlatCurrencyBonus == 0 &&
+                    Mathf.Approximately(pin.HitMultiplier, 1f) &&
+                    pin.ExtraBounceReward == 0)
+                {
+                    continue;
+                }
+
+                sb.AppendLine($"  Pin {pin.PinId} => flat={pin.FlatCurrencyBonus}, mul={pin.HitMultiplier}, bounce={pin.ExtraBounceReward}");
+            }
+
+            for (int i = 0; i < slotStates.Count; i++)
+            {
+                PlinkoSlotStateSnapshot slot = slotStates[i];
+                if (slot.FlatCurrencyBonus == 0 &&
+                    Mathf.Approximately(slot.JackpotMultiplier, 1f))
+                {
+                    continue;
+                }
+
+                sb.AppendLine($"  Slot {slot.SlotId} => flat={slot.FlatCurrencyBonus}, jackpot={slot.JackpotMultiplier}");
+            }
+
+            Debug.Log(sb.ToString());
+        }
+#endif
     }
 }

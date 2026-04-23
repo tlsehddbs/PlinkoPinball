@@ -19,10 +19,18 @@ namespace PlinkoPinball.Gameplay.Core.Flow
         /// <param name="pinballScore">현재 핀볼 점수</param>
         public void TransitionToPlinko(int roundIndex, int pinballScore)
         {
-            if (plinkoSnapshotBuilder == null || PhaseHandoffService.Instance == null)
+            if (plinkoSnapshotBuilder == null)
             {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-                Debug.LogWarning($"[{nameof(PinballToPlinkoTransitionController)}] Missing required reference.", this);
+                Debug.LogWarning("[PinballToPlinkoTransitionController] Missing snapshot builder.", this);
+#endif
+                return;
+            }
+
+            if (PhaseHandoffService.Instance == null)
+            {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                Debug.LogWarning("[PinballToPlinkoTransitionController] Missing handoff service.", this);
 #endif
                 return;
             }
@@ -35,7 +43,14 @@ namespace PlinkoPinball.Gameplay.Core.Flow
                 snapshot);
 
             PhaseHandoffService.Instance.SetPlinkoContext(context);
-            SceneManager.LoadScene(plinkoSceneName);
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            Debug.Log(
+                $"[PinballToPlinkoTransitionController] Transitioning to {plinkoSceneName} | Round={roundIndex} | Score={pinballScore}",
+                this);
+#endif
+
+            SceneManager.LoadScene("PlinkoTestScene");
         }
     }
 }

@@ -125,15 +125,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 8785119320411753247}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 833a9426d314b4cbdbb580941e83d090, type: 3}
+  m_Script: {fileID: 11500000, guid: 8db9ac0b936074c2db7ac7963440eb91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Modules.ModuleRoot
-  moduleId: ModuleId
-  baseMultiplier: 2
-  groupRules:
-  - groupId: Test1
-    requireAllOn: 1
-    completedMultiplierBonus: 5
+  moduleId: module
+  baseMultiplier: 1
+  groupRules: []
 --- !u!114 &1671596070650057857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,7 +140,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8785119320411753247}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a423ed60132e44d26a970a4757e63629, type: 3}
+  m_Script: {fileID: 11500000, guid: 2c51b87299fdf411fb4b5d0b99105f55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Modules.ModuleState
   collectOnAwake: 1
@@ -157,7 +154,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1598793109583244760, guid: e888e643d298b1a4693942ca5f7bf195, type: 3}
       propertyPath: eventId
-      value: hit.test
+      value: hit.testbumper-a
       objectReference: {fileID: 0}
     - target: {fileID: 1598793109583244760, guid: e888e643d298b1a4693942ca5f7bf195, type: 3}
       propertyPath: tags.Array.size
@@ -217,7 +214,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7430023637041184352, guid: e888e643d298b1a4693942ca5f7bf195, type: 3}
       propertyPath: m_Name
-      value: TestBumper
+      value: TestBumper_A
       objectReference: {fileID: 0}
     - target: {fileID: 8539648652224343645, guid: e888e643d298b1a4693942ca5f7bf195, type: 3}
       propertyPath: impulseStrength
@@ -248,7 +245,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 866da38f522db40a19998c5c16912cfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Components.Reactions.SwitchState
-  switchId: TestBumper
+  autoGenerateSwitchId: 1
+  switchId: testbumper-a
   groupId: Test1
   initialOn: 0
   requiredEventIdExact: 
@@ -271,7 +269,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1598793109583244760, guid: e888e643d298b1a4693942ca5f7bf195, type: 3}
       propertyPath: eventId
-      value: hit.test
+      value: hit.testbumper-b
       objectReference: {fileID: 0}
     - target: {fileID: 1598793109583244760, guid: e888e643d298b1a4693942ca5f7bf195, type: 3}
       propertyPath: tags.Array.size
@@ -331,7 +329,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7430023637041184352, guid: e888e643d298b1a4693942ca5f7bf195, type: 3}
       propertyPath: m_Name
-      value: TestBumper (1)
+      value: TestBumper_B
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -358,7 +356,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 866da38f522db40a19998c5c16912cfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Components.Reactions.SwitchState
-  switchId: TestBumper (1)
+  autoGenerateSwitchId: 1
+  switchId: testbumper-b
   groupId: Test1
   initialOn: 0
   requiredEventIdExact: 

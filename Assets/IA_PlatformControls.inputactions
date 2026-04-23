@@ -122,6 +122,73 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "UI",
+            "id": "58d6d82d-e21d-4cf9-a1b9-a4365e92ed3f",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "dcda18f6-813c-4830-9632-618d9e9bc937",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "8c3e33e3-ef21-4c92-b2f8-5403f1f29fbc",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Plinko",
+            "id": "057c13e4-e0fd-4e53-9b35-0b383d190c69",
+            "actions": [
+                {
+                    "name": "Return",
+                    "type": "Button",
+                    "id": "8c1e5e37-c775-45ed-92c6-7485c52e59c2",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "afd2142c-2668-48d4-bfe9-1d41c6740431",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Return",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "041a96d7-889c-4f06-b529-c0db9316168d",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Return",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

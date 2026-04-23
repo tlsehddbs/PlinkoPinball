@@ -33,6 +33,14 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                 return;
             }
 
+            PlinkoPinModifierData modifier = runtime.ExportState();
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            Debug.Log(
+                $"[PlinkoPinCollisionHandler] Pin={runtime.PinId}, base={baseReward}, flat={modifier.FlatCurrencyBonus}, mul={modifier.HitMultiplier}, bounce={modifier.ExtraBounceReward}",
+                this);
+#endif
+
             boardContext.RewardAccumulator.RegisterPinHit(baseReward, runtime.ExportState());
         }
     }

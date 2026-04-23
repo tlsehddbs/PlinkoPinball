@@ -13,6 +13,9 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
         [SerializeField, Min(1f)] private float hitMultiplier = 1f;
         [SerializeField] private int extraBounceReward;
 
+        /// <summary>
+        /// 현재 핀의 고유 ID
+        /// </summary>
         public string PinId => pinId;
 
         /// <summary>
@@ -26,8 +29,11 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
         }
 
         /// <summary>
-        /// 외부 스냅샷 결과를 이 핀에 적용
+        /// 외부 스냅샷 결과를 해당 핀에 적용
         /// </summary>
+        /// <param name="currencyBonus">고정 재화 보너스</param>
+        /// <param name="multiplier">히트 배율</param>
+        /// <param name="bounceReward">추가 바운스 보상</param>
         public void ApplyState(int currencyBonus, float multiplier, int bounceReward)
         {
             flatCurrencyBonus = currencyBonus;
@@ -46,6 +52,16 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
                 HitMultiplier = hitMultiplier,
                 ExtraBounceReward = extraBounceReward
             };
+        }
+
+        /// <summary>
+        /// Authoring 단계에서 핀 ID를 설정
+        /// 런타임 플레이 중에는 호출하지 않도록 한다
+        /// </summary>
+        /// <param name="newPinId">설정할 핀 id</param>
+        public void SetPinIdForAuthoring(string newPinId)
+        {
+            pinId = newPinId;
         }
     }
 }
