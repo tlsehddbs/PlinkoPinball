@@ -1,15 +1,14 @@
 using UnityEngine;
-using PlinkoPinball.Gameplay.Core.Flow;
+using PlinkoPinball.Core;
+using PlinkoPinball.Gameplay.Components.Plinko;
+using PlinkoPinball.Gameplay.Core.Plinko;
 
-namespace PlinkoPinball.Gameplay.Core.Plinko
+namespace PlinkoPinball.Gameplay.Core.Flow
 {
-    /// <summary>
-    /// 플링코 씬 진입 시 전달된 스냅샷을 해석하고 런을 시작
-    /// </summary>
-    public sealed class PlinkoSceneBootstrapper : MonoBehaviour
+    public sealed class PlinkoSceneBootstrap : MonoBehaviour
     {
         [Header("Board")]
-        [SerializeField] private PlinkoBoardDefinition boardDefinition;
+        [SerializeField] private PlinkoBoardRuntimeGenerator boardRuntimeGenerator;
         [SerializeField] private PlinkoBoardStateApplier boardStateApplier;
         [SerializeField] private PlinkoRunController runController;
 
@@ -19,24 +18,42 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 
         private void Start()
         {
+            if (GameManager.Instance == null)
+            {
+                return;
+            }
+
+            GameManager.Instance.SetPhase(GamePhase.Plinko);
+            //GameManager.Instance.InputRouter?.BindPinballTargets(null);
+            //GameManager.Instance.InputRouter?.ApplyPhase(GamePhase.Plinko);
+
             if (!TryGetContext(out PlinkoPhaseHandoffContext context))
             {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-                Debug.LogWarning($"[{nameof(PlinkoSceneBootstrapper)}] No handoff context found.", this);
+                Debug.LogWarning($"[{nameof(PlinkoSceneBootstrap)}] No valid handoff context found.", this);
 #endif
                 return;
             }
 
-            if (boardDefinition == null || boardStateApplier == null || runController == null)
+            if (boardRuntimeGenerator == null || boardStateApplier == null || runController == null)
             {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-                Debug.LogWarning($"[{nameof(PlinkoSceneBootstrapper)}] Missing required reference.", this);
+                Debug.LogWarning($"[{nameof(PlinkoSceneBootstrap)}] Missing scene references.", this);
 #endif
                 return;
             }
 
+            boardRuntimeGenerator.GenerateBoard(
+                out PlinkoPinRuntime[] generatedPins,
+                out PlinkoSlotRuntime[] generatedSlots);
+
+            boardStateApplier.RegisterRuntimeObjects(generatedPins, generatedSlots);
+
             PlinkoBoardAppliedSnapshot appliedSnapshot =
-                PlinkoAppliedSnapshotBuilder.Build(boardDefinition, context.RunSnapshot);
+                PlinkoAppliedSnapshotBuilder.Build(
+                    generatedPins,
+                    generatedSlots,
+                    context.RunSnapshot);
 
             boardStateApplier.ResetBoardState();
             boardStateApplier.ApplySnapshot(appliedSnapshot);
@@ -52,8 +69,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         {
             context = default;
 
-            if (PhaseHandoffService.Instance != null &&
-                PhaseHandoffService.Instance.TryConsumePlinkoContext(out context))
+            if (PhaseHandoffService.Instance != null && PhaseHandoffService.Instance.TryConsumePlinkoContext(out context))
             {
                 return true;
             }

@@ -33,6 +33,14 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                 return;
             }
 
+            PlinkoSlotModifierData modifier = runtime.ExportState();
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            Debug.Log(
+                $"[PlinkoSlotResolver] Slot={runtime.SlotId}, base={runtime.BaseReward}, flat={modifier.FlatCurrencyBonus}, jackpot={modifier.JackpotMultiplier}",
+                this);
+#endif
+
             boardContext.RewardAccumulator.RegisterSlotReward(runtime.BaseReward, runtime.ExportState());
             ball.Resolve();
         }

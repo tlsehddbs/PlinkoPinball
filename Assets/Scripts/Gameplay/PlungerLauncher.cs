@@ -1,4 +1,6 @@
 using UnityEngine;
+using PlinkoPinball.InputRuntime;
+
 
 namespace PlinkoPinball.Gameplay
 {
@@ -43,6 +45,24 @@ namespace PlinkoPinball.Gameplay
         public bool IsCharging => _isCharging;
         public float Charge01 => _charge01;
 
+
+        private void OnEnable()
+        {
+            if (InputRouter.Instance != null)
+            {
+                InputRouter.Instance.OnLaunchPressed += BeginCharge;
+                InputRouter.Instance.OnLaunchReleased += Release;
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (InputRouter.Instance != null)
+            {
+                InputRouter.Instance.OnLaunchPressed -= BeginCharge;
+                InputRouter.Instance.OnLaunchReleased -= Release;
+            }
+        }
 
         private void Update()
         {

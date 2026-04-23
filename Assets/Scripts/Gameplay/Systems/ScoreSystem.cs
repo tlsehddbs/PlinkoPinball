@@ -1,9 +1,9 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using PlinkoPinball.Core.TableEvents;
 using PlinkoPinball.Gameplay.Core;
 using PlinkoPinball.Gameplay.Modules;
+using PlinkoPinball.Gameplay.Core.Flow;
 
 namespace PlinkoPinball.Gameplay.Systems
 {
@@ -17,7 +17,7 @@ namespace PlinkoPinball.Gameplay.Systems
     /// 추후 eventId 기반 오버라이드/룰 테이블(SO)로 확장 예정
     /// Contextbonus, upgrade 등 적용 예정
     /// </summary>
-    public sealed class ScoreSystem : MonoBehaviour
+    public sealed class ScoreSystem : MonoBehaviour, IRoundResettable
     {
         [Header("Tag")]
         [Tooltip("이 태그가 있는 이벤트만 점수에 반영. 비어있을 시 태그 필터를 사용하지 않음.")]
@@ -43,6 +43,7 @@ namespace PlinkoPinball.Gameplay.Systems
         private const string BestScorePrefsKey = "PlinkoPinball_BestScore_v1";
 
 
+
         private void Awake()
         {
             BestScore = PlayerPrefs.GetInt(BestScorePrefsKey, 0);
@@ -57,6 +58,15 @@ namespace PlinkoPinball.Gameplay.Systems
         private void OnDisable()
         {
             TableEventBus.OnEvent -= HandleTableEvent;
+        }
+        
+
+        /// <summary>
+        /// 새 라운드를 위해 점수 초기화
+        /// </summary>
+        public void ResetForRound()
+        {
+            CurrentScore = 0;
         }
 
         /// <summary>
@@ -132,7 +142,7 @@ namespace PlinkoPinball.Gameplay.Systems
         }
 
         /// <summary>
-        /// 해당 이벤트가 점수 반영 대상인지 판별합니다.
+        /// 해당 이벤트가 점수 반영 대상인지 판별
         /// </summary>
         /// <returns></returns>
         private bool ShouldScore(TableEvent e)
@@ -147,7 +157,7 @@ namespace PlinkoPinball.Gameplay.Systems
         }
 
         /// <summary>
-        /// 추가할 최종 점수를 계산합니다.
+        /// 추가할 최종 점수를 계산
         /// </summary>
         /// <param name="baseValue">기본 점수</param>
         /// <param name="globalMultiplier">전역 배수</param>

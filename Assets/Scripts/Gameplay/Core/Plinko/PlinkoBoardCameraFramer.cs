@@ -38,11 +38,11 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                 return;
             }
 
-            Vector3 center = layoutRoot.GetBoardCenter();
+            //Vector3 center = layoutRoot.GetBoardCenter();
             float width = layoutRoot.GetBoardWidth();
             float height = layoutRoot.GetBoardHeight();
 
-            transform.position = new Vector3(center.x, transform.position.y, center.z);
+            //transform.position = new Vector3(center.x, transform.position.y, center.z);
 
             if (_camera.orthographic)
             {

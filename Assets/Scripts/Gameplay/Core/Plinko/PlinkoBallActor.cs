@@ -12,7 +12,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         private bool _resolved;
 
         /// <summary>
-        /// 현재 볼을 런 컨트롤러에 바인딩합니다.
+        /// 현재 볼을 런 컨트롤러에 바인딩
         /// </summary>
         public void Initialize(PlinkoRunController runController)
         {

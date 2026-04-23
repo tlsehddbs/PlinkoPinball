@@ -1,12 +1,10 @@
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using PlinkoPinball.Gameplay.Components.Plinko;
 
 namespace PlinkoPinball.Gameplay.Core.Plinko
 {
-    /// <summary>
-    /// 적용 결과 스냅샷을 실제 핀/슬롯 인스턴스에 반영
-    /// </summary>
     public sealed class PlinkoBoardStateApplier : MonoBehaviour
     {
         [SerializeField] private PlinkoPinRuntime[] pinRuntimes;
@@ -20,31 +18,26 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             BuildLookup();
         }
 
-        /// <summary>
-        /// 모든 핀/슬롯 상태를 기본값으로 되돌림
-        /// </summary>
+        public void RegisterRuntimeObjects(PlinkoPinRuntime[] pins, PlinkoSlotRuntime[] slots)
+        {
+            pinRuntimes = pins ?? System.Array.Empty<PlinkoPinRuntime>();
+            slotRuntimes = slots ?? System.Array.Empty<PlinkoSlotRuntime>();
+            BuildLookup();
+        }
+
         public void ResetBoardState()
         {
             for (int i = 0; i < pinRuntimes.Length; i++)
             {
-                if (pinRuntimes[i] != null)
-                {
-                    pinRuntimes[i].ResetRuntimeState();
-                }
+                pinRuntimes[i]?.ResetRuntimeState();
             }
 
             for (int i = 0; i < slotRuntimes.Length; i++)
             {
-                if (slotRuntimes[i] != null)
-                {
-                    slotRuntimes[i].ResetRuntimeState();
-                }
+                slotRuntimes[i]?.ResetRuntimeState();
             }
         }
 
-        /// <summary>
-        /// 적용 결과 스냅샷을 핀/슬롯 인스턴스에 주입
-        /// </summary>
         public void ApplySnapshot(in PlinkoBoardAppliedSnapshot snapshot)
         {
             for (int i = 0; i < snapshot.PinStates.Count; i++)
@@ -64,38 +57,98 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                     runtime.ApplyState(slotState.FlatCurrencyBonus, slotState.JackpotMultiplier);
                 }
             }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            LogAppliedRuntimeState();
+#endif
         }
 
         private void BuildLookup()
         {
-            _pinLookup = new Dictionary<string, PlinkoPinRuntime>(pinRuntimes.Length);
-            _slotLookup = new Dictionary<string, PlinkoSlotRuntime>(slotRuntimes.Length);
+            _pinLookup = new Dictionary<string, PlinkoPinRuntime>(pinRuntimes != null ? pinRuntimes.Length : 0);
+            _slotLookup = new Dictionary<string, PlinkoSlotRuntime>(slotRuntimes != null ? slotRuntimes.Length : 0);
 
-            for (int i = 0; i < pinRuntimes.Length; i++)
+            if (pinRuntimes != null)
             {
-                if (pinRuntimes[i] == null || string.IsNullOrWhiteSpace(pinRuntimes[i].PinId))
+                for (int i = 0; i < pinRuntimes.Length; i++)
                 {
-                    continue;
-                }
+                    if (pinRuntimes[i] == null || string.IsNullOrWhiteSpace(pinRuntimes[i].PinId))
+                    {
+                        continue;
+                    }
 
-                if (!_pinLookup.ContainsKey(pinRuntimes[i].PinId))
-                {
-                    _pinLookup.Add(pinRuntimes[i].PinId, pinRuntimes[i]);
+                    if (!_pinLookup.ContainsKey(pinRuntimes[i].PinId))
+                    {
+                        _pinLookup.Add(pinRuntimes[i].PinId, pinRuntimes[i]);
+                    }
                 }
             }
 
-            for (int i = 0; i < slotRuntimes.Length; i++)
+            if (slotRuntimes != null)
             {
-                if (slotRuntimes[i] == null || string.IsNullOrWhiteSpace(slotRuntimes[i].SlotId))
+                for (int i = 0; i < slotRuntimes.Length; i++)
                 {
-                    continue;
-                }
+                    if (slotRuntimes[i] == null || string.IsNullOrWhiteSpace(slotRuntimes[i].SlotId))
+                    {
+                        continue;
+                    }
 
-                if (!_slotLookup.ContainsKey(slotRuntimes[i].SlotId))
-                {
-                    _slotLookup.Add(slotRuntimes[i].SlotId, slotRuntimes[i]);
+                    if (!_slotLookup.ContainsKey(slotRuntimes[i].SlotId))
+                    {
+                        _slotLookup.Add(slotRuntimes[i].SlotId, slotRuntimes[i]);
+                    }
                 }
             }
         }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private void LogAppliedRuntimeState()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("[PlinkoBoardStateApplier] Runtime State");
+
+            if (pinRuntimes != null)
+            {
+                for (int i = 0; i < pinRuntimes.Length; i++)
+                {
+                    if (pinRuntimes[i] == null)
+                    {
+                        continue;
+                    }
+
+                    PlinkoPinModifierData data = pinRuntimes[i].ExportState();
+                    if (data.FlatCurrencyBonus == 0 &&
+                        Mathf.Approximately(data.HitMultiplier, 1f) &&
+                        data.ExtraBounceReward == 0)
+                    {
+                        continue;
+                    }
+
+                    sb.AppendLine($"  Pin {pinRuntimes[i].PinId} => flat={data.FlatCurrencyBonus}, mul={data.HitMultiplier}, bounce={data.ExtraBounceReward}");
+                }
+            }
+
+            if (slotRuntimes != null)
+            {
+                for (int i = 0; i < slotRuntimes.Length; i++)
+                {
+                    if (slotRuntimes[i] == null)
+                    {
+                        continue;
+                    }
+
+                    PlinkoSlotModifierData data = slotRuntimes[i].ExportState();
+                    if (data.FlatCurrencyBonus == 0 && Mathf.Approximately(data.JackpotMultiplier, 1f))
+                    {
+                        continue;
+                    }
+
+                    sb.AppendLine($"  Slot {slotRuntimes[i].SlotId} => flat={data.FlatCurrencyBonus}, jackpot={data.JackpotMultiplier}");
+                }
+            }
+
+            Debug.Log(sb.ToString(), this);
+        }
+#endif
     }
 }

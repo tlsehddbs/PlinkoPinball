@@ -144,7 +144,7 @@ Transform:
   m_GameObject: {fileID: 119072852}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.6, y: 4.5000005, z: 0}
+  m_LocalPosition: {x: -6, y: 4.5000005, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -366,7 +366,7 @@ Transform:
   m_GameObject: {fileID: 190095663}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.1, y: -7.4000006, z: 0}
+  m_LocalPosition: {x: 6, y: -7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -381,11 +381,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 195935846}
+  - component: {fileID: 195935847}
+  - component: {fileID: 195935841}
   - component: {fileID: 195935845}
   - component: {fileID: 195935844}
   - component: {fileID: 195935843}
   - component: {fileID: 195935842}
-  - component: {fileID: 195935841}
   - component: {fileID: 195935840}
   m_Layer: 0
   m_Name: RuntimeSystems
@@ -492,6 +493,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &195935847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195935839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54b5ddf8962f04222bf51b588dac032a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Core.Plinko.PlinkoBoardRuntimeGenerator
+  layoutRoot: {fileID: 1730081458}
+  pinRoot: {fileID: 397947694}
+  slotRoot: {fileID: 732175660}
+  boardDefinition: {fileID: 11400000, guid: 40c8e54ebf75740d9b95e741e6b39e8a, type: 2}
+  pinPrefab: {fileID: 273467198304246948, guid: 0bf207b1d52284f46b5f2a1fa4bfde3f, type: 3}
+  slotPrefab: {fileID: 7467012589910173596, guid: f2a7567528901441587258211dfbae82, type: 3}
 --- !u!1 &370580218
 GameObject:
   m_ObjectHideFlags: 0
@@ -859,7 +878,7 @@ Transform:
   m_GameObject: {fileID: 1173466321}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.25, y: 5.0000005, z: 0}
+  m_LocalPosition: {x: 0, y: 5.0000005, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1034,11 +1053,60 @@ Transform:
   m_GameObject: {fileID: 1312271737}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.25, y: -1.45, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1730081459}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1446250226
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1446250228}
+  - component: {fileID: 1446250227}
+  m_Layer: 0
+  m_Name: Bootstrap
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1446250227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1446250226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fff2ce1a2ebd4014a6c32855fb9aacb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Core.Flow.PlinkoSceneBootstrap
+  boardRuntimeGenerator: {fileID: 195935847}
+  boardStateApplier: {fileID: 195935841}
+  runController: {fileID: 195935845}
+  useDebugSnapshotInEditor: 1
+  debugSnapshotProvider: {fileID: 2091891821}
+--- !u!4 &1446250228
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1446250226}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.47129, y: 0, z: 2.81853}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1548084783
 GameObject:
@@ -1192,7 +1260,7 @@ Transform:
   m_GameObject: {fileID: 1585551816}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.6, y: -7.4000006, z: 0}
+  m_LocalPosition: {x: -6, y: -7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1223,73 +1291,11 @@ Transform:
   m_GameObject: {fileID: 1608163343}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.25, y: -7.4000006, z: 0}
+  m_LocalPosition: {x: 0, y: -6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1730081459}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1630057788
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1630057791}
-  - component: {fileID: 1630057790}
-  - component: {fileID: 1630057789}
-  m_Layer: 0
-  m_Name: SceneBootstrap
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &1630057789
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1630057788}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0c6c902dfe6e4b1daa07b34354af6eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Core.Plinko.PlinkoSceneBootstrapper
-  boardDefinition: {fileID: 0}
-  boardStateApplier: {fileID: 0}
-  runController: {fileID: 0}
-  useDebugSnapshotInEditor: 0
-  debugSnapshotProvider: {fileID: 0}
---- !u!114 &1630057790
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1630057788}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa035b379ea904341ae785f63281c3f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Core.Flow.PhaseHandoffService
---- !u!4 &1630057791
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1630057788}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1645838389
 GameObject:
@@ -1436,14 +1442,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1645838389}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 146476b0f7eac44d081c444afda1b888, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Core.Plinko.PlinkoBoardCameraFramer
   layoutRoot: {fileID: 0}
   padding: 1
-  applyOnStart: 1
+  applyOnStart: 0
 --- !u!1 &1730081457
 GameObject:
   m_ObjectHideFlags: 0
@@ -1454,7 +1460,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1730081459}
   - component: {fileID: 1730081458}
-  - component: {fileID: 1730081460}
   m_Layer: 0
   m_Name: PlinkoBoardRoot
   m_TagString: Untagged
@@ -1502,42 +1507,6 @@ Transform:
   - {fileID: 732175660}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1730081460
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1730081457}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ab052b8e1c6a445491445eacf62fe7d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Core.Plinko.PlinkoBoardAuthoring
-  layoutRoot: {fileID: 1730081458}
-  pinRoot: {fileID: 397947694}
-  slotRoot: {fileID: 732175660}
-  boardDefinition: {fileID: 0}
-  pinPrefab: {fileID: 273467198304246948, guid: 0bf207b1d52284f46b5f2a1fa4bfde3f, type: 3}
-  slotPrefab: {fileID: 7467012589910173596, guid: f2a7567528901441587258211dfbae82, type: 3}
-  rows: 8
-  columns: 13
-  horizontalSpacing: 1
-  verticalSpacing: 1.2
-  staggerOddRows: 1
-  staggerOffsetRatio: 0.5
-  customRowOffsets: []
-  generateSlots: 1
-  slotCount: 10
-  slotSpacing: 1.2
-  slotBaseRewards: 
-  sidePadding: 0.6
-  topPadding: 0.8
-  bottomPadding: 0.8
-  spawnYOffset: 0.5
-  slotStripYOffset: 0
-  pinAreaYOffset: -0.5
-  slotAreaYOffset: -1.2
 --- !u!1 &1734343920
 GameObject:
   m_ObjectHideFlags: 0
@@ -1563,7 +1532,7 @@ Transform:
   m_GameObject: {fileID: 1734343920}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0, z: 5}
+  m_LocalPosition: {x: 0.36, y: 2.61, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1594,7 +1563,7 @@ Transform:
   m_GameObject: {fileID: 1822485616}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.1, y: 4.5000005, z: 0}
+  m_LocalPosition: {x: 6, y: 4.5000005, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1722,7 +1691,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2091891822}
   - component: {fileID: 2091891821}
-  - component: {fileID: 2091891820}
   m_Layer: 0
   m_Name: Debug
   m_TagString: Untagged
@@ -1730,24 +1698,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2091891820
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2091891819}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04373fb3fe56a448380fd3c2baa7d2c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Debugging.PlinkoPinGridPreview
-  pinPrefab: {fileID: 273467198304246948, guid: 0bf207b1d52284f46b5f2a1fa4bfde3f, type: 3}
-  rows: 8
-  columns: 13
-  horizontalSpacing: 1
-  verticalSpacing: 1.2
-  staggerOddRows: 1
 --- !u!114 &2091891821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1784,8 +1734,8 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1446250228}
   - {fileID: 1548084785}
-  - {fileID: 1630057791}
   - {fileID: 195935846}
   - {fileID: 1730081459}
   - {fileID: 1300561268}
