@@ -23,17 +23,21 @@ namespace PlinkoPinball.Core.TableEvents
 
         public bool HasTag(string tag)
         {
-            if (tags == null || tags.Length == 0 || string.IsNullOrEmpty(tag)) return false;
+            if (tags == null || tags.Length == 0 || string.IsNullOrEmpty(tag))
+            {
+                return false;
+            }
 
             for (int i = 0; i < tags.Length; i++)
             {
                 if (string.Equals(tags[i], tag, StringComparison.OrdinalIgnoreCase))
+                {
                     return true;
+                }
             }
             return false;
         }
 
         public override string ToString() => $"{eventType} | {eventId} | base={baseValue} | src={(source != null ? source.name : "null")}";
     }
-
 }

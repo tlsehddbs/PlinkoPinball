@@ -24,6 +24,7 @@ namespace PlinkoPinball.Gameplay
 
             if (other.attachedRigidbody != null)
             {
+                Debug.Log($"[PlungerLaunchLaneSensor] 공 감지됨. {other.name}");
                 // 공인지 판별은 tag 로
                 launcher.SetBall(other.attachedRigidbody);
             }

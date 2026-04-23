@@ -1,0 +1,362 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 402b180728bc445a999e13d4d8e8cb44, type: 3}
+  m_Name: PlinkoBoardDefinition
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Core.Plinko.PlinkoBoardDefinition
+  rows: 8
+  columns: 10
+  slotCount: 8
+  staggerOddRows: 1
+  staggerRatio: 0.5
+  pinAreaYOffset: -1
+  slotAreaYOffset: -1
+  horizontalSpacing: 1
+  verticalSpacing: 1.2
+  slotSpacing: 1.2
+  pins:
+  - pinId: pin.r00.c00
+    row: 0
+    column: 0
+    localPosition: {x: -4.5, y: 3.2000003}
+  - pinId: pin.r00.c01
+    row: 0
+    column: 1
+    localPosition: {x: -3.5, y: 3.2000003}
+  - pinId: pin.r00.c02
+    row: 0
+    column: 2
+    localPosition: {x: -2.5, y: 3.2000003}
+  - pinId: pin.r00.c03
+    row: 0
+    column: 3
+    localPosition: {x: -1.5, y: 3.2000003}
+  - pinId: pin.r00.c04
+    row: 0
+    column: 4
+    localPosition: {x: -0.5, y: 3.2000003}
+  - pinId: pin.r00.c05
+    row: 0
+    column: 5
+    localPosition: {x: 0.5, y: 3.2000003}
+  - pinId: pin.r00.c06
+    row: 0
+    column: 6
+    localPosition: {x: 1.5, y: 3.2000003}
+  - pinId: pin.r00.c07
+    row: 0
+    column: 7
+    localPosition: {x: 2.5, y: 3.2000003}
+  - pinId: pin.r00.c08
+    row: 0
+    column: 8
+    localPosition: {x: 3.5, y: 3.2000003}
+  - pinId: pin.r00.c09
+    row: 0
+    column: 9
+    localPosition: {x: 4.5, y: 3.2000003}
+  - pinId: pin.r01.c00
+    row: 1
+    column: 0
+    localPosition: {x: -4, y: 2.0000002}
+  - pinId: pin.r01.c01
+    row: 1
+    column: 1
+    localPosition: {x: -3, y: 2.0000002}
+  - pinId: pin.r01.c02
+    row: 1
+    column: 2
+    localPosition: {x: -2, y: 2.0000002}
+  - pinId: pin.r01.c03
+    row: 1
+    column: 3
+    localPosition: {x: -1, y: 2.0000002}
+  - pinId: pin.r01.c04
+    row: 1
+    column: 4
+    localPosition: {x: 0, y: 2.0000002}
+  - pinId: pin.r01.c05
+    row: 1
+    column: 5
+    localPosition: {x: 1, y: 2.0000002}
+  - pinId: pin.r01.c06
+    row: 1
+    column: 6
+    localPosition: {x: 2, y: 2.0000002}
+  - pinId: pin.r01.c07
+    row: 1
+    column: 7
+    localPosition: {x: 3, y: 2.0000002}
+  - pinId: pin.r01.c08
+    row: 1
+    column: 8
+    localPosition: {x: 4, y: 2.0000002}
+  - pinId: pin.r02.c00
+    row: 2
+    column: 0
+    localPosition: {x: -4.5, y: 0.8000002}
+  - pinId: pin.r02.c01
+    row: 2
+    column: 1
+    localPosition: {x: -3.5, y: 0.8000002}
+  - pinId: pin.r02.c02
+    row: 2
+    column: 2
+    localPosition: {x: -2.5, y: 0.8000002}
+  - pinId: pin.r02.c03
+    row: 2
+    column: 3
+    localPosition: {x: -1.5, y: 0.8000002}
+  - pinId: pin.r02.c04
+    row: 2
+    column: 4
+    localPosition: {x: -0.5, y: 0.8000002}
+  - pinId: pin.r02.c05
+    row: 2
+    column: 5
+    localPosition: {x: 0.5, y: 0.8000002}
+  - pinId: pin.r02.c06
+    row: 2
+    column: 6
+    localPosition: {x: 1.5, y: 0.8000002}
+  - pinId: pin.r02.c07
+    row: 2
+    column: 7
+    localPosition: {x: 2.5, y: 0.8000002}
+  - pinId: pin.r02.c08
+    row: 2
+    column: 8
+    localPosition: {x: 3.5, y: 0.8000002}
+  - pinId: pin.r02.c09
+    row: 2
+    column: 9
+    localPosition: {x: 4.5, y: 0.8000002}
+  - pinId: pin.r03.c00
+    row: 3
+    column: 0
+    localPosition: {x: -4, y: -0.39999986}
+  - pinId: pin.r03.c01
+    row: 3
+    column: 1
+    localPosition: {x: -3, y: -0.39999986}
+  - pinId: pin.r03.c02
+    row: 3
+    column: 2
+    localPosition: {x: -2, y: -0.39999986}
+  - pinId: pin.r03.c03
+    row: 3
+    column: 3
+    localPosition: {x: -1, y: -0.39999986}
+  - pinId: pin.r03.c04
+    row: 3
+    column: 4
+    localPosition: {x: 0, y: -0.39999986}
+  - pinId: pin.r03.c05
+    row: 3
+    column: 5
+    localPosition: {x: 1, y: -0.39999986}
+  - pinId: pin.r03.c06
+    row: 3
+    column: 6
+    localPosition: {x: 2, y: -0.39999986}
+  - pinId: pin.r03.c07
+    row: 3
+    column: 7
+    localPosition: {x: 3, y: -0.39999986}
+  - pinId: pin.r03.c08
+    row: 3
+    column: 8
+    localPosition: {x: 4, y: -0.39999986}
+  - pinId: pin.r04.c00
+    row: 4
+    column: 0
+    localPosition: {x: -4.5, y: -1.5999999}
+  - pinId: pin.r04.c01
+    row: 4
+    column: 1
+    localPosition: {x: -3.5, y: -1.5999999}
+  - pinId: pin.r04.c02
+    row: 4
+    column: 2
+    localPosition: {x: -2.5, y: -1.5999999}
+  - pinId: pin.r04.c03
+    row: 4
+    column: 3
+    localPosition: {x: -1.5, y: -1.5999999}
+  - pinId: pin.r04.c04
+    row: 4
+    column: 4
+    localPosition: {x: -0.5, y: -1.5999999}
+  - pinId: pin.r04.c05
+    row: 4
+    column: 5
+    localPosition: {x: 0.5, y: -1.5999999}
+  - pinId: pin.r04.c06
+    row: 4
+    column: 6
+    localPosition: {x: 1.5, y: -1.5999999}
+  - pinId: pin.r04.c07
+    row: 4
+    column: 7
+    localPosition: {x: 2.5, y: -1.5999999}
+  - pinId: pin.r04.c08
+    row: 4
+    column: 8
+    localPosition: {x: 3.5, y: -1.5999999}
+  - pinId: pin.r04.c09
+    row: 4
+    column: 9
+    localPosition: {x: 4.5, y: -1.5999999}
+  - pinId: pin.r05.c00
+    row: 5
+    column: 0
+    localPosition: {x: -4, y: -2.8}
+  - pinId: pin.r05.c01
+    row: 5
+    column: 1
+    localPosition: {x: -3, y: -2.8}
+  - pinId: pin.r05.c02
+    row: 5
+    column: 2
+    localPosition: {x: -2, y: -2.8}
+  - pinId: pin.r05.c03
+    row: 5
+    column: 3
+    localPosition: {x: -1, y: -2.8}
+  - pinId: pin.r05.c04
+    row: 5
+    column: 4
+    localPosition: {x: 0, y: -2.8}
+  - pinId: pin.r05.c05
+    row: 5
+    column: 5
+    localPosition: {x: 1, y: -2.8}
+  - pinId: pin.r05.c06
+    row: 5
+    column: 6
+    localPosition: {x: 2, y: -2.8}
+  - pinId: pin.r05.c07
+    row: 5
+    column: 7
+    localPosition: {x: 3, y: -2.8}
+  - pinId: pin.r05.c08
+    row: 5
+    column: 8
+    localPosition: {x: 4, y: -2.8}
+  - pinId: pin.r06.c00
+    row: 6
+    column: 0
+    localPosition: {x: -4.5, y: -4}
+  - pinId: pin.r06.c01
+    row: 6
+    column: 1
+    localPosition: {x: -3.5, y: -4}
+  - pinId: pin.r06.c02
+    row: 6
+    column: 2
+    localPosition: {x: -2.5, y: -4}
+  - pinId: pin.r06.c03
+    row: 6
+    column: 3
+    localPosition: {x: -1.5, y: -4}
+  - pinId: pin.r06.c04
+    row: 6
+    column: 4
+    localPosition: {x: -0.5, y: -4}
+  - pinId: pin.r06.c05
+    row: 6
+    column: 5
+    localPosition: {x: 0.5, y: -4}
+  - pinId: pin.r06.c06
+    row: 6
+    column: 6
+    localPosition: {x: 1.5, y: -4}
+  - pinId: pin.r06.c07
+    row: 6
+    column: 7
+    localPosition: {x: 2.5, y: -4}
+  - pinId: pin.r06.c08
+    row: 6
+    column: 8
+    localPosition: {x: 3.5, y: -4}
+  - pinId: pin.r06.c09
+    row: 6
+    column: 9
+    localPosition: {x: 4.5, y: -4}
+  - pinId: pin.r07.c00
+    row: 7
+    column: 0
+    localPosition: {x: -4, y: -5.2}
+  - pinId: pin.r07.c01
+    row: 7
+    column: 1
+    localPosition: {x: -3, y: -5.2}
+  - pinId: pin.r07.c02
+    row: 7
+    column: 2
+    localPosition: {x: -2, y: -5.2}
+  - pinId: pin.r07.c03
+    row: 7
+    column: 3
+    localPosition: {x: -1, y: -5.2}
+  - pinId: pin.r07.c04
+    row: 7
+    column: 4
+    localPosition: {x: 0, y: -5.2}
+  - pinId: pin.r07.c05
+    row: 7
+    column: 5
+    localPosition: {x: 1, y: -5.2}
+  - pinId: pin.r07.c06
+    row: 7
+    column: 6
+    localPosition: {x: 2, y: -5.2}
+  - pinId: pin.r07.c07
+    row: 7
+    column: 7
+    localPosition: {x: 3, y: -5.2}
+  - pinId: pin.r07.c08
+    row: 7
+    column: 8
+    localPosition: {x: 4, y: -5.2}
+  slots:
+  - slotId: slot.00
+    column: 0
+    localPosition: {x: -4.2000003, y: -6.4000006}
+    baseReward: 5
+  - slotId: slot.01
+    column: 1
+    localPosition: {x: -3.0000002, y: -6.4000006}
+    baseReward: 5
+  - slotId: slot.02
+    column: 2
+    localPosition: {x: -1.8000002, y: -6.4000006}
+    baseReward: 5
+  - slotId: slot.03
+    column: 3
+    localPosition: {x: -0.60000014, y: -6.4000006}
+    baseReward: 5
+  - slotId: slot.04
+    column: 4
+    localPosition: {x: 0.5999999, y: -6.4000006}
+    baseReward: 5
+  - slotId: slot.05
+    column: 5
+    localPosition: {x: 1.8, y: -6.4000006}
+    baseReward: 5
+  - slotId: slot.06
+    column: 6
+    localPosition: {x: 3, y: -6.4000006}
+    baseReward: 5
+  - slotId: slot.07
+    column: 7
+    localPosition: {x: 4.2, y: -6.4000006}
+    baseReward: 5

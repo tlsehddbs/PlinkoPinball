@@ -1,136 +1,185 @@
 using UnityEngine;
+using System;
+using System.Collections.Generic;
+
 using PlinkoPinball.Services;
+using PlinkoPinball.Gameplay.Core.Flow;
+using PlinkoPinball.Gameplay.Systems;
+using PlinkoPinball.InputRuntime;
 
 namespace PlinkoPinball.Core
 {
     /// <summary>
-    /// 게임 전체의 최상위 관리자
-    /// 
-    /// - 게임 상태를 단일 진실(SSOT)로 관리
-    /// - 주요 서비스(Timer/Score/Economy/Event 등)을 생성/초기화하고 구동
-    /// - 상태 전환(라운드 시작/종료/일시정지)를 중앙에서 통제
-    /// 
-    /// 단,
-    /// - 모든 로직을 여기에 몰아넣지 않는다
-    /// - GameManager는 흐름만 잡고, 규칙/계산은 서비스로 내려보낸다
+    /// 게임 전체 전역 상태와 상위 흐름을 관리합니다.
     /// </summary>
     public sealed class GameManager : MonoBehaviour
     {
         public static GameManager Instance { get; private set; }
 
         [Header("Round Defaults")]
-        [Tooltip("라운드 시작 시 기본으로 제공되는 시간")]
-        [SerializeField] private float startTimeSeconds = 60f;
-
-        [Tooltip("TimeChanged 이벤트를 n 초 간격으로만 통지하려면 설정(0일 경우 매 변경시 통지)")]
+        [SerializeField] private float startTimeSeconds = 20f;
         [SerializeField] private float timeChangedNotifyIntervalSeconds = 0.1f;
 
-        public GameState State { get; private set; } = GameState.Boot;
+        [Header("Global Services")]
+        [SerializeField] private GameSceneManager gameSceneManager;
+        [SerializeField] private GameSessionState sessionState;
+        [SerializeField] private InputRouter inputRouter;
 
+        public GamePhase Phase { get; private set; } = GamePhase.None;
         public TimeManager Time { get; private set; }
+        public GameSessionState SessionState => sessionState;
+        public InputRouter InputRouter => inputRouter;
 
-        public event System.Action<GameState, GameState> OnStateChanged;
+        public event Action<GamePhase, GamePhase> OnPhaseChanged;
 
+        private readonly List<IRoundResettable> _roundResettables = new List<IRoundResettable>();
+
+        private ScoreSystem _scoreSystem;
+        private PinballToPlinkoTransitionController _transitionController;
+        private bool _roundEnded;
+        private bool _isPaused;
 
         private void Awake()
         {
             if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
-
                 return;
             }
 
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            Bootstrap();
-        }
-
-        private void Bootstrap()
-        {
-            // Service 생성
             Time = new TimeManager(notifyIntervalSeconds: timeChangedNotifyIntervalSeconds);
             Time.OnTimeOver += HandleTimeOver;
 
-            SetState(GameState.MainMenu);
+            // 현재 씬에 맞는 페이즈로 자동 설정되게 하는 거는 어떨까?
+            //SetPhase(GamePhase.MainMenu);
         }
 
         private void Update()
         {
-            // InRun 상태일 때만 타이머가 작동하도록 함.
-            if (State == GameState.InRound)
+            if (Phase == GamePhase.Pinball && !_isPaused)
             {
                 Time.Tick(UnityEngine.Time.deltaTime);
             }
         }
 
-        public void StartRound()
+        public void SetPhase(GamePhase newPhase)
         {
-            if (State == GameState.InRound) return;
+            if (Phase == newPhase)
+            {
+                return;
+            }
 
-            SetState(GameState.InRound);
+            GamePhase previous = Phase;
+            Phase = newPhase;
+            OnPhaseChanged?.Invoke(previous, newPhase);
+
+            inputRouter.ApplyPhase(newPhase);
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            Debug.Log($"[GameManager] Phase => {newPhase}", this);
+#endif
+        }
+
+        public void StartNewSession()
+        {
+            sessionState?.ResetSession();
+            gameSceneManager?.LoadMainTable();
+        }
+
+        public void ReturnToMainMenu()
+        {
+            gameSceneManager?.LoadMainMenu();
+        }
+
+        public void RegisterPinballScene(ScoreSystem scoreSystem, PinballToPlinkoTransitionController transitionController, IEnumerable<IRoundResettable> roundResettables)
+        {
+            _scoreSystem = scoreSystem;
+            _transitionController = transitionController;
+
+            _roundResettables.Clear();
+
+            if (roundResettables != null)
+            {
+                foreach (IRoundResettable resettable in roundResettables)
+                {
+                    if (resettable != null)
+                    {
+                        _roundResettables.Add(resettable);
+                    }
+                }
+            }
+        }
+
+        public void StartPinballRound()
+        {
+            Debug.Log("[GameManager] StartPinballRound 호출됨.");
+            _roundEnded = false;
+            _isPaused = false;
+            SetPhase(GamePhase.Pinball);
+
+            for (int i = 0; i < _roundResettables.Count; i++)
+            {
+                _roundResettables[i].ResetForRound();
+            }
+
             Time.Start(startTimeSeconds);
 
-            Debug.Log($"[GameManager] Round Start - {startTimeSeconds:0.##}s");
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            Debug.Log($"[GameManager] Round {sessionState?.CurrentRoundIndex ?? 1} started.", this);
+#endif
         }
 
-        public void EndRound()
-        {
-            if (State != GameState.InRound && State != GameState.Paused) return;
-
-            Time.Stop();
-            SetState(GameState.RoundEnded);
-
-            Debug.Log("[GameManager] Round End");
-        }
-
+        // TODO: Pause 될 떼 물리 tick 도 멈추게 변경하는것도?
         public void SetPaused(bool paused)
         {
-            if (paused)
+            if (Phase != GamePhase.Pinball)
             {
-                if (State != GameState.InRound) return;
-
-                SetState(GameState.Paused);
-                Time.SetPaused(true);
+                return;
             }
-            else
-            {
-                if (State != GameState.Paused) return;
 
-                SetState(GameState.InRound);
-                Time.SetPaused(false);
-            }
+            _isPaused = paused;
+            Time.SetPaused(paused);
         }
 
-        /// <summary>
-        /// 타이머가 0이 되면 호출되는 콜백
-        /// </summary>
+        public bool IsPaused => _isPaused;
+
+        public void EndPinballRoundAndTransitionToPlinko()
+        {
+            if (_roundEnded)
+            {
+                return;
+            }
+
+            _roundEnded = true;
+            _isPaused = false;
+            Time.Stop();
+
+            int roundIndex = sessionState != null ? sessionState.CurrentRoundIndex : 1;
+            int currentScore = _scoreSystem != null ? _scoreSystem.CurrentScore : 0;
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            Debug.Log($"[GameManager] Ending round {roundIndex}. Score={currentScore}", this);
+#endif
+
+            _transitionController?.TransitionToPlinko(roundIndex, currentScore);
+        }
+
+        public void CompletePlinkoAndReturnToPinball()
+        {
+            sessionState?.AdvanceRound();
+            gameSceneManager?.LoadMainTable();
+            _roundEnded = false;
+        }
+
         private void HandleTimeOver()
         {
-            //TODO: 정산/기록 저장/결과 등으로 연결
-            Debug.Log("[GameManager] Time Over");
-            EndRound();
-        }
-
-
-        private void SetState(GameState newState)
-        {
-            if (State == newState) return;
-            
-            var prev = State;
-            State = newState;
-
-            // NOTE:
-            // 상태 변경은 게임 흐름의 핵심
-            // UI/오디오/연출은 이 이벤트를 구독해서 결합도를 낮춤
-            OnStateChanged?.Invoke(prev, newState);
-        }
-
-#if UNITY_EDITOR
-        // 개발 편의: 에디터에서 바로 런 시작 테스트
-        [ContextMenu("DEV/Start Run")]
-        private void DevStartRun() => StartRound();
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            Debug.Log("[GameManager] Time Over", this);
 #endif
+            EndPinballRoundAndTransitionToPlinko();
+        }
     }
 }

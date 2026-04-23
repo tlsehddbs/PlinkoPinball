@@ -1,5 +1,6 @@
 using UnityEngine;
 using PlinkoPinball.Core.TableEvents;
+using PlinkoPinball.Core.Utility;
 using PlinkoPinball.Gameplay.Core;
 
 namespace PlinkoPinball.Gameplay.Components.Triggers
@@ -15,9 +16,13 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
     public sealed class BallHitTrigger : MonoBehaviour
     {
         [Header("Event")]
+        [SerializeField] private bool autoGenerateEventId = true;
         [SerializeField] private string eventId = "hit.none";
         [SerializeField] private int baseValue = 1;
         [SerializeField] private string[] tags;
+
+        // 모듈에 포함되어 있는 트리거의 경우 모듈의 source 위치를 파악하기 위해 사용함
+        [SerializeField] private Transform eventSourceOverride;
 
         [Header("Ball Filter")]
         [Tooltip("공 레이어. -1이면 레이어 필터를 사용하지 않음")]
@@ -40,13 +45,16 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (cooldownSeconds > 0f && Time.time < _nextAllowedTime) return;
+            if (cooldownSeconds > 0f && Time.time < _nextAllowedTime)
+                return;
 
             // 공 판별 (RigidBody가 있어야 함. (설정 시) 레이어가 맞아야 함)
             var ballRb = collision.rigidbody;
-            if (ballRb == null) return;
+            if (ballRb == null)
+                return;
 
-            if (ballLayer >= 0 && ballRb.gameObject.layer != ballLayer) return;
+            if (ballLayer >= 0 && ballRb.gameObject.layer != ballLayer)
+                return;
 
             _nextAllowedTime = Time.time + cooldownSeconds;
 
@@ -58,7 +66,7 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
                 eventType = TableEventType.Hit,
                 baseValue = baseValue,
                 tags = tags,
-                source = transform,
+                source = (eventSourceOverride != null) ? eventSourceOverride : transform,
                 position = pos,
                 time = Time.time,
                 ball = ballRb
@@ -73,12 +81,32 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
 
         private void NotifyLocal(in TableEvent e)
         {
-            if (_localReactions == null || _localReactions.Length == 0) return;
+            if (_localReactions == null || _localReactions.Length == 0)
+            {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                //Debug.Log($"[BallHitTrigger:{name}] No local reactions.", this);
+#endif
+                return;
+            }
 
-            Debug.Log($"reaction count = {_localReactions.Length}");
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            //Debug.Log($"[BallHitTrigger:{name}] reaction count={_localReactions.Length}");
+#endif
 
             for (int i = 0; i < _localReactions.Length; i++)
+            {
                 _localReactions[i].OnTableEvent(in e);
+            }
         }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (autoGenerateEventId)
+            {
+                eventId = TableIdentityGenerator.CreateEventId("hit", transform);
+            }
+        }
+#endif
     }
 }
