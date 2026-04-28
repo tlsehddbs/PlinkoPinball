@@ -1,7 +1,7 @@
 namespace PlinkoPinball.Gameplay.Core.Plinko
 {
     /// <summary>
-    /// 플링코 런 종료 결과
+    /// 플링코 런 종료 결과를 보관
     /// </summary>
     public readonly struct PlinkoRunResult
     {

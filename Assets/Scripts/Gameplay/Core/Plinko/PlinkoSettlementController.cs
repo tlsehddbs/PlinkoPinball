@@ -16,6 +16,14 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 
         private bool _hasPendingReturn;
 
+        public void Start()
+        {
+            if(currencySystem == null)
+            {
+                currencySystem = FindAnyObjectByType<CurrencySystem>();
+            }
+        }
+
         /// <summary>
         /// 플링코 결과를 정산하고 결과 UI를 표시
         /// </summary>

@@ -7,7 +7,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
     /// 플링코 핀 충돌 시 보상 누적을 요청
     /// </summary>
     [RequireComponent(typeof(Collider))]
-    public sealed class PlinkoPinCollisionHandler : MonoBehaviour
+    public sealed class PlinkoPinResolver : MonoBehaviour
     {
         [SerializeField, Min(0)] private int baseReward = 1;
         [SerializeField] private PlinkoPinRuntime runtime;
@@ -15,9 +15,15 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 
         private void Start()
         {
+            if (runtime == null)
+            {
+                runtime = GetComponentInParent<PlinkoPinRuntime>();
+            }
+
+
             if (boardContext == null)
             {
-                boardContext = GetComponentInParent<PlinkoBoardContext>();
+                boardContext = FindAnyObjectByType<PlinkoBoardContext>();
             }
         }
 
