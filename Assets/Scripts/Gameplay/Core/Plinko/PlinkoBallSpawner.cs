@@ -23,6 +23,17 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         private readonly List<Vector3> _recentSpawnPositions = new();
         [SerializeField, Min(0)] private int RecentPositionLimit = 32;
 
+
+        [Header("Debug")]
+        [SerializeField] private bool debugDrawSpawnPoints = true;
+        [SerializeField] private float debugSphereRadius = 0.05f;
+
+        private readonly List<Vector3> _debugCandidates = new();
+        private readonly List<bool> _debugResults = new(); // true = success, false = rejected
+        private Vector3 _debugFinalPosition;
+        private bool _debugUsedFallback;
+        
+
         /// <summary>
         /// 새 볼을 생성하고 런 컨트롤러에 바인딩
         /// </summary>
@@ -46,18 +57,39 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 
         private Vector3 FindSpawnPosition()
         {
-            Vector3 fallback = transform.TransformPoint(spawnAnchor.position);
+            _debugCandidates.Clear();
+            _debugResults.Clear();
+            _debugUsedFallback = false;
+
+            Vector3 fallback = GetRandomPointInArea();
 
             for (int i = 0; i < maxPositionAttempts; i++)
             {
                 Vector3 candidate = GetRandomPointInArea();
 
-                if (IsFarEnoughFromRecentSpawns(candidate))
+                bool valid = IsFarEnoughFromRecentSpawns(candidate);
+
+                _debugCandidates.Add(candidate);
+                _debugResults.Add(valid);
+
+                if (valid)
                 {
+                    _debugFinalPosition = candidate;
                     return candidate;
                 }
+
+                fallback = candidate;
             }
 
+            _debugUsedFallback = true;
+            _debugFinalPosition = fallback;
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (_debugUsedFallback)
+            {
+                Debug.LogWarning("[PlinkoBallSpawner] Fallback used - spawn area too dense", this);
+            }
+#endif
             return fallback;
         }
 
@@ -96,5 +128,35 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                 _recentSpawnPositions.RemoveAt(0);
             }
         }
+
+#if UNITY_EDITOR
+        // Unity Scene Window 에서 작동함
+        private void OnDrawGizmos()
+        {
+            if (!debugDrawSpawnPoints)
+            {
+                return;
+            }
+
+            // Spawn Area
+            var areaCenterOffset = spawnAnchor.position;
+            Gizmos.color = Color.cyan;
+            Gizmos.matrix = transform.localToWorldMatrix;
+            Gizmos.DrawWireCube(areaCenterOffset, areaSize);
+
+            Gizmos.matrix = Matrix4x4.identity;
+
+            // 후보 위치들
+            for (int i = 0; i < _debugCandidates.Count; i++)
+            {
+                Gizmos.color = _debugResults[i] ? Color.green : Color.red;
+                Gizmos.DrawSphere(_debugCandidates[i], debugSphereRadius);
+            }
+
+            // 최종 선택 위치
+            Gizmos.color = _debugUsedFallback ? Color.magenta : Color.yellow;
+            Gizmos.DrawWireSphere(_debugFinalPosition, debugSphereRadius * 2f);
+        }
+#endif
     }
 }
