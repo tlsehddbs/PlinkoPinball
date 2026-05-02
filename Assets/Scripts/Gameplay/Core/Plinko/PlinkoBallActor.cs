@@ -3,38 +3,36 @@ using UnityEngine;
 namespace PlinkoPinball.Gameplay.Core.Plinko
 {
     /// <summary>
-    /// 플링코 볼의 생명주기를 관리
+    /// 플링코 보드에서 드랍되는 단일 볼의 런타임 상태를 관리
     /// </summary>
-    [RequireComponent(typeof(Rigidbody))]
     public sealed class PlinkoBallActor : MonoBehaviour
     {
         private PlinkoRunController _runController;
-        private bool _resolved;
+        private bool _isResolved;
 
         /// <summary>
-        /// 현재 볼을 런 컨트롤러에 바인딩
+        /// 볼을 현재 플링코 런에 바인딩
         /// </summary>
         public void Initialize(PlinkoRunController runController)
         {
             _runController = runController;
+            _isResolved = false;
         }
 
         /// <summary>
-        /// 이 볼을 해결 완료 상태로 처리하고 제거
+        /// 볼을 해결 상태로 전환
+        /// 슬롯 도착, 타임아웃, 보드 이탈 등 모든 종료 경로는 이 메서드로 모음
         /// </summary>
         public void Resolve()
         {
-            if (_resolved)
+            if (_isResolved)
             {
                 return;
             }
 
-            _resolved = true;
+            _isResolved = true;
 
-            if (_runController != null)
-            {
-                _runController.OnBallResolved(this);
-            }
+            _runController?.OnBallResolved(this);
 
             Destroy(gameObject);
         }

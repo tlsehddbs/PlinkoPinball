@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using PlinkoPinball.Gameplay.Components.Plinko;
 using UnityEditor;
+using Unity.Mathematics;
 
 
 namespace PlinkoPinball.Gameplay.Core.Plinko
@@ -58,7 +59,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                     boardCenter.y + local.y,
                     boardCenter.z);
 
-                GameObject instance = Instantiate(pinPrefab, worldPosition, Quaternion.identity, pinRoot);
+                GameObject instance = Instantiate(pinPrefab, worldPosition, quaternion.identity, pinRoot);
                 instance.name = pinDefinition.PinId;
 
                 PlinkoPinRuntime runtime = instance.GetComponent<PlinkoPinRuntime>();
