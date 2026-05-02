@@ -1,5 +1,7 @@
 using UnityEngine;
 
+using TMPro;
+
 namespace PlinkoPinball.Gameplay.Core.Plinko
 {
     /// <summary>
@@ -16,6 +18,9 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         [Header("Ball Drop Rules")]
         [SerializeField, Min(1)] private int maxActiveBalls = 8;
         [SerializeField, Min(0f)] private float spawnInterval = 0.08f;
+
+        [Header("Debug")]
+        [SerializeField] private TMP_Text text;
 
         private int _roundIndex;
         private int _pinballScore;
@@ -72,6 +77,8 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             {
                 return;
             }
+
+            text.text = $"BallSpawned\n{SpawnedBalls}\n\nActiveBalls\n{ActiveBalls}";
 
             TrySpawnAvailableBalls();
             TryCompleteRun();
