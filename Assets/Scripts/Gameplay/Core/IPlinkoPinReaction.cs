@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace PlinkoPinball.Gameplay.Components.Plinko
+namespace PlinkoPinball.Gameplay.Core.Plinko
 {
     /// <summary>
     /// 플링코 핀 충돌 시 같은 핀 오브젝트에서 실행되는 로컬 반응 인터페이스

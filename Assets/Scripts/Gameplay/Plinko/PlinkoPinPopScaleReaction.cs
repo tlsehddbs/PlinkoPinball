@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using PlinkoPinball.Gameplay.Core.Plinko;
 
 namespace PlinkoPinball.Gameplay.Components.Plinko
 {
