@@ -7,7 +7,7 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
     /// 플링코 핀이 충돌 시 순간적으로 커졌다가 원래 크기로 돌아오는 로컬 피드백
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class PinPopScaleReaction : MonoBehaviour, IPlinkoPinReaction
+    public sealed class PlinkoPinPopScaleReaction : MonoBehaviour, IPlinkoPinReaction
     {
         [Header("Target")]
         [SerializeField] private Transform scaleTarget;
