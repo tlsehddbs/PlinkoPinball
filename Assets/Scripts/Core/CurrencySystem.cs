@@ -1,7 +1,6 @@
 using UnityEngine;
-using UnityEngine.Rendering;
 
-namespace PlinkoPinball.Gameplay.Core.Meta
+namespace PlinkoPinball.Core
 {
     /// <summary>
     /// 메타 재화 관리

@@ -1,7 +1,6 @@
 using UnityEngine;
-using PlinkoPinball.Gameplay.Core.Meta;
-using PlinkoPinball.UI.Presenters;
 using PlinkoPinball.Core;
+using PlinkoPinball.UI.Presenters;
 
 namespace PlinkoPinball.Gameplay.Core.Plinko
 {

@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
-using PlinkoPinball.Core;
-using PlinkoPinball.Gameplay.Systems;
+using PlinkoPinball.Gameplay.Core.Flow;
 
-namespace PlinkoPinball.Gameplay.Core.Flow
+namespace PlinkoPinball.Core.Flow
 {
     /// <summary>
     /// 핀볼 씬 초기화를 담당합니다.

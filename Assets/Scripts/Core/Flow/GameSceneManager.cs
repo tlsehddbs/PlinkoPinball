@@ -1,8 +1,7 @@
-using PlinkoPinball.Core;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace PlinkoPinball.Gameplay.Core.Flow
+namespace PlinkoPinball.Core.Flow
 {
     /// <summary>
     /// 주요 씬 전환을 담당합니다.

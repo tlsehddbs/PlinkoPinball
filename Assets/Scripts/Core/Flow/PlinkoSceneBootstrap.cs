@@ -1,9 +1,9 @@
 using UnityEngine;
-using PlinkoPinball.Core;
 using PlinkoPinball.Gameplay.Components.Plinko;
 using PlinkoPinball.Gameplay.Core.Plinko;
+using PlinkoPinball.Gameplay.Core.Flow;
 
-namespace PlinkoPinball.Gameplay.Core.Flow
+namespace PlinkoPinball.Core.Flow
 {
     public sealed class PlinkoSceneBootstrap : MonoBehaviour
     {

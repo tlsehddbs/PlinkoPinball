@@ -1,7 +1,6 @@
 using UnityEngine;
-using PlinkoPinball.Core;
 
-namespace PlinkoPinball.Gameplay.Core.Flow
+namespace PlinkoPinball.Core.Flow
 {
     /// <summary>
     /// 메인 메뉴 씬 초기화를 담당합니다.

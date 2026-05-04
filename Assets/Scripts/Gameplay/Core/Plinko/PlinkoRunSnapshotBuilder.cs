@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using PlinkoPinball.Gameplay.Core.Flow;
+using PlinkoPinball.Core.Flow;
 using System.Text;
 
 namespace PlinkoPinball.Gameplay.Core.Plinko

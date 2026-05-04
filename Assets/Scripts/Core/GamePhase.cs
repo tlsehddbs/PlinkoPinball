@@ -1,4 +1,4 @@
-namespace PlinkoPinball.Gameplay.Core.Flow
+namespace PlinkoPinball.Core
 {
     /// <summary>
     /// 현재 게임 진행 상태를 나타냄

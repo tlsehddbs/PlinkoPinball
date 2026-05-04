@@ -3,9 +3,9 @@ using UnityEngine;
 using PlinkoPinball.Core.TableEvents;
 using PlinkoPinball.Gameplay.Core;
 using PlinkoPinball.Gameplay.Modules;
-using PlinkoPinball.Gameplay.Core.Flow;
+using PlinkoPinball.Core.Flow;
 
-namespace PlinkoPinball.Gameplay.Systems
+namespace PlinkoPinball.Core
 {
     /// <summary>
     /// TableEvent를 점수로 변환하는 Global System (TableEventBus 구독)

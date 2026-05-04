@@ -1,6 +1,6 @@
 using UnityEngine;
 using TMPro;
-using PlinkoPinball.Gameplay.Systems;
+using PlinkoPinball.Core;
 
 namespace PlinkoPinball.UI
 {
