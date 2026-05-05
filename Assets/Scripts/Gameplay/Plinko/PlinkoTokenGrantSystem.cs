@@ -49,7 +49,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                 {
                     continue;
                 }
-                
+
                 ApplyRewards(definition);
             }
         }
@@ -75,18 +75,38 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                     snapshotBuilder.AddStartBalls(reward.StartBallAmount);
                 }
 
-                if (reward.GrantGlobalCurrencyPerPinHit)
+                if (!reward.GrantToken)
                 {
-                    snapshotBuilder.AddGlobalCurrencyPerPinHit(reward.GlobalCurrencyPerPinHitAmount);
+                    continue;
                 }
 
-                if (reward.GrantToken)
-                {
-                    snapshotBuilder.AddToken(
-                        reward.TokenType,
-                        reward.TokenAmount,
-                        reward.TokenStackCount);
-                }
+                ApplyTokenReward(reward.TokenType, reward.TokenAmount, reward.TokenStackCount);
+            }
+        }
+
+        private void ApplyTokenReward(PlinkoBonusTokenType tokenType, int amount, int stackCount)
+        {
+            switch (tokenType)
+            {
+                case PlinkoBonusTokenType.GlobalPinMultiplier:
+                    snapshotBuilder.AddGlobalPinMultiplier(amount);
+                    break;
+
+                case PlinkoBonusTokenType.GlobalSlotMultiplier:
+                    snapshotBuilder.AddGlobalSlotMultiplier(amount);
+                    break;
+
+                case PlinkoBonusTokenType.ErrorPinRateReduction:
+                    snapshotBuilder.AddErrorPinRateReduction(amount * 0.01f);
+                    break;
+
+                case PlinkoBonusTokenType.ErrorSlotRateReduction:
+                    snapshotBuilder.AddErrorSlotRateReduction(amount * 0.01f);
+                    break;
+
+                default:
+                    snapshotBuilder.AddToken(tokenType, amount, stackCount);
+                    break;
             }
         }
     }

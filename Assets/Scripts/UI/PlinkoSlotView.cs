@@ -27,8 +27,8 @@ namespace PlinkoPinball.UI.Presenters
 
             var state = slotRuntime.ExportState();
 
-            int displayedReward = slotRuntime.BaseReward + state.FlatCurrencyBonus;
-            float displayedMultiplier = state.JackpotMultiplier;
+            int displayedReward = slotRuntime.BaseReward + state.ValueBonus;
+            float displayedMultiplier = state.Multiplier;
 
             if (rewardText != null)
             {
@@ -42,7 +42,7 @@ namespace PlinkoPinball.UI.Presenters
 
             if (jackpotMarker != null)
             {
-                jackpotMarker.SetActive(displayedMultiplier > 1f || state.FlatCurrencyBonus > 0);
+                jackpotMarker.SetActive(displayedMultiplier > 1f || state.ValueBonus > 0);
             }
         }
     }

@@ -12,53 +12,68 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
     public sealed class PlinkoRunSnapshotBuilder : MonoBehaviour, IRoundResettable
     {
         [SerializeField, Min(0)] private int startBalls;
-        [SerializeField, Min(0)] private int globalCurrencyPerPinHit;
+        [SerializeField, Min(0f)] private float globalPinMultiplier = 1f;
+        [SerializeField, Min(0f)] private float globalSlotMultiplier = 1f;
+        [SerializeField, Range(0f, 1f)] private float errorPinRateReduction;
+        [SerializeField, Range(0f, 1f)] private float errorSlotRateReduction;
+
+        public float GlobalPinMultiplier => globalPinMultiplier;
+        public float GlobalSlotMultiplier => globalSlotMultiplier;
+        public float ErrorPinRateReduction => errorPinRateReduction;
+        public float ErrorSlotRateReduction => errorSlotRateReduction;
 
         private readonly List<PlinkoBonusToken> _tokens = new List<PlinkoBonusToken>(32);
 
-        /// <summary>
-        /// 누적된 플링코 시작 볼의 수
-        /// </summary>
-        public int StartBalls => startBalls;
-
-        /// <summary>
-        /// 누적된 전역 핀 보상
-        /// </summary>
-        public int GlobalCurrencyPerPinHit => globalCurrencyPerPinHit;
-
-        /// <summary>
-        /// 누적된 토큰 수
-        /// </summary>
-        public int TokenCount => _tokens.Count;
-
-        /// <summary>
-        /// 플링코 시작 볼 수를 추가
-        /// </summary>
         public void AddStartBalls(int amount)
         {
             if (amount <= 0)
             {
                 return;
             }
-
             startBalls += amount;
-
             Debug.Log($"[PlinkoRunSnapshotBuilder] AddStartBalls +{amount} => {startBalls}", this);
         }
 
-        /// <summary>
-        /// 모든 핀 히트에 공통 적용되는 재화 보너스를 추가
-        /// </summary>
-        public void AddGlobalCurrencyPerPinHit(int amount)
+        public void AddGlobalPinMultiplier(float amount)
         {
-            if (amount <= 0)
+            if (amount <= 0f)
             {
                 return;
             }
-
-            globalCurrencyPerPinHit += amount;
-            Debug.Log($"[PlinkoRunSnapshotBuilder] AddglobalCurrencyPerPinHit +{amount} => {globalCurrencyPerPinHit}", this);
+            globalPinMultiplier += amount;
+            Debug.Log($"[PlinkoRunSnapshotBuilder] AddGlobalPinMultiplier +{amount} => {globalPinMultiplier}", this);
         }
+
+        public void AddGlobalSlotMultiplier(float amount)
+        {
+            if (amount <= 0f)
+            {
+                return;
+            }
+            globalSlotMultiplier += amount;
+            Debug.Log($"[PlinkoRunSnapshotBuilder] AddGlobalSlotMultiplier +{amount} => {globalSlotMultiplier}", this);
+        }
+
+        public void AddErrorPinRateReduction(float amount)
+        {
+            if (amount <= 0f)
+            {
+                return;
+            }
+            errorPinRateReduction = Mathf.Clamp01(errorPinRateReduction + amount);
+            Debug.Log($"[PlinkoRunSnapshotBuilder] AddErrorPinRateReduction +{amount} => {errorPinRateReduction}", this);
+        }
+
+        public void AddErrorSlotRateReduction(float amount)
+        {
+            if (amount <= 0f)
+            {
+                return;
+            }
+            errorSlotRateReduction = Mathf.Clamp01(errorSlotRateReduction + amount);
+            Debug.Log($"[PlinkoRunSnapshotBuilder] AddErrorSlotRateReduction +{amount} => {errorSlotRateReduction}", this);
+        }
+
 
         /// <summary>
         /// 개별 핀/슬롯 주입용 토큰을 추가
@@ -72,7 +87,6 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 
             _tokens.Add(new PlinkoBonusToken(tokenType, amount, stackCount));
             Debug.Log($"[PlinkoRunSnapshotBuilder] AddToken type={tokenType}, amount={amount}, stack={stackCount}, totalTokens={_tokens.Count}", this);
-            
         }
 
         /// <summary>
@@ -82,13 +96,14 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         {
             int seed = Random.Range(int.MinValue, int.MaxValue);
 
-
-
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("[PlinkoRunSnapshotBuilder] BuildSnapshot");
             sb.AppendLine($"  StartBalls = {startBalls}");
-            sb.AppendLine($"  GlobalCurrencyPerPinHit = {globalCurrencyPerPinHit}");
+            sb.AppendLine($"  GlobalPinMultiplier = {globalPinMultiplier}");
+            sb.AppendLine($"  GlobalSlotMultiplier = {globalSlotMultiplier}");
+            sb.AppendLine($"  ErrorPinRateReduction = {errorPinRateReduction}");
+            sb.AppendLine($"  ErrorSlotRateReduction = {errorSlotRateReduction}");
             sb.AppendLine($"  TokenCount = {_tokens.Count}");
             sb.AppendLine($"  Seed = {seed}");
 
@@ -102,7 +117,10 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 
             return new PlinkoRunSnapshot(
                 startBalls,
-                globalCurrencyPerPinHit,
+                globalPinMultiplier,
+                globalSlotMultiplier,
+                errorPinRateReduction,
+                errorSlotRateReduction,
                 new List<PlinkoBonusToken>(_tokens),
                 seed);
         }
@@ -114,7 +132,10 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         public void ResetForRound()
         {
             startBalls = 0;
-            globalCurrencyPerPinHit = 0;
+            globalPinMultiplier = 1f;
+            globalSlotMultiplier = 1f;
+            errorPinRateReduction = 0f;
+            errorSlotRateReduction = 0f;
             _tokens.Clear();
         }
     }

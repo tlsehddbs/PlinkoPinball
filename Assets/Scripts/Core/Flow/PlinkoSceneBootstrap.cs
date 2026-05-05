@@ -61,8 +61,7 @@ namespace PlinkoPinball.Core.Flow
             runController.BeginRun(
                 context.RoundIndex,
                 context.PinballScore,
-                appliedSnapshot.StartBalls,
-                appliedSnapshot.GlobalCurrencyPerPinHit);
+                appliedSnapshot.StartBalls);
         }
 
         private bool TryGetContext(out PlinkoPhaseHandoffContext context)

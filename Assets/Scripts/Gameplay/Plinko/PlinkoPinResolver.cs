@@ -19,10 +19,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         private void Awake()
         {
             _reactions = GetComponents<IPlinkoPinReaction>();
-        }
-
-        private void Start()
-        {
+            
             if (runtime == null)
             {
                 runtime = GetComponentInParent<PlinkoPinRuntime>();
@@ -35,14 +32,14 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             }
         }
 
-        private void OnCollisionEnter(Collision collision)
+        private void OnCollisionEnter(Collision other)
         {
             if (boardContext == null || runtime == null)
             {
                 return;
             }
 
-            if (collision.gameObject.GetComponent<PlinkoBallActor>() == null)
+            if (other.gameObject.GetComponentInParent<PlinkoBallActor>() == null)
             {
                 return;
             }
@@ -50,16 +47,20 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             PlinkoPinModifierData modifier = runtime.ExportState();
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            Debug.Log($"[PlinkoPinCollisionHandler] Pin={runtime.PinId}, base={baseReward}, flat={modifier.FlatCurrencyBonus}, mul={modifier.HitMultiplier}, bounce={modifier.ExtraBounceReward}", this);
+            int previewReward = PlinkoRewardCalculator.CalculatePinHitReward(baseReward, modifier);
+            Debug.Log($"[PlinkoPinResolver] Pin={runtime.PinId}, state={modifier.StateKind}, base={baseReward}, valueBonus={modifier.ValueBonus}, multiplier={modifier.Multiplier}, reward={previewReward}", this);
 #endif
 
-            boardContext.RewardAccumulator.RegisterPinHit(baseReward, runtime.ExportState());
+            if (boardContext.RewardAccumulator != null)
+            {
+                boardContext.RewardAccumulator.RegisterPinHit(baseReward, modifier);
+            }
 
-            Vector3 hitPoint = collision.contactCount > 0 ? collision.GetContact(0).point : transform.position;
+            Vector3 hitPoint = other.contactCount > 0 ? other.GetContact(0).point : transform.position;
 
             for (int i = 0; i < _reactions.Length; i++)
             {
-                _reactions[i].OnPinHit(collision.rigidbody, hitPoint);
+                _reactions[i].OnPinHit(other.rigidbody, hitPoint);
             }
         }
     }

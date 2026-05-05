@@ -5,10 +5,16 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
     /// </summary>
     public enum PlinkoBonusTokenType
     {
-        RandomPinFlatCurrencyBonus = 0,
-        RandomPinHitMultiplier = 1,
-        RandomPinExtraBounceReward = 2,
-        RandomSlotFlatCurrencyBonus = 3,
-        RandomSlotJackpotMultiplier = 4
+        RandomPinValueBonus,
+        RandomPinMultiplier,
+
+        RandomSlotValueBonus,
+        RandomSlotMultiplier,
+
+        GlobalPinMultiplier,
+        GlobalSlotMultiplier,
+
+        ErrorPinRateReduction,
+        ErrorSlotRateReduction
     }
 }

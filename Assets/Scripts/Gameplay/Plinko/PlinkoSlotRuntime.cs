@@ -15,8 +15,9 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
         [SerializeField, Min(0)] private int baseReward = 5;
 
         [Header("Runtime Modifier")]
-        [SerializeField] private int flatCurrencyBonus;
-        [SerializeField, Min(1f)] private float jackpotMultiplier = 1f;
+        [SerializeField] private PlinkoSlotStateKind stateKind = PlinkoSlotStateKind.Normal;
+        [SerializeField, Min(0)] private int valueBonus;
+        [SerializeField, Min(0f)] private float multiplier = 1f;
 
         /// <summary>
         /// 현재 슬롯의 고유 ID
@@ -29,33 +30,23 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
         public int BaseReward => baseReward;
 
         /// <summary>
-        /// 현재 슬롯의 고정 재화 보너스
-        /// </summary>
-        public int FlatCurrencyBonus => flatCurrencyBonus;
-
-        /// <summary>
-        /// 현재 슬롯의 잭팟 배율
-        /// </summary>
-        public float JackpotMultiplier => jackpotMultiplier;
-
-        /// <summary>
         /// 슬롯 상태를 기본값으로 초기화
         /// </summary>
         public void ResetRuntimeState()
         {
-            flatCurrencyBonus = 0;
-            jackpotMultiplier = 1f;
+            stateKind = PlinkoSlotStateKind.Normal;
+            valueBonus = 0;
+            multiplier = 1f;
         }
 
         /// <summary>
         /// 외부 스냅샷 결과를 이 슬롯에 적용
         /// </summary>
-        /// <param name="currencyBonus">슬롯에 추가할 고정 재화 보너스</param>
-        /// <param name="multiplier">슬롯에 적용할 보상 배율</param>
-        public void ApplyState(int currencyBonus, float multiplier)
+        public void ApplyState(PlinkoSlotStateKind newStateKind, int newValueBonus, float newMultiplier)
         {
-            flatCurrencyBonus = Mathf.Max(0, currencyBonus);
-            jackpotMultiplier = Mathf.Max(1f, multiplier);
+            stateKind = newStateKind;
+            valueBonus = Mathf.Max(0, newValueBonus);
+            multiplier = Mathf.Max(0f, newMultiplier);
         }
 
         /// <summary>
@@ -65,8 +56,9 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
         {
             return new PlinkoSlotModifierData
             {
-                FlatCurrencyBonus = flatCurrencyBonus,
-                JackpotMultiplier = jackpotMultiplier
+                StateKind = stateKind,
+                ValueBonus = valueBonus,
+                Multiplier = multiplier
             };
         }
 

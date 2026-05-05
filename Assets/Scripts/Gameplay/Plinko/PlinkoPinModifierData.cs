@@ -5,15 +5,26 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
     /// </summary>
     public struct PlinkoPinModifierData
     {
-        public int FlatCurrencyBonus;
-        public float HitMultiplier;
-        public int ExtraBounceReward;
+        public PlinkoPinStateKind StateKind;
+        public int ValueBonus;
+        public float Multiplier;
 
         public static PlinkoPinModifierData Default => new PlinkoPinModifierData
         {
-            FlatCurrencyBonus = 0,
-            HitMultiplier = 1f,
-            ExtraBounceReward = 0
+            StateKind = PlinkoPinStateKind.Normal,
+            ValueBonus = 0,
+            Multiplier = 1f
         };
+
+        public int CalculateReward(int baseReward)
+        {
+            if (StateKind == PlinkoPinStateKind.Error)
+            {
+                return 0;
+            }
+
+            float value = (baseReward + ValueBonus) * UnityEngine.Mathf.Max(0f, Multiplier);
+            return UnityEngine.Mathf.Max(0, UnityEngine.Mathf.RoundToInt(value));
+        }
     }
 }

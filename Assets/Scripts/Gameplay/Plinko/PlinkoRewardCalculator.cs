@@ -10,10 +10,15 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         /// <summary>
         /// 핀 충돌 시 획득 재화를 계산
         /// </summary>
-        public static int CalculatePinHitReward(int baseReward, int globalCurrencyPerPinHit, in PlinkoPinModifierData modifier)
+        public static int CalculatePinHitReward(int baseReward, in PlinkoPinModifierData modifier)
         {
-            int total = baseReward + globalCurrencyPerPinHit + modifier.FlatCurrencyBonus + modifier.ExtraBounceReward;
-            float multiplied = total * Mathf.Max(1f, modifier.HitMultiplier);
+            if (modifier.StateKind == PlinkoPinStateKind.Error)
+            {
+                return 0;
+            }
+
+            int total = baseReward + modifier.ValueBonus;
+            float multiplied = total * Mathf.Max(0f, modifier.Multiplier);
 
             return Mathf.Max(0, Mathf.RoundToInt(multiplied));
         }
@@ -23,8 +28,13 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         /// </summary>
         public static int CalculateSlotReward(int baseReward, in PlinkoSlotModifierData modifier)
         {
-            int total = baseReward + modifier.FlatCurrencyBonus;
-            float multiplied = total * Mathf.Max(1f, modifier.JackpotMultiplier);
+            if (modifier.StateKind == PlinkoSlotStateKind.Error)
+            {
+                return 0;
+            }
+
+            int total = baseReward + modifier.ValueBonus;
+            float multiplied = total * Mathf.Max(0f, modifier.Multiplier);
             
             return Mathf.Max(0, Mathf.RoundToInt(multiplied));
         }

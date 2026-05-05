@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using PlinkoPinball.Gameplay.Components.Plinko;
+using System;
 
 namespace PlinkoPinball.Gameplay.Core.Plinko
 {
@@ -12,6 +13,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 
         private Dictionary<string, PlinkoPinRuntime> _pinLookup;
         private Dictionary<string, PlinkoSlotRuntime> _slotLookup;
+
 
         private void Awake()
         {
@@ -27,34 +29,52 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 
         public void ResetBoardState()
         {
-            for (int i = 0; i < pinRuntimes.Length; i++)
+            if (pinRuntimes != null)
             {
-                pinRuntimes[i]?.ResetRuntimeState();
+                for (int i = 0; i < pinRuntimes.Length; i++)
+                {
+                    pinRuntimes[i]?.ResetRuntimeState();
+                }
             }
 
-            for (int i = 0; i < slotRuntimes.Length; i++)
+            if (slotRuntimes != null)
             {
-                slotRuntimes[i]?.ResetRuntimeState();
+                for (int i = 0; i < slotRuntimes.Length; i++)
+                {
+                    slotRuntimes[i]?.ResetRuntimeState();
+                }
             }
         }
 
         public void ApplySnapshot(in PlinkoBoardAppliedSnapshot snapshot)
         {
-            for (int i = 0; i < snapshot.PinStates.Count; i++)
+            ResetBoardState();
+
+            if (snapshot.PinStates != null)
             {
-                PlinkoPinStateSnapshot pinState = snapshot.PinStates[i];
-                if (_pinLookup.TryGetValue(pinState.PinId, out PlinkoPinRuntime runtime))
+                for (int i = 0; i < snapshot.PinStates.Count; i++)
                 {
-                    runtime.ApplyState(pinState.FlatCurrencyBonus, pinState.HitMultiplier, pinState.ExtraBounceReward);
+                    PlinkoPinStateSnapshot pinState = snapshot.PinStates[i];
+
+                    if (_pinLookup.TryGetValue(pinState.PinId, out PlinkoPinRuntime runtime))
+                    {
+                        float finalMultiplier = pinState.Multiplier * Mathf.Max(0f, snapshot.GlobalPinMultiplier);
+                        runtime.ApplyState(pinState.StateKind, pinState.ValueBonus, finalMultiplier);
+                    }
                 }
             }
 
-            for (int i = 0; i < snapshot.SlotStates.Count; i++)
+            if (snapshot.SlotStates != null)
             {
-                PlinkoSlotStateSnapshot slotState = snapshot.SlotStates[i];
-                if (_slotLookup.TryGetValue(slotState.SlotId, out PlinkoSlotRuntime runtime))
+                for (int i = 0; i < snapshot.SlotStates.Count; i++)
                 {
-                    runtime.ApplyState(slotState.FlatCurrencyBonus, slotState.JackpotMultiplier);
+                    PlinkoSlotStateSnapshot slotState = snapshot.SlotStates[i];
+
+                    if (_slotLookup.TryGetValue(slotState.SlotId, out PlinkoSlotRuntime runtime))
+                    {
+                        float finalMultiplier = slotState.Multiplier * Mathf.Max(0f, snapshot.GlobalSlotMultiplier);
+                        runtime.ApplyState(slotState.StateKind, slotState.ValueBonus, finalMultiplier);
+                    }
                 }
             }
 
@@ -117,14 +137,12 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                     }
 
                     PlinkoPinModifierData data = pinRuntimes[i].ExportState();
-                    if (data.FlatCurrencyBonus == 0 &&
-                        Mathf.Approximately(data.HitMultiplier, 1f) &&
-                        data.ExtraBounceReward == 0)
+
+                    if (data.StateKind == PlinkoPinStateKind.Normal && data.ValueBonus == 0 && Mathf.Approximately(data.Multiplier, 1f))
                     {
                         continue;
                     }
-
-                    sb.AppendLine($"  Pin {pinRuntimes[i].PinId} => flat={data.FlatCurrencyBonus}, mul={data.HitMultiplier}, bounce={data.ExtraBounceReward}");
+                    sb.AppendLine($"  Pin {pinRuntimes[i].PinId} => state={data.StateKind}, valueBonus={data.ValueBonus}, multiplier={data.Multiplier}");
                 }
             }
 
@@ -138,12 +156,12 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                     }
 
                     PlinkoSlotModifierData data = slotRuntimes[i].ExportState();
-                    if (data.FlatCurrencyBonus == 0 && Mathf.Approximately(data.JackpotMultiplier, 1f))
+                    if (data.StateKind == PlinkoSlotStateKind.Normal && data.ValueBonus == 0 && Mathf.Approximately(data.Multiplier, 1f))
                     {
                         continue;
                     }
 
-                    sb.AppendLine($"  Slot {slotRuntimes[i].SlotId} => flat={data.FlatCurrencyBonus}, jackpot={data.JackpotMultiplier}");
+                    sb.AppendLine($"  Slot {slotRuntimes[i].SlotId} => state={data.StateKind}, valueBonus={data.ValueBonus}, multiplier={data.Multiplier}");
                 }
             }
 

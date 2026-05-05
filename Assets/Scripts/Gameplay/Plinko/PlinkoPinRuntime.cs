@@ -8,10 +8,13 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
     /// </summary>
     public sealed class PlinkoPinRuntime : MonoBehaviour
     {
+        [Header("Identity")]
         [SerializeField] private string pinId;
-        [SerializeField] private int flatCurrencyBonus;
-        [SerializeField, Min(1f)] private float hitMultiplier = 1f;
-        [SerializeField] private int extraBounceReward;
+
+        [Header("Runtime Modifier")]
+        [SerializeField] private PlinkoPinStateKind stateKind = PlinkoPinStateKind.Normal;
+        [SerializeField, Min(0)] private int valueBonus;
+        [SerializeField, Min(0f)] private float multiplier = 1f;
 
         /// <summary>
         /// 현재 핀의 고유 ID
@@ -23,22 +26,19 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
         /// </summary>
         public void ResetRuntimeState()
         {
-            flatCurrencyBonus = 0;
-            hitMultiplier = 1f;
-            extraBounceReward = 0;
+            stateKind = PlinkoPinStateKind.Normal;
+            valueBonus = 0;
+            multiplier = 1f;
         }
 
         /// <summary>
         /// 외부 스냅샷 결과를 해당 핀에 적용
         /// </summary>
-        /// <param name="currencyBonus">고정 재화 보너스</param>
-        /// <param name="multiplier">히트 배율</param>
-        /// <param name="bounceReward">추가 바운스 보상</param>
-        public void ApplyState(int currencyBonus, float multiplier, int bounceReward)
+        public void ApplyState(PlinkoPinStateKind newStateKind, int newValueBonus, float newMultiplier)
         {
-            flatCurrencyBonus = currencyBonus;
-            hitMultiplier = Mathf.Max(1f, multiplier);
-            extraBounceReward = bounceReward;
+            stateKind = newStateKind;
+            valueBonus = Mathf.Max(0, newValueBonus);
+            multiplier = Mathf.Max(0f, newMultiplier);
         }
 
         /// <summary>
@@ -48,9 +48,9 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
         {
             return new PlinkoPinModifierData
             {
-                FlatCurrencyBonus = flatCurrencyBonus,
-                HitMultiplier = hitMultiplier,
-                ExtraBounceReward = extraBounceReward
+                StateKind = stateKind,
+                ValueBonus = valueBonus,
+                Multiplier = multiplier
             };
         }
 

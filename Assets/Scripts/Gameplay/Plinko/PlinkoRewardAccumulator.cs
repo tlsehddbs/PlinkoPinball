@@ -10,17 +10,15 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         private long _currency;
         private int _pinHits;
         private int _ballsResolved;
-        private int _globalCurrencyPerPinHit;
 
         /// <summary>
         /// 새로운 플링코 런을 위해 누적 상태를 초기화
         /// </summary>
-        public void ResetForRun(int globalCurrencyPerPinHit)
+        public void ResetForRun()
         {
             _currency = 0;
             _pinHits = 0;
             _ballsResolved = 0;
-            _globalCurrencyPerPinHit = globalCurrencyPerPinHit;
         }
 
         /// <summary>
@@ -28,10 +26,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         /// </summary>
         public void RegisterPinHit(int baseReward, in PlinkoPinModifierData modifier)
         {
-            int reward = PlinkoRewardCalculator.CalculatePinHitReward(
-                baseReward,
-                _globalCurrencyPerPinHit,
-                modifier);
+            int reward = PlinkoRewardCalculator.CalculatePinHitReward(baseReward, modifier);
 
             _pinHits += 1;
             _currency += reward;
@@ -43,6 +38,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         public void RegisterSlotReward(int baseReward, in PlinkoSlotModifierData modifier)
         {
             int reward = PlinkoRewardCalculator.CalculateSlotReward(baseReward, modifier);
+            
             _currency += reward;
         }
 

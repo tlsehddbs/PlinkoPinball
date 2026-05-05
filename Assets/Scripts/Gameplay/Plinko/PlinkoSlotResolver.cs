@@ -60,12 +60,10 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         private void ResolveSlot(PlinkoBallActor ball)
         {
             PlinkoSlotModifierData modifier = runtime.ExportState();
-            int finalReward = modifier.CalculateReward(runtime.BaseReward);
+            int finalReward = PlinkoRewardCalculator.CalculateSlotReward(runtime.BaseReward, modifier);
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            Debug.Log(
-                $"[PlinkoSlotResolver] Slot={runtime.SlotId}, base={runtime.BaseReward}, flat={modifier.FlatCurrencyBonus}, multiplier={modifier.JackpotMultiplier}, final={finalReward}",
-                this);
+            Debug.Log($"[PlinkoSlotResolver] Slot={runtime.SlotId}, state={modifier.StateKind}, base={runtime.BaseReward}, valueBonus={modifier.ValueBonus}, multiplier={modifier.Multiplier}, final={finalReward}", this);
 #endif
 
             if (boardContext.RewardAccumulator != null)
@@ -80,9 +78,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         [System.Diagnostics.Conditional("DEVELOPMENT_BUILD")]
         private void DebugLogMissingReference()
         {
-            Debug.LogWarning(
-                $"[{nameof(PlinkoSlotResolver)}] Missing reference. Runtime={runtime != null}, BoardContext={boardContext != null}",
-                this);
+            Debug.LogWarning($"[{nameof(PlinkoSlotResolver)}] Missing reference. Runtime={runtime != null}, BoardContext={boardContext != null}", this);
         }
     }
 }

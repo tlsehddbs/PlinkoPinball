@@ -4,44 +4,52 @@ using UnityEngine;
 
 namespace PlinkoPinball.Gameplay.Core.Plinko
 {
-    [Serializable]
-    public struct PlinkoPinStateSnapshot
+    public enum PlinkoPinStateKind
     {
-        [SerializeField] private string pinId;
-        [SerializeField] private int flatCurrencyBonus;
-        [SerializeField] private float hitMultiplier;
-        [SerializeField] private int extraBounceReward;
+        Normal,
+        Boosted,
+        Error
+    }
 
-        public string PinId => pinId;
-        public int FlatCurrencyBonus => flatCurrencyBonus;
-        public float HitMultiplier => hitMultiplier;
-        public int ExtraBounceReward => extraBounceReward;
+    public enum PlinkoSlotStateKind
+    {
+        Normal,
+        Boosted,
+        Error
+    }
 
-        public PlinkoPinStateSnapshot(string pinId, int flatCurrencyBonus, float hitMultiplier, int extraBounceReward)
+
+    [Serializable]
+    public readonly struct PlinkoPinStateSnapshot
+    {
+        public readonly string PinId;
+        public readonly PlinkoPinStateKind StateKind;
+        public readonly int ValueBonus;
+        public readonly float Multiplier;
+
+        public PlinkoPinStateSnapshot(string pinId, PlinkoPinStateKind stateKind, int valueBonus, float multiplier)
         {
-            this.pinId = pinId;
-            this.flatCurrencyBonus = flatCurrencyBonus;
-            this.hitMultiplier = hitMultiplier;
-            this.extraBounceReward = extraBounceReward;
+            PinId = pinId;
+            StateKind = stateKind;
+            ValueBonus = Mathf.Max(0, valueBonus);
+            Multiplier = Mathf.Max(0f, multiplier);
         }
     }
 
     [Serializable]
-    public struct PlinkoSlotStateSnapshot
+    public readonly struct PlinkoSlotStateSnapshot
     {
-        [SerializeField] private string slotId;
-        [SerializeField] private int flatCurrencyBonus;
-        [SerializeField] private float jackpotMultiplier;
+        public readonly string SlotId;
+        public readonly PlinkoSlotStateKind StateKind;
+        public readonly int ValueBonus;
+        public readonly float Multiplier;
 
-        public string SlotId => slotId;
-        public int FlatCurrencyBonus => flatCurrencyBonus;
-        public float JackpotMultiplier => jackpotMultiplier;
-
-        public PlinkoSlotStateSnapshot(string slotId, int flatCurrencyBonus, float jackpotMultiplier)
+        public PlinkoSlotStateSnapshot(string slotId, PlinkoSlotStateKind stateKind, int valueBonus, float multiplier)
         {
-            this.slotId = slotId;
-            this.flatCurrencyBonus = flatCurrencyBonus;
-            this.jackpotMultiplier = jackpotMultiplier;
+            SlotId = slotId;
+            StateKind = stateKind;
+            ValueBonus = Mathf.Max(0, valueBonus);
+            Multiplier = Mathf.Max(0f, multiplier);
         }
     }
 
@@ -51,14 +59,16 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
     public readonly struct PlinkoBoardAppliedSnapshot
     {
         public readonly int StartBalls;
-        public readonly int GlobalCurrencyPerPinHit;
+        public readonly float GlobalPinMultiplier;
+        public readonly float GlobalSlotMultiplier;
         public readonly IReadOnlyList<PlinkoPinStateSnapshot> PinStates;
         public readonly IReadOnlyList<PlinkoSlotStateSnapshot> SlotStates;
 
-        public PlinkoBoardAppliedSnapshot(int startBalls, int globalCurrencyPerPinHit, IReadOnlyList<PlinkoPinStateSnapshot> pinStates, IReadOnlyList<PlinkoSlotStateSnapshot> slotStates)
+        public PlinkoBoardAppliedSnapshot(int startBalls, float globalPinMultiplier, float globalSlotMultiplier, IReadOnlyList<PlinkoPinStateSnapshot> pinStates, IReadOnlyList<PlinkoSlotStateSnapshot> slotStates)
         {
-            StartBalls = startBalls;
-            GlobalCurrencyPerPinHit = globalCurrencyPerPinHit;
+            StartBalls = Mathf.Max(0, startBalls);
+            GlobalPinMultiplier = Mathf.Max(0f, globalPinMultiplier);
+            GlobalSlotMultiplier = Mathf.Max(0f, globalSlotMultiplier);
             PinStates = pinStates;
             SlotStates = slotStates;
         }

@@ -56,6 +56,7 @@ namespace PlinkoPinball.Gameplay.Core.Modules
             for (int i = 0; i < rewardDefinitions.Length; i++)
             {
                 ModuleTokenRewardDefinition definition = rewardDefinitions[i];
+
                 if (definition == null)
                 {
                     continue;
@@ -73,6 +74,7 @@ namespace PlinkoPinball.Gameplay.Core.Modules
         private void ApplyRewards(ModuleTokenRewardDefinition definition)
         {
             var rewards = definition.Rewards;
+
             if (rewards == null)
             {
                 return;
@@ -80,25 +82,45 @@ namespace PlinkoPinball.Gameplay.Core.Modules
 
             for (int i = 0; i < rewards.Length; i++)
             {
-                var reward = rewards[i];
+                ModuleTokenRewardDefinition.RewardEntry reward = rewards[i];
 
                 if (reward.GrantStartBalls)
                 {
                     snapshotBuilder.AddStartBalls(reward.StartBallAmount);
                 }
 
-                if (reward.GrantGlobalCurrencyPerPinHit)
+                if (!reward.GrantToken)
                 {
-                    snapshotBuilder.AddGlobalCurrencyPerPinHit(reward.GlobalCurrencyPerPinHitAmount);
+                    continue;
                 }
 
-                if (reward.GrantToken)
-                {
-                    snapshotBuilder.AddToken(
-                        reward.TokenType,
-                        reward.TokenAmount,
-                        reward.TokenStackCount);
-                }
+                ApplyTokenReward(reward.TokenType, reward.TokenAmount, reward.TokenStackCount);
+            }
+        }
+
+        private void ApplyTokenReward(PlinkoBonusTokenType tokenType, int amount, int stackCount)
+        {
+            switch (tokenType)
+            {
+                case PlinkoBonusTokenType.GlobalPinMultiplier:
+                    snapshotBuilder.AddGlobalPinMultiplier(amount);
+                    break;
+
+                case PlinkoBonusTokenType.GlobalSlotMultiplier:
+                    snapshotBuilder.AddGlobalSlotMultiplier(amount);
+                    break;
+
+                case PlinkoBonusTokenType.ErrorPinRateReduction:
+                    snapshotBuilder.AddErrorPinRateReduction(amount * 0.01f);
+                    break;
+
+                case PlinkoBonusTokenType.ErrorSlotRateReduction:
+                    snapshotBuilder.AddErrorSlotRateReduction(amount * 0.01f);
+                    break;
+
+                default:
+                    snapshotBuilder.AddToken(tokenType, amount, stackCount);
+                    break;
             }
         }
     }

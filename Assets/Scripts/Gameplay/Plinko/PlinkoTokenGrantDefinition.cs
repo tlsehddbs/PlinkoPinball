@@ -26,9 +26,6 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             [SerializeField] private bool grantStartBalls;
             [SerializeField, Min(1)] private int startBallAmount;
 
-            [SerializeField] private bool grantGlobalCurrencyPerPinHit;
-            [SerializeField, Min(1)] private int globalCurrencyPerPinHitAmount;
-
             [SerializeField] private bool grantToken;
             [SerializeField] private PlinkoBonusTokenType tokenType;
             [SerializeField, Min(1)] private int tokenAmount;
@@ -37,8 +34,6 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             public bool GrantStartBalls => grantStartBalls;
             public int StartBallAmount => startBallAmount;
 
-            public bool GrantGlobalCurrencyPerPinHit => grantGlobalCurrencyPerPinHit;
-            public int GlobalCurrencyPerPinHitAmount => globalCurrencyPerPinHitAmount;
 
             public bool GrantToken => grantToken;
             public PlinkoBonusTokenType TokenType => tokenType;

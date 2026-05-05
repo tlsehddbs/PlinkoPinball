@@ -50,7 +50,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         /// <summary>
         /// 플링코 런 시작
         /// </summary>
-        public void BeginRun(int roundIndex, int pinballScore, int startBalls, int globalCurrencyPerPinHit)
+        public void BeginRun(int roundIndex, int pinballScore, int startBalls)
         {
             _roundIndex = roundIndex;
             _pinballScore = pinballScore;
@@ -64,7 +64,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 
             if (rewardAccumulator != null)
             {
-                rewardAccumulator.ResetForRun(globalCurrencyPerPinHit);
+                rewardAccumulator.ResetForRun();
             }
 
             TrySpawnAvailableBalls();

@@ -10,14 +10,23 @@ namespace PlinkoPinball.Gameplay.Core.Modules
     [CreateAssetMenu(fileName = "ModuleTokenRewardDefinition", menuName = "PlinkoPinball/Modules/Module Token Reward Definition")]
     public sealed class ModuleTokenRewardDefinition : ScriptableObject
     {
+        [Header("Match")]
+        [SerializeField] private string moduleId;
+        [SerializeField] private ModuleRewardState requiredState;
+
+        [Header("Rewards")]
+        [SerializeField] private RewardEntry[] rewards;
+
+        public string ModuleId => moduleId;
+        public ModuleRewardState RequiredState => requiredState;
+        public RewardEntry[] Rewards => rewards;
+
+
         [Serializable]
         public struct RewardEntry
         {
             [SerializeField] private bool grantStartBalls;
             [SerializeField, Min(1)] private int startBallAmount;
-
-            [SerializeField] private bool grantGlobalCurrencyPerPinHit;
-            [SerializeField, Min(1)] private int globalCurrencyPerPinHitAmount;
 
             [SerializeField] private bool grantToken;
             [SerializeField] private PlinkoBonusTokenType tokenType;
@@ -27,24 +36,10 @@ namespace PlinkoPinball.Gameplay.Core.Modules
             public bool GrantStartBalls => grantStartBalls;
             public int StartBallAmount => startBallAmount;
 
-            public bool GrantGlobalCurrencyPerPinHit => grantGlobalCurrencyPerPinHit;
-            public int GlobalCurrencyPerPinHitAmount => globalCurrencyPerPinHitAmount;
-
             public bool GrantToken => grantToken;
             public PlinkoBonusTokenType TokenType => tokenType;
             public int TokenAmount => tokenAmount;
             public int TokenStackCount => tokenStackCount;
         }
-
-        [Header("Match")]
-        [SerializeField] private string moduleId;
-        [SerializeField] private ModuleRewardState requiredState = ModuleRewardState.Completed;
-
-        [Header("Rewards")]
-        [SerializeField] private RewardEntry[] rewards;
-
-        public string ModuleId => moduleId;
-        public ModuleRewardState RequiredState => requiredState;
-        public RewardEntry[] Rewards => rewards;
     }
 }
