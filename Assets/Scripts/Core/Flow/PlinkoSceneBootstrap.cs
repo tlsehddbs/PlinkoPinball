@@ -57,6 +57,7 @@ namespace PlinkoPinball.Core.Flow
 
             boardStateApplier.ResetBoardState();
             boardStateApplier.ApplySnapshot(appliedSnapshot);
+            Debug.Log("[PlinkoBoardStateApplier] ApplySnapshot completed. Refreshing visuals.", this);
 
             runController.BeginRun(
                 context.RoundIndex,

@@ -47,9 +47,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Components.Plinko.PlinkoPinRuntime
   pinId: 
-  flatCurrencyBonus: 0
-  hitMultiplier: 1
-  extraBounceReward: 0
+  stateKind: 0
+  valueBonus: 0
+  multiplier: 1
 --- !u!1 &3171659700140775698
 GameObject:
   m_ObjectHideFlags: 0
@@ -61,6 +61,7 @@ GameObject:
   - component: {fileID: 5852510592302178245}
   - component: {fileID: 120559594272145889}
   - component: {fileID: 9055459095360308118}
+  - component: {fileID: 2174001256836313620}
   m_Layer: 0
   m_Name: Cylinder
   m_TagString: Untagged
@@ -116,7 +117,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 9ca82e37ac9345d42bdebe36523597a6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -140,6 +141,24 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &2174001256836313620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3171659700140775698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a03df45a03aeb9847a244ac1bc9d2e26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Components.Plinko.PlinkoPinColorReaction
+  targetRenderer: {fileID: 0}
+  pinRuntime: {fileID: 0}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  boostedColor: {r: 0.35, g: 0.9, b: 1, a: 1}
+  errorColor: {r: 1, g: 0.15, b: 0.1, a: 1}
+  colorProperty: _BaseColor
 --- !u!1 &8260462467021859494
 GameObject:
   m_ObjectHideFlags: 0
@@ -153,7 +172,6 @@ GameObject:
   - component: {fileID: 2978234196530190304}
   - component: {fileID: 8335735649135357559}
   - component: {fileID: 239946878193845395}
-  - component: {fileID: 1075966847206576449}
   - component: {fileID: 5409392863019653332}
   m_Layer: 0
   m_Name: Collider
@@ -243,25 +261,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Components.Plinko.PlinkoPinFloatingTextReaction
   floatingTextPrefab: {fileID: 6255730122574570506, guid: 88031e337c48825438fac487233c4d37, type: 3}
-  text: +1
+  runtime: {fileID: 0}
+  normalText: +1
+  bonusFormat: +{0}
+  multiplierFormat: x{0:0.##}
+  bonusMultiplierFormat: +{0} x{1:0.##}
   useHitPoint: 1
   spawnOffset: {x: 0, y: 0.35, z: 0}
   cooldown: 0.03
---- !u!114 &1075966847206576449
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8260462467021859494}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49aded128bedc814097e2bf9f206d466, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Components.Plinko.PlinkoPinFlashReaction
-  targetRenderer: {fileID: 9055459095360308118}
-  flashColor: {r: 1, g: 1, b: 1, a: 1}
-  duration: 0.1
 --- !u!114 &5409392863019653332
 MonoBehaviour:
   m_ObjectHideFlags: 0

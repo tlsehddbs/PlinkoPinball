@@ -78,9 +78,24 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                 }
             }
 
+            RefreshVisualReactions();
+
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             LogAppliedRuntimeState();
 #endif
+        }
+
+        private void RefreshVisualReactions()
+        {
+            PlinkoPinColorReaction[] reactions = FindObjectsByType<PlinkoPinColorReaction>(FindObjectsSortMode.None);
+
+            for (int i = 0; i < reactions.Length; i++)
+            {
+                if (reactions[i] != null)
+                {
+                    reactions[i].Refresh();
+                }
+            }
         }
 
         private void BuildLookup()

@@ -9,8 +9,14 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
         [Header("Prefab")]
         [SerializeField] private FloatingTextView floatingTextPrefab;
 
+        [Header("References")]
+        [SerializeField] private PlinkoPinRuntime runtime;
+
         [Header("Text")]
-        [SerializeField] private string text = "+1";
+        [SerializeField] private string normalText = "+1";
+        [SerializeField] private string bonusFormat = "+{0}";
+        [SerializeField] private string multiplierFormat = "x{0:0.##}";
+        [SerializeField] private string bonusMultiplierFormat = "+{0} x{1:0.##}";
 
         [Header("Position")]
         [SerializeField] private bool useHitPoint = true;
@@ -21,10 +27,18 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
 
         private float _lastShownTime = -999f;
 
-        
+
+        private void Awake()
+        {
+            if (runtime == null)
+            {
+                runtime = GetComponentInParent<PlinkoPinRuntime>();
+            }
+        }
+
         public void OnPinHit(Rigidbody ball, Vector3 hitPoint)
         {
-            if (floatingTextPrefab == null)
+            if (floatingTextPrefab == null || runtime == null)
             {
                 return;
             }
@@ -34,13 +48,45 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
                 return;
             }
 
+            PlinkoPinModifierData data = runtime.ExportState();
+
+            if (data.StateKind == PlinkoPinStateKind.Error)
+            {
+                return;
+            }
+
+            string displayText = BuildText(data);
+
             _lastShownTime = Time.time;
 
             Vector3 spawnPosition = useHitPoint ? hitPoint : transform.position;
             spawnPosition += spawnOffset;
 
             FloatingTextView view = Instantiate(floatingTextPrefab, spawnPosition, Quaternion.identity);
-            view.Play(text, spawnPosition);
+            view.Play(displayText, spawnPosition);
+        }
+
+        private string BuildText(in PlinkoPinModifierData data)
+        {
+            bool hasBonus = data.ValueBonus > 0;
+            bool hasMultiplier = !Mathf.Approximately(data.Multiplier, 1f);
+
+            if (hasBonus && hasMultiplier)
+            {
+                return string.Format(bonusMultiplierFormat, data.ValueBonus, data.Multiplier);
+            }
+
+            if (hasBonus)
+            {
+                return string.Format(bonusFormat, data.ValueBonus);
+            }
+
+            if (hasMultiplier)
+            {
+                return string.Format(multiplierFormat, data.Multiplier);
+            }
+
+            return normalText;
         }
     }
 }
