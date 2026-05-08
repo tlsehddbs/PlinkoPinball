@@ -1415,7 +1415,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Core.Plinko.PlinkoRunSnapshotBuilder
   startBalls: 0
-  globalCurrencyPerPinHit: 0
+  globalPinMultiplier: 1
+  globalSlotMultiplier: 1
+  errorPinRateReduction: 0
+  errorSlotRateReduction: 0
 --- !u!4 &673696832
 Transform:
   m_ObjectHideFlags: 0
