@@ -2,8 +2,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using PlinkoPinball.Core;
 using PlinkoPinball.Input;
-using PlinkoPinball.Gameplay.Core.Flow;
-using PlinkoPinball.Gameplay;
 
 namespace PlinkoPinball.InputRuntime
 {
@@ -20,14 +18,33 @@ namespace PlinkoPinball.InputRuntime
         private PlatformControls _controls;
         private GameManager _gameManager;
 
+
+        // ===== 기본 게임 관련 입력 =====
         private System.Action<InputAction.CallbackContext> _onStart;
         private System.Action<InputAction.CallbackContext> _onPause;
         private System.Action<InputAction.CallbackContext> _onRestart;
+
+
+        // ===== Pinball Launch =====
         private System.Action<InputAction.CallbackContext> _onLaunchPerformed;
         private System.Action<InputAction.CallbackContext> _onLaunchCanceled;
 
+
+        // ===== Pinball Flipper =====
+        private System.Action<InputAction.CallbackContext> _onLeftFlipperPerformed;
+        private System.Action<InputAction.CallbackContext> _onLeftFlipperCanceled;
+        private System.Action<InputAction.CallbackContext> _onRightFlipperPerformed;
+        private System.Action<InputAction.CallbackContext> _onRightFlipperCanceled;
+
+
         public event System.Action OnLaunchPressed;
         public event System.Action OnLaunchReleased;
+
+        public event System.Action OnLeftFlipperPressed;
+        public event System.Action OnLeftFlipperReleased;
+        public event System.Action OnRightFlipperPressed;
+        public event System.Action OnRightFlipperReleased;
+
 
         private System.Action<InputAction.CallbackContext> _onReturnToPinball;
 
@@ -53,6 +70,12 @@ namespace PlinkoPinball.InputRuntime
             _onLaunchPerformed = _ => HandleLaunchPressed();
             _onLaunchCanceled = _ => HandleLaunchReleased();
 
+            _onLeftFlipperPerformed = _ => HandleLeftFlipperPressed();
+            _onLeftFlipperCanceled = _ => HandleLeftFlipperReleased();
+
+            _onRightFlipperPerformed = _ => HandleRightFlipperPressed();
+            _onRightFlipperCanceled = _ => HandleRightFlipperReleased();
+
             _onReturnToPinball = _ => { if (_gameManager.Phase == GamePhase.Plinko) _gameManager.CompletePlinkoAndReturnToPinball(); };
         }
 
@@ -71,13 +94,19 @@ namespace PlinkoPinball.InputRuntime
             _controls.GamePlay.StartRound.performed += _onStart;
             _controls.GamePlay.Pause.performed += _onPause;
             _controls.GamePlay.Restart.performed += _onRestart;
-            _controls.GamePlay.Launch.performed += _onLaunchPerformed;
-            _controls.GamePlay.Launch.canceled += _onLaunchCanceled;
+
+            _controls.Pinball.Launch.performed += _onLaunchPerformed;
+            _controls.Pinball.Launch.canceled += _onLaunchCanceled;
+            _controls.Pinball.LeftFlipper.performed += _onLeftFlipperPerformed;
+            _controls.Pinball.LeftFlipper.canceled += _onLeftFlipperCanceled;
+            _controls.Pinball.RightFlipper.performed += _onRightFlipperPerformed;
+            _controls.Pinball.RightFlipper.canceled += _onRightFlipperCanceled;
 
             _controls.Plinko.Return.performed += _onReturnToPinball;
 
             _controls.UI.Enable();
             _controls.GamePlay.Enable();
+            _controls.Pinball.Enable();
             _controls.Plinko.Enable();
         }
 
@@ -91,13 +120,19 @@ namespace PlinkoPinball.InputRuntime
             _controls.GamePlay.StartRound.performed -= _onStart;
             _controls.GamePlay.Pause.performed -= _onPause;
             _controls.GamePlay.Restart.performed -= _onRestart;
-            _controls.GamePlay.Launch.performed -= _onLaunchPerformed;
-            _controls.GamePlay.Launch.canceled -= _onLaunchCanceled;
+            
+            _controls.Pinball.Launch.performed -= _onLaunchPerformed;
+            _controls.Pinball.Launch.canceled -= _onLaunchCanceled;
+            _controls.Pinball.LeftFlipper.performed -= _onLeftFlipperPerformed;
+            _controls.Pinball.LeftFlipper.canceled -= _onLeftFlipperCanceled;
+            _controls.Pinball.RightFlipper.performed -= _onRightFlipperPerformed;
+            _controls.Pinball.RightFlipper.canceled -= _onRightFlipperCanceled;
 
             _controls.Plinko.Return.performed -= _onReturnToPinball;
 
             _controls.UI.Disable();
             _controls.GamePlay.Disable();
+            _controls.Pinball.Disable();
             _controls.Plinko.Disable();
         }
 
@@ -119,6 +154,7 @@ namespace PlinkoPinball.InputRuntime
 
                 case GamePhase.Pinball:
                     _controls.GamePlay.Enable();
+                    _controls.Pinball.Enable();
                     Debug.Log($"[InputRouter] 현재 Phase={_gameManager.Phase}");
                     break;
 
@@ -179,23 +215,71 @@ namespace PlinkoPinball.InputRuntime
             }
         }
 
+
+        private bool CanHandlePinballInput()
+        {
+            return _gameManager != null && _gameManager.Phase == GamePhase.Pinball && !_gameManager.IsPaused;
+        }
+
         private void HandleLaunchPressed()
         {
-            Debug.Log($"[InputRouter] HandleLaunchPressed 호출됨. {_gameManager} / {_gameManager.Phase} / {_gameManager.IsPaused}");
-            if (_gameManager == null || _gameManager.Phase != GamePhase.Pinball || _gameManager.IsPaused)
+            if (!CanHandlePinballInput())
             {
                 return;
             }
+
             OnLaunchPressed?.Invoke();
         }
 
         private void HandleLaunchReleased()
         {
-            if (_gameManager == null || _gameManager.Phase != GamePhase.Pinball || _gameManager.IsPaused)
+            if (!CanHandlePinballInput())
             {
                 return;
             }
+
             OnLaunchReleased?.Invoke();
+        }
+
+
+        private void HandleLeftFlipperPressed()
+        {
+            if (!CanHandlePinballInput())
+            {
+                return;
+            }
+
+            OnLeftFlipperPressed?.Invoke();
+        }
+
+        private void HandleLeftFlipperReleased()
+        {
+            if (!CanHandlePinballInput())
+            {
+                return;
+            }
+
+            OnLeftFlipperReleased?.Invoke();
+        }
+
+        private void HandleRightFlipperPressed()
+        {
+            if (!CanHandlePinballInput())
+            {
+                return;
+            }
+
+            OnRightFlipperPressed?.Invoke();
+        }
+
+        private void HandleRightFlipperReleased()
+        {
+            if (!CanHandlePinballInput())
+            {
+                return;
+            }
+
+            OnRightFlipperReleased?.Invoke();
         }
     }
 }

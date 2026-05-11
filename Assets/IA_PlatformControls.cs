@@ -120,15 +120,6 @@ namespace PlinkoPinball.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Launch"",
-                    ""type"": ""Button"",
-                    ""id"": ""5328ea6e-f490-4fea-ac52-83a46b511b76"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -195,17 +186,6 @@ namespace PlinkoPinball.Input
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Restart"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""493c093f-f6b5-4f4f-a10b-d1aa8dd1411a"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Launch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -277,6 +257,74 @@ namespace PlinkoPinball.Input
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Pinball"",
+            ""id"": ""443f4685-c249-4fbb-b74f-53ec21cbf259"",
+            ""actions"": [
+                {
+                    ""name"": ""Launch"",
+                    ""type"": ""Button"",
+                    ""id"": ""c374c57d-b577-4b16-b3da-5d673efc2bdb"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeftFlipper"",
+                    ""type"": ""Button"",
+                    ""id"": ""ce71b2a8-ac2a-4b71-b07b-3a0a97419c82"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RightFlipper"",
+                    ""type"": ""Button"",
+                    ""id"": ""7217894e-9135-47d8-b29b-9e76e602052c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""681ea7e0-bc46-4727-93f5-5f58806147b4"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Launch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3d53461d-06bb-416f-8ca7-62d2872473b5"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftFlipper"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7db80aea-ddd2-4d86-a3bd-a909e3642ece"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightFlipper"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -286,13 +334,17 @@ namespace PlinkoPinball.Input
             m_GamePlay_StartRound = m_GamePlay.FindAction("StartRound", throwIfNotFound: true);
             m_GamePlay_Pause = m_GamePlay.FindAction("Pause", throwIfNotFound: true);
             m_GamePlay_Restart = m_GamePlay.FindAction("Restart", throwIfNotFound: true);
-            m_GamePlay_Launch = m_GamePlay.FindAction("Launch", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Newaction = m_UI.FindAction("New action", throwIfNotFound: true);
             // Plinko
             m_Plinko = asset.FindActionMap("Plinko", throwIfNotFound: true);
             m_Plinko_Return = m_Plinko.FindAction("Return", throwIfNotFound: true);
+            // Pinball
+            m_Pinball = asset.FindActionMap("Pinball", throwIfNotFound: true);
+            m_Pinball_Launch = m_Pinball.FindAction("Launch", throwIfNotFound: true);
+            m_Pinball_LeftFlipper = m_Pinball.FindAction("LeftFlipper", throwIfNotFound: true);
+            m_Pinball_RightFlipper = m_Pinball.FindAction("RightFlipper", throwIfNotFound: true);
         }
 
         ~@PlatformControls()
@@ -300,6 +352,7 @@ namespace PlinkoPinball.Input
             UnityEngine.Debug.Assert(!m_GamePlay.enabled, "This will cause a leak and performance issues, PlatformControls.GamePlay.Disable() has not been called.");
             UnityEngine.Debug.Assert(!m_UI.enabled, "This will cause a leak and performance issues, PlatformControls.UI.Disable() has not been called.");
             UnityEngine.Debug.Assert(!m_Plinko.enabled, "This will cause a leak and performance issues, PlatformControls.Plinko.Disable() has not been called.");
+            UnityEngine.Debug.Assert(!m_Pinball.enabled, "This will cause a leak and performance issues, PlatformControls.Pinball.Disable() has not been called.");
         }
 
         /// <summary>
@@ -378,7 +431,6 @@ namespace PlinkoPinball.Input
         private readonly InputAction m_GamePlay_StartRound;
         private readonly InputAction m_GamePlay_Pause;
         private readonly InputAction m_GamePlay_Restart;
-        private readonly InputAction m_GamePlay_Launch;
         /// <summary>
         /// Provides access to input actions defined in input action map "GamePlay".
         /// </summary>
@@ -402,10 +454,6 @@ namespace PlinkoPinball.Input
             /// Provides access to the underlying input action "GamePlay/Restart".
             /// </summary>
             public InputAction @Restart => m_Wrapper.m_GamePlay_Restart;
-            /// <summary>
-            /// Provides access to the underlying input action "GamePlay/Launch".
-            /// </summary>
-            public InputAction @Launch => m_Wrapper.m_GamePlay_Launch;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -441,9 +489,6 @@ namespace PlinkoPinball.Input
                 @Restart.started += instance.OnRestart;
                 @Restart.performed += instance.OnRestart;
                 @Restart.canceled += instance.OnRestart;
-                @Launch.started += instance.OnLaunch;
-                @Launch.performed += instance.OnLaunch;
-                @Launch.canceled += instance.OnLaunch;
             }
 
             /// <summary>
@@ -464,9 +509,6 @@ namespace PlinkoPinball.Input
                 @Restart.started -= instance.OnRestart;
                 @Restart.performed -= instance.OnRestart;
                 @Restart.canceled -= instance.OnRestart;
-                @Launch.started -= instance.OnLaunch;
-                @Launch.performed -= instance.OnLaunch;
-                @Launch.canceled -= instance.OnLaunch;
             }
 
             /// <summary>
@@ -692,6 +734,124 @@ namespace PlinkoPinball.Input
         /// Provides a new <see cref="PlinkoActions" /> instance referencing this action map.
         /// </summary>
         public PlinkoActions @Plinko => new PlinkoActions(this);
+
+        // Pinball
+        private readonly InputActionMap m_Pinball;
+        private List<IPinballActions> m_PinballActionsCallbackInterfaces = new List<IPinballActions>();
+        private readonly InputAction m_Pinball_Launch;
+        private readonly InputAction m_Pinball_LeftFlipper;
+        private readonly InputAction m_Pinball_RightFlipper;
+        /// <summary>
+        /// Provides access to input actions defined in input action map "Pinball".
+        /// </summary>
+        public struct PinballActions
+        {
+            private @PlatformControls m_Wrapper;
+
+            /// <summary>
+            /// Construct a new instance of the input action map wrapper class.
+            /// </summary>
+            public PinballActions(@PlatformControls wrapper) { m_Wrapper = wrapper; }
+            /// <summary>
+            /// Provides access to the underlying input action "Pinball/Launch".
+            /// </summary>
+            public InputAction @Launch => m_Wrapper.m_Pinball_Launch;
+            /// <summary>
+            /// Provides access to the underlying input action "Pinball/LeftFlipper".
+            /// </summary>
+            public InputAction @LeftFlipper => m_Wrapper.m_Pinball_LeftFlipper;
+            /// <summary>
+            /// Provides access to the underlying input action "Pinball/RightFlipper".
+            /// </summary>
+            public InputAction @RightFlipper => m_Wrapper.m_Pinball_RightFlipper;
+            /// <summary>
+            /// Provides access to the underlying input action map instance.
+            /// </summary>
+            public InputActionMap Get() { return m_Wrapper.m_Pinball; }
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+            public void Enable() { Get().Enable(); }
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+            public void Disable() { Get().Disable(); }
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+            public bool enabled => Get().enabled;
+            /// <summary>
+            /// Implicitly converts an <see ref="PinballActions" /> to an <see ref="InputActionMap" /> instance.
+            /// </summary>
+            public static implicit operator InputActionMap(PinballActions set) { return set.Get(); }
+            /// <summary>
+            /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+            /// </summary>
+            /// <param name="instance">Callback instance.</param>
+            /// <remarks>
+            /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+            /// </remarks>
+            /// <seealso cref="PinballActions" />
+            public void AddCallbacks(IPinballActions instance)
+            {
+                if (instance == null || m_Wrapper.m_PinballActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_PinballActionsCallbackInterfaces.Add(instance);
+                @Launch.started += instance.OnLaunch;
+                @Launch.performed += instance.OnLaunch;
+                @Launch.canceled += instance.OnLaunch;
+                @LeftFlipper.started += instance.OnLeftFlipper;
+                @LeftFlipper.performed += instance.OnLeftFlipper;
+                @LeftFlipper.canceled += instance.OnLeftFlipper;
+                @RightFlipper.started += instance.OnRightFlipper;
+                @RightFlipper.performed += instance.OnRightFlipper;
+                @RightFlipper.canceled += instance.OnRightFlipper;
+            }
+
+            /// <summary>
+            /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+            /// </summary>
+            /// <remarks>
+            /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+            /// </remarks>
+            /// <seealso cref="PinballActions" />
+            private void UnregisterCallbacks(IPinballActions instance)
+            {
+                @Launch.started -= instance.OnLaunch;
+                @Launch.performed -= instance.OnLaunch;
+                @Launch.canceled -= instance.OnLaunch;
+                @LeftFlipper.started -= instance.OnLeftFlipper;
+                @LeftFlipper.performed -= instance.OnLeftFlipper;
+                @LeftFlipper.canceled -= instance.OnLeftFlipper;
+                @RightFlipper.started -= instance.OnRightFlipper;
+                @RightFlipper.performed -= instance.OnRightFlipper;
+                @RightFlipper.canceled -= instance.OnRightFlipper;
+            }
+
+            /// <summary>
+            /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="PinballActions.UnregisterCallbacks(IPinballActions)" />.
+            /// </summary>
+            /// <seealso cref="PinballActions.UnregisterCallbacks(IPinballActions)" />
+            public void RemoveCallbacks(IPinballActions instance)
+            {
+                if (m_Wrapper.m_PinballActionsCallbackInterfaces.Remove(instance))
+                    UnregisterCallbacks(instance);
+            }
+
+            /// <summary>
+            /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+            /// </summary>
+            /// <remarks>
+            /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+            /// </remarks>
+            /// <seealso cref="PinballActions.AddCallbacks(IPinballActions)" />
+            /// <seealso cref="PinballActions.RemoveCallbacks(IPinballActions)" />
+            /// <seealso cref="PinballActions.UnregisterCallbacks(IPinballActions)" />
+            public void SetCallbacks(IPinballActions instance)
+            {
+                foreach (var item in m_Wrapper.m_PinballActionsCallbackInterfaces)
+                    UnregisterCallbacks(item);
+                m_Wrapper.m_PinballActionsCallbackInterfaces.Clear();
+                AddCallbacks(instance);
+            }
+        }
+        /// <summary>
+        /// Provides a new <see cref="PinballActions" /> instance referencing this action map.
+        /// </summary>
+        public PinballActions @Pinball => new PinballActions(this);
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "GamePlay" which allows adding and removing callbacks.
         /// </summary>
@@ -720,13 +880,6 @@ namespace PlinkoPinball.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnRestart(InputAction.CallbackContext context);
-            /// <summary>
-            /// Method invoked when associated input action "Launch" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-            /// </summary>
-            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-            void OnLaunch(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
@@ -757,6 +910,35 @@ namespace PlinkoPinball.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnReturn(InputAction.CallbackContext context);
+        }
+        /// <summary>
+        /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Pinball" which allows adding and removing callbacks.
+        /// </summary>
+        /// <seealso cref="PinballActions.AddCallbacks(IPinballActions)" />
+        /// <seealso cref="PinballActions.RemoveCallbacks(IPinballActions)" />
+        public interface IPinballActions
+        {
+            /// <summary>
+            /// Method invoked when associated input action "Launch" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnLaunch(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "LeftFlipper" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnLeftFlipper(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "RightFlipper" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnRightFlipper(InputAction.CallbackContext context);
         }
     }
 }

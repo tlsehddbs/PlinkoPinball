@@ -66,9 +66,15 @@ namespace PlinkoPinball.Gameplay
 
         private void Update()
         {
-            if (_cooldownTimer > 0f) _cooldownTimer -= Time.deltaTime;
+            if (_cooldownTimer > 0f) 
+            {
+                _cooldownTimer -= Time.deltaTime;
+            }
 
-            if (!_isCharging) return;
+            if (!_isCharging) 
+            {
+                return;
+            }
 
             // charge01을 maxchargeSeconds 동안 1까지 증가
             float chargeRate = (maxChargeSeconds <= 0f) ? 1f : (Time.deltaTime / maxChargeSeconds);
@@ -97,9 +103,16 @@ namespace PlinkoPinball.Gameplay
         /// </summary>
         public void BeginCharge()
         {
-            Debug.Log("begin launcher");
-            if (_cooldownTimer > 0f) return;
-            if (_ballRb == null) return;     // 레인에 공이 없으면 차지 x
+            //Debug.Log("begin launcher");
+            if (_cooldownTimer > 0f) 
+            {
+                return;
+            }
+
+            if (_ballRb == null) 
+            {
+                return;     // 레인에 공이 없으면 차지 x
+            }
 
             _isCharging = true;
             _charge01 = 0f;
@@ -107,12 +120,18 @@ namespace PlinkoPinball.Gameplay
 
         public void Release()
         {
-            Debug.Log("Release launcher");
-            if (!_isCharging) return;
+            //Debug.Log("Release launcher");
+            if (!_isCharging) 
+            {
+                return;
+            }
 
             _isCharging = false;
 
-            if (_ballRb == null) return;
+            if (_ballRb == null) 
+            {
+                return;
+            }
 
             float dv = Mathf.Lerp(minVelocityChange, maxVelocityChange, _charge01);
             Vector3 dir = (launchDirection != null) ? launchDirection.forward : transform.forward;
@@ -123,7 +142,9 @@ namespace PlinkoPinball.Gameplay
                 // 발사 방향으로 이미 속도가 있는 경우(레인 안에서 튕김 등), forward 성분만 제거해 발사 결과를 안정화
                 float forwardSpeed = Vector3.Dot(_ballRb.linearVelocity, dir);
                 if (forwardSpeed > 0f)
+                {
                     _ballRb.linearVelocity -= dir * forwardSpeed;
+                }
             }
 
             // 속도 변화를 직접 적용 -> 질량과 무관하게 일정한 발사 느낌을 줌
