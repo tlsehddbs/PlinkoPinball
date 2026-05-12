@@ -461,7 +461,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ede49d31862244fc8e91499c5e6a4dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Core.Plinko.PlinkoBallSpawner
-  ballPrefab: {fileID: -4571125201370721874, guid: 1ae5f2198ed8d7044ab6a177260cbf2b, type: 3}
+  ballPrefab: {fileID: -4571125201370721874, guid: 453ac2ed452a2164d9b96e5bb7f0c3e0, type: 3}
   spawnAnchor: {fileID: 1173466322}
   areaSize: {x: 12, y: 0.5, z: 0}
   minSpawnDistance: 0.1
@@ -1915,8 +1915,19 @@ MonoBehaviour:
   debugRoundIndex: 1
   debugPinballScore: 1000
   debugStartBalls: 5
-  debugGlobalCurrencyPerPinHit: 1
   debugSeed: 12345
+  debugGlobalPinMultiplier: 1
+  debugGlobalSlotMultiplier: 1
+  debugErrorPinRateReduction: 0
+  debugErrorSlotRateReduction: 0
+  randomPinMultiplierStacks: 3
+  randomPinValueBonusStacks: 4
+  randomSlotMultiplierStacks: 1
+  randomSlotValueBonusStacks: 2
+  randomPinMultiplierAmount: 1
+  randomPinValueBonusAmount: 2
+  randomSlotMultiplierAmount: 1
+  randomSlotValueBonusAmount: 3
 --- !u!4 &2091891822
 Transform:
   m_ObjectHideFlags: 0
@@ -1939,12 +1950,12 @@ SceneRoots:
   - {fileID: 1446250228}
   - {fileID: 1548084785}
   - {fileID: 195935846}
+  - {fileID: 1734343921}
   - {fileID: 1730081459}
   - {fileID: 1300561268}
   - {fileID: 811968634}
   - {fileID: 125049701}
   - {fileID: 2091891822}
-  - {fileID: 1734343921}
   - {fileID: 119072853}
   - {fileID: 1822485617}
   - {fileID: 1585551817}

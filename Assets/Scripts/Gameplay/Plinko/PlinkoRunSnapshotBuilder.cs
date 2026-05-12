@@ -30,7 +30,9 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             {
                 return;
             }
+            
             startBalls += amount;
+
             Debug.Log($"[PlinkoRunSnapshotBuilder] AddStartBalls +{amount} => {startBalls}", this);
         }
 
@@ -40,7 +42,9 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             {
                 return;
             }
+
             globalPinMultiplier += amount;
+
             Debug.Log($"[PlinkoRunSnapshotBuilder] AddGlobalPinMultiplier +{amount} => {globalPinMultiplier}", this);
         }
 
@@ -50,7 +54,9 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             {
                 return;
             }
+
             globalSlotMultiplier += amount;
+
             Debug.Log($"[PlinkoRunSnapshotBuilder] AddGlobalSlotMultiplier +{amount} => {globalSlotMultiplier}", this);
         }
 
@@ -60,7 +66,9 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             {
                 return;
             }
+
             errorPinRateReduction = Mathf.Clamp01(errorPinRateReduction + amount);
+
             Debug.Log($"[PlinkoRunSnapshotBuilder] AddErrorPinRateReduction +{amount} => {errorPinRateReduction}", this);
         }
 
@@ -70,7 +78,9 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             {
                 return;
             }
+
             errorSlotRateReduction = Mathf.Clamp01(errorSlotRateReduction + amount);
+
             Debug.Log($"[PlinkoRunSnapshotBuilder] AddErrorSlotRateReduction +{amount} => {errorSlotRateReduction}", this);
         }
 
@@ -86,6 +96,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             }
 
             _tokens.Add(new PlinkoBonusToken(tokenType, amount, stackCount));
+
             Debug.Log($"[PlinkoRunSnapshotBuilder] AddToken type={tokenType}, amount={amount}, stack={stackCount}, totalTokens={_tokens.Count}", this);
         }
 
@@ -112,6 +123,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                 PlinkoBonusToken token = _tokens[i];
                 sb.AppendLine($"  Token[{i}] = {token.TokenType}, amount={token.Amount}, stack={token.StackCount}");
             }
+
             Debug.Log(sb.ToString(), this);
 #endif
 

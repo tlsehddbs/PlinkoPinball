@@ -22,7 +22,9 @@ namespace PlinkoPinball.Gameplay
             }
 
             if (CurrentBall != null)
+            {
                 Destroy(CurrentBall.gameObject);
+            }
 
             CurrentBall = Instantiate(ballPrefab, spawnPoint.position, spawnPoint.rotation);
             return CurrentBall;
@@ -30,7 +32,11 @@ namespace PlinkoPinball.Gameplay
 
         public void DespawnCurrent()
         {
-            if (CurrentBall == null) return;
+            if (CurrentBall == null) 
+            {
+                return;
+            }
+            
             Destroy(CurrentBall.gameObject);
             CurrentBall = null;
         }

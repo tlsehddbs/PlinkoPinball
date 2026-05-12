@@ -74,16 +74,22 @@ namespace PlinkoPinball.Gameplay.Modules
             float result = baseMultiplier;
 
             if (State == null || groupRules == null || groupRules.Length == 0)
+            {
                 return result;
+            }
 
             for (int i = 0; i < groupRules.Length; i++)
             {
                 var rule = groupRules[i];
                 if (rule == null || string.IsNullOrWhiteSpace(rule.groupId))
+                {
                     continue;
+                }
 
                 if (State.IsGroupComplete(rule.groupId, rule.requireAllOn))
+                {
                     result += rule.completedMultiplierBonus;
+                }
 
                 // Debug.Log(State.GetOnCount(rule.groupId));
             }
@@ -123,17 +129,23 @@ namespace PlinkoPinball.Gameplay.Modules
         public void ResetModuleState()
         {
             if (State != null)
+            {
                 State.ResetAllSwitches();
+            }
         }
 
 #if UNITY_EDITOR
         private void OnValidate()
         {
             if (string.IsNullOrWhiteSpace(moduleId))
+            {
                 moduleId = gameObject.name;
+            }
 
             if (baseMultiplier < 0f)
+            {
                 baseMultiplier = 0f;
+            }
         }
 #endif
 
@@ -151,7 +163,7 @@ namespace PlinkoPinball.Gameplay.Modules
             {
                 RewardStateChanged?.Invoke(moduleId, ModuleRewardState.Deactivated);
             }
-            
+
             _wasCompletedLastFrame = isCompletedNow;
         }
     }

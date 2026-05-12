@@ -38,6 +38,7 @@ namespace PlinkoPinball.Core
         private PinballToPlinkoTransitionController _transitionController;
         private bool _roundEnded;
         private bool _isPaused;
+        
 
         private void Awake()
         {

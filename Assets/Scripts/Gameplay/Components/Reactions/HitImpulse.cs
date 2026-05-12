@@ -25,19 +25,28 @@ namespace PlinkoPinball.Gameplay.Components.Reactions
         public void OnTableEvent(in TableEvent e)
         {
             if (onlyOnHitType && e.eventType != TableEventType.Hit)
+            {
                 return;
+            }
 
             // Trigger에서 주입해 둔 ball Rigidbody를 사용
             var ballRb = e.ball;
-            if (ballRb == null) return;
+            if (ballRb == null) 
+            {
+                return;
+            }
 
             // 방향: 범퍼 중심에서 공 위치 방향으로 밀어냄
             Vector3 dir = (ballRb.worldCenterOfMass - transform.position).normalized;
             if (dir.sqrMagnitude < 0.0001f)
+            {
                 dir = transform.up;     // 완전히 겹쳤을 경우를 대비
+            }
                 
             if (upBias != 0f)
+            {
                 dir = (dir + Vector3.up * upBias).normalized;
+            }
                 
             ballRb.AddForce(dir * impulseStrength, ForceMode.Impulse);
         }

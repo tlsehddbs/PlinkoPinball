@@ -24,6 +24,7 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
         private Vector3 _baseScale;
         private Coroutine _routine;
 
+
         private void Awake()
         {
             if (scaleTarget == null)
@@ -34,7 +35,7 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
             _baseScale = scaleTarget.localScale;
         }
 
-        /// <inheritdoc />
+
         public void OnPinHit(Rigidbody ball, Vector3 hitPoint)
         {
             if (_routine != null)

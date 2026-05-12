@@ -48,6 +48,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             int previewReward = PlinkoRewardCalculator.CalculatePinHitReward(baseReward, modifier);
+            
             Debug.Log($"[PlinkoPinResolver] Pin={runtime.PinId}, state={modifier.StateKind}, base={baseReward}, valueBonus={modifier.ValueBonus}, multiplier={modifier.Multiplier}, reward={previewReward}", this);
 #endif
 

@@ -46,15 +46,21 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
         private void OnCollisionEnter(Collision collision)
         {
             if (cooldownSeconds > 0f && Time.time < _nextAllowedTime)
+            {
                 return;
+            }
 
             // 공 판별 (RigidBody가 있어야 함. (설정 시) 레이어가 맞아야 함)
             var ballRb = collision.rigidbody;
             if (ballRb == null)
+            {
                 return;
+            }
 
             if (ballLayer >= 0 && ballRb.gameObject.layer != ballLayer)
+            {
                 return;
+            }
 
             _nextAllowedTime = Time.time + cooldownSeconds;
 

@@ -45,7 +45,9 @@ namespace PlinkoPinball.Gameplay.Modules
         private void Awake()
         {
             if (collectOnAwake)
+            {
                 RebuildCache();
+            }
         }
 
         private void OnEnable()
@@ -77,12 +79,16 @@ namespace PlinkoPinball.Gameplay.Modules
                 {
                     var sw = found[i];
                     if (sw == null)
+                    {
                         continue;
+                    }
 
                     _switches.Add(sw);
 
                     if (!string.IsNullOrWhiteSpace(sw.SwitchId) && !_switchById.ContainsKey(sw.SwitchId))
+                    {
                         _switchById.Add(sw.SwitchId, sw);
+                    }
 
                     if (!string.IsNullOrWhiteSpace(sw.GroupId))
                     {
@@ -107,7 +113,9 @@ namespace PlinkoPinball.Gameplay.Modules
         public SwitchState FindSwitch(string switchId)
         {
             if (string.IsNullOrWhiteSpace(switchId))
+            {
                 return null;
+            }
 
             _switchById.TryGetValue(switchId, out var sw);
             return sw;
@@ -119,7 +127,9 @@ namespace PlinkoPinball.Gameplay.Modules
         public int GetTotalCount(string groupId)
         {
             if (string.IsNullOrWhiteSpace(groupId))
+            {
                 return 0;
+            }
 
             return _groups.TryGetValue(groupId, out var list) ? list.Count : 0;
         }
@@ -130,17 +140,23 @@ namespace PlinkoPinball.Gameplay.Modules
         public int GetOnCount(string groupId)
         {
             if (string.IsNullOrWhiteSpace(groupId))
+            {
                 return 0;
+            }
 
             if (!_groups.TryGetValue(groupId, out var list) || list == null)
+            {
                 return 0;
+            }
 
             int count = 0;
             for (int i = 0; i < list.Count; i++)
             {
                 var sw = list[i];
                 if (sw != null && sw.IsOn)
+                {
                     count++;
+                }
             }
             // Debug.Log($"모듈 내 활성화 된 스위치의 개수 : {count} / 총 스위치의 개수 : {list.Count}");
             return count;
@@ -154,10 +170,14 @@ namespace PlinkoPinball.Gameplay.Modules
         public bool IsGroupComplete(string groupId, bool requireAllOn = true)
         {
             if (string.IsNullOrWhiteSpace(groupId))
+            {
                 return false;
+            }
 
             if (!_groups.TryGetValue(groupId, out var list) || list == null || list.Count == 0)
+            {
                 return false;
+            }
 
             if (requireAllOn)
             {
@@ -165,7 +185,9 @@ namespace PlinkoPinball.Gameplay.Modules
                 {
                     var sw = list[i];
                     if (sw == null || !sw.IsOn)
+                    {
                         return false;
+                    }
                 }
 
                 return true;
@@ -175,7 +197,9 @@ namespace PlinkoPinball.Gameplay.Modules
             {
                 var sw = list[i];
                 if (sw != null && sw.IsOn)
+                {
                     return true;
+                }
             }
 
             return false;
@@ -189,7 +213,9 @@ namespace PlinkoPinball.Gameplay.Modules
             for (int i = 0; i < _switches.Count; i++)
             {
                 if (_switches[i] != null)
+                {
                     _switches[i].ResetState();
+                }
             }
 
             MarkDirty();
@@ -227,7 +253,9 @@ namespace PlinkoPinball.Gameplay.Modules
             for (int i = 0; i < _switches.Count; i++)
             {
                 if (_switches[i] != null)
+                {
                     _switches[i].StateChanged += OnSwitchStateChanged;
+                }
             }
         }
 
@@ -236,7 +264,9 @@ namespace PlinkoPinball.Gameplay.Modules
             for (int i = 0; i < _switches.Count; i++)
             {
                 if (_switches[i] != null)
+                {
                     _switches[i].StateChanged -= OnSwitchStateChanged;
+                }
             }
         }
 

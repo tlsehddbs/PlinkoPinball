@@ -75,28 +75,45 @@ namespace PlinkoPinball.Gameplay.Components
             _isOn = initialOn;
 
             if (forwardSemanticToLocal)
+            {
                 _localReactions = GetComponents<ITableEventReaction>();
+            }
         }
 
         public void OnTableEvent(in TableEvent e)
         {
             // 스위치 이벤트는 입력으로 처리하지 않음
-            if (e.eventId != null && e.eventId.StartsWith("switch.")) return;
+            if (e.eventId != null && e.eventId.StartsWith("switch."))
+            {
+                return;
+            }
 
             // semantic 발행 중 로컬로 재전달된 이벤트가 돌아오는 케이스 방지
-            if(_emittingSemantic) return;
+            if(_emittingSemantic) 
+            {
+                return;
+            }
 
             // 입력 필터(exact 우선 처리, 없을 경우 prefix로 처리)
             if(!string.IsNullOrEmpty(requiredEventIdExact))
             {
-                if(e.eventId != requiredEventIdExact) return;
+                if(e.eventId != requiredEventIdExact) 
+                {
+                    return;
+                }
             }
             else if(!string.IsNullOrEmpty(requiredEventIdPrefix))
             {
-                if(e.eventId == null || !e.eventId.StartsWith(requiredEventIdPrefix)) return;
+                if(e.eventId == null || !e.eventId.StartsWith(requiredEventIdPrefix)) 
+                {
+                    return;
+                }
             }
 
-            if(e.ball == null) return;
+            if(e.ball == null) 
+            {
+                return;
+            }
 
             // semantic 이벤트 발행
             switch(mode)

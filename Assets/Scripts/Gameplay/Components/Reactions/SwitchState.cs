@@ -79,17 +79,25 @@ namespace PlinkoPinball.Gameplay.Components.Reactions
         public void OnTableEvent(in TableEvent e)
         {
             if (!isActiveAndEnabled)
+            {
                 return;
+            }
 
             // 현재 설계에서는 Hit 입력만 스위치에 반응시킨다
             if (e.eventType != TableEventType.Hit)
+            {
                 return;
+            }
 
             if (!PassesEventFilter(in e))
+            {
                 return;
+            }
 
             if (cooldownSeconds > 0f && Time.time < _nextAllowedTime)
+            {
                 return;
+            }
 
             _nextAllowedTime = Time.time + cooldownSeconds;
 
@@ -97,7 +105,9 @@ namespace PlinkoPinball.Gameplay.Components.Reactions
             {
                 // 이미 ON이면 재통지하지 않음
                 if (!IsOn)
+                {
                     SetStateInternal(true, notify: true);
+                }
 
                 return;
             }
@@ -143,12 +153,13 @@ namespace PlinkoPinball.Gameplay.Components.Reactions
             if (!string.IsNullOrEmpty(requiredEventIdExact))
             {
                 if (!string.Equals(e.eventId, requiredEventIdExact, StringComparison.Ordinal))
+                {
                     return false;
+                }
             }
             else if (!string.IsNullOrEmpty(requiredEventIdPrefix))
             {
-                if (string.IsNullOrEmpty(e.eventId) ||
-                    !e.eventId.StartsWith(requiredEventIdPrefix, StringComparison.Ordinal))
+                if (string.IsNullOrEmpty(e.eventId) || !e.eventId.StartsWith(requiredEventIdPrefix, StringComparison.Ordinal))
                 {
                     return false;
                 }
@@ -157,17 +168,19 @@ namespace PlinkoPinball.Gameplay.Components.Reactions
             if (!string.IsNullOrEmpty(requiredTag))
             {
                 if (e.tags == null || e.tags.Length == 0)
+                {
                     return false;
+                }
 
                 for (int i = 0; i < e.tags.Length; i++)
                 {
                     if (string.Equals(e.tags[i], requiredTag, StringComparison.Ordinal))
+                    {
                         return true;
+                    }
                 }
-
                 return false;
             }
-
             return true;
         }
 
@@ -179,22 +192,30 @@ namespace PlinkoPinball.Gameplay.Components.Reactions
         private void SetStateInternal(bool value, bool notify)
         {
             if (IsOn == value)
+            {
                 return;
+            }
 
             IsOn = value;
 
             if (notify)
+            {
                 StateChanged?.Invoke(this, IsOn);
+            }
         }
 
 #if UNITY_EDITOR
         private void OnValidate()
         {
             if (autoGenerateSwitchId)
+            {
                 switchId = TableIdentityGenerator.CreateSwitchId(transform);
+            }
 
             if (autoGenerateSwitchId && string.IsNullOrWhiteSpace(groupId))
+            {
                 groupId = TableIdentityGenerator.CreateParentBasedGroupId(transform);
+            }
         }
 #endif
     }

@@ -76,11 +76,9 @@ Shader "PlinkoPinball/URP/SimpleCelShader"
             {
                 Varyings output;
 
-                VertexPositionInputs positionInputs =
-                    GetVertexPositionInputs(input.positionOS.xyz);
+                VertexPositionInputs positionInputs = GetVertexPositionInputs(input.positionOS.xyz);
 
-                VertexNormalInputs normalInputs =
-                    GetVertexNormalInputs(input.normalOS);
+                VertexNormalInputs normalInputs = GetVertexNormalInputs(input.normalOS);
 
                 output.positionCS = positionInputs.positionCS;
                 output.normalWS = normalize(normalInputs.normalWS);
@@ -163,11 +161,9 @@ Shader "PlinkoPinball/URP/SimpleCelShader"
             {
                 Varyings output;
 
-                float3 expandedPositionOS =
-                    input.positionOS.xyz + normalize(input.normalOS) * _OutlineWidth;
+                float3 expandedPositionOS = input.positionOS.xyz + normalize(input.normalOS) * _OutlineWidth;
 
-                VertexPositionInputs positionInputs =
-                    GetVertexPositionInputs(expandedPositionOS);
+                VertexPositionInputs positionInputs = GetVertexPositionInputs(expandedPositionOS);
 
                 output.positionCS = positionInputs.positionCS;
 

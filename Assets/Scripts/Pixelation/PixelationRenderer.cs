@@ -41,9 +41,7 @@ namespace PlinkoPinball.Rendering
             };
         }
 
-        public override void AddRenderPasses(
-            ScriptableRenderer renderer,
-            ref RenderingData renderingData)
+        public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
             if (material == null || settings.pixelationSettings == null || pass == null)
             {
@@ -52,8 +50,7 @@ namespace PlinkoPinball.Rendering
 
             Camera camera = renderingData.cameraData.camera;
 
-            if (camera.cameraType == CameraType.SceneView &&
-                !settings.pixelationSettings.enabledInSceneView)
+            if (camera.cameraType == CameraType.SceneView && !settings.pixelationSettings.enabledInSceneView)
             {
                 return;
             }
@@ -82,17 +79,14 @@ namespace PlinkoPinball.Rendering
                 this.settings = settings;
             }
 
-            public override void RecordRenderGraph(
-                RenderGraph renderGraph,
-                ContextContainer frameData)
+            public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
             {
                 if (material == null || settings == null)
                 {
                     return;
                 }
 
-                UniversalResourceData resourceData =
-                    frameData.Get<UniversalResourceData>();
+                UniversalResourceData resourceData = frameData.Get<UniversalResourceData>();
 
                 TextureHandle source = resourceData.activeColorTexture;
 
@@ -105,18 +99,14 @@ namespace PlinkoPinball.Rendering
                 destinationDesc.name = "_PlinkoPixelationColor";
                 destinationDesc.clearBuffer = false;
 
-                TextureHandle destination =
-                    renderGraph.CreateTexture(destinationDesc);
+                TextureHandle destination = renderGraph.CreateTexture(destinationDesc);
 
                 material.SetFloat(PixelSizeId, Mathf.Max(1, settings.pixelSize));
                 material.SetFloat(ColorStepsId, settings.colorSteps);
 
-                RenderGraphUtils.BlitMaterialParameters blitParameters =
-                    new(source, destination, material, 0);
+                RenderGraphUtils.BlitMaterialParameters blitParameters = new(source, destination, material, 0);
 
-                renderGraph.AddBlitPass(
-                    blitParameters,
-                    "PlinkoPinball Pixelation");
+                renderGraph.AddBlitPass(blitParameters, "PlinkoPinball Pixelation");
 
                 resourceData.cameraColor = destination;
             }

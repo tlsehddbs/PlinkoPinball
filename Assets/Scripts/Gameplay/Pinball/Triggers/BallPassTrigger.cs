@@ -38,14 +38,18 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
         {
             var c = GetComponent<Collider>();
             if (c != null)
+            {
                 c.isTrigger = true;
+            }
         }
 
         private void Awake()
         {
             var c = GetComponent<Collider>();
             if (c != null && !c.isTrigger)
+            {
                 c.isTrigger = true;
+            }
 
             _localReactions = GetComponents<ITableEventReaction>();
         }
@@ -53,14 +57,20 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
         private void OnTriggerEnter(Collider other)
         {
             if (cooldownSeconds > 0f && Time.time < _nextAllowedTime)
+            {
                 return;
+            }
 
             var ballRb = other.attachedRigidbody;
             if (ballRb == null)
+            {
                 return;
+            }
 
             if (ballLayer >= 0 && ballRb.gameObject.layer != ballLayer)
+            {
                 return;
+            }
 
             _nextAllowedTime = Time.time + cooldownSeconds;
 
@@ -84,25 +94,33 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
         private void NotifyLocal(in TableEvent e)
         {
             if (_localReactions == null || _localReactions.Length == 0)
+            {
                 return;
+            }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             Debug.Log($"reaction count = {_localReactions.Length}");
 #endif
 
             for (int i = 0; i < _localReactions.Length; i++)
+            {
                 _localReactions[i].OnTableEvent(in e);
+            }
         }
 
 #if UNITY_EDITOR
         private void OnValidate()
         {
             if (autoGenerateEventId)
+            {
                 eventId = TableIdentityGenerator.CreateEventId("pass", transform);
+            }
 
             var c = GetComponent<Collider>();
             if (c != null && !c.isTrigger)
+            {
                 c.isTrigger = true;
+            }
         }
 #endif
     }

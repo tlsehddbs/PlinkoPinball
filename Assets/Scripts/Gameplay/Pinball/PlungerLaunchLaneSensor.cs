@@ -20,7 +20,10 @@ namespace PlinkoPinball.Gameplay
 
         private void OnTriggerEnter(Collider other)
         {
-            if (launcher == null) return;
+            if (launcher == null) 
+            {
+                return;
+            }
 
             if (other.attachedRigidbody != null)
             {
@@ -32,10 +35,15 @@ namespace PlinkoPinball.Gameplay
 
         private void OnTriggerExit(Collider other)
         {
-            if (launcher == null) return;
+            if (launcher == null) 
+            {
+                return;
+            }
 
             if (other.attachedRigidbody != null && launcher.HasBall(other.attachedRigidbody))
+            {
                 launcher.ClearBall();
+            }
         }
     }
 }

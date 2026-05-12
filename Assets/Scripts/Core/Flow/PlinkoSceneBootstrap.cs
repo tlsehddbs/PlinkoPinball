@@ -43,14 +43,11 @@ namespace PlinkoPinball.Core.Flow
                 return;
             }
 
-            boardRuntimeGenerator.GenerateBoard(
-                out PlinkoPinRuntime[] generatedPins,
-                out PlinkoSlotRuntime[] generatedSlots);
+            boardRuntimeGenerator.GenerateBoard(out PlinkoPinRuntime[] generatedPins, out PlinkoSlotRuntime[] generatedSlots);
 
             boardStateApplier.RegisterRuntimeObjects(generatedPins, generatedSlots);
 
-            PlinkoBoardAppliedSnapshot appliedSnapshot =
-                PlinkoAppliedSnapshotBuilder.Build(
+            PlinkoBoardAppliedSnapshot appliedSnapshot = PlinkoAppliedSnapshotBuilder.Build(
                     generatedPins,
                     generatedSlots,
                     context.RunSnapshot);
@@ -59,10 +56,7 @@ namespace PlinkoPinball.Core.Flow
             boardStateApplier.ApplySnapshot(appliedSnapshot);
             Debug.Log("[PlinkoBoardStateApplier] ApplySnapshot completed. Refreshing visuals.", this);
 
-            runController.BeginRun(
-                context.RoundIndex,
-                context.PinballScore,
-                appliedSnapshot.StartBalls);
+            runController.BeginRun(context.RoundIndex, context.PinballScore, appliedSnapshot.StartBalls);
         }
 
         private bool TryGetContext(out PlinkoPhaseHandoffContext context)

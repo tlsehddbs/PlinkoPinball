@@ -141,16 +141,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         /// <summary>
         /// Authoring 단계에서 보드 메타데이터와 핀/슬롯 데이터를 함께 갱신
         /// </summary>
-        public void ApplyAuthoringLayout(
-            int newRows,
-            int newColumns,
-            int newSlotCount,
-            bool newStaggerOddRows,
-            float newStaggerRatio,
-            float newPinAreaYOffset,
-            float newSlotAreaYOffset,
-            IReadOnlyList<PlinkoPinDefinition> newPins,
-            IReadOnlyList<PlinkoSlotDefinition> newSlots)
+        public void ApplyAuthoringLayout(int newRows, int newColumns, int newSlotCount, bool newStaggerOddRows, float newStaggerRatio, float newPinAreaYOffset, float newSlotAreaYOffset, IReadOnlyList<PlinkoPinDefinition> newPins, IReadOnlyList<PlinkoSlotDefinition> newSlots)
         {
             rows = Mathf.Max(1, newRows);
             columns = Mathf.Max(2, newColumns);

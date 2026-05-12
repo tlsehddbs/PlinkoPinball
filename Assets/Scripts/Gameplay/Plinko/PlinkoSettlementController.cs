@@ -39,9 +39,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            Debug.Log(
-                $"[PlinkoSettlement] Round={roundIndex}, PinballScore={pinballScore}, EarnedCurrency={result.EarnedCurrency}",
-                this);
+            Debug.Log($"[PlinkoSettlement] Round={roundIndex}, PinballScore={pinballScore}, EarnedCurrency={result.EarnedCurrency}", this);
 #endif
 
             _hasPendingReturn = true;

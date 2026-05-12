@@ -71,9 +71,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 else
                 {
-                    Debug.LogWarning(
-                        $"[{nameof(PlinkoBoardRuntimeGenerator)}] Pin prefab is missing {nameof(PlinkoPinRuntime)}.",
-                        this);
+                    Debug.LogWarning($"[{nameof(PlinkoBoardRuntimeGenerator)}] Pin prefab is missing {nameof(PlinkoPinRuntime)}.", this);
                 }
 #endif
             }
@@ -101,9 +99,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 else
                 {
-                    Debug.LogWarning(
-                        $"[{nameof(PlinkoBoardRuntimeGenerator)}] Slot prefab is missing {nameof(PlinkoSlotRuntime)}.",
-                        this);
+                    Debug.LogWarning($"[{nameof(PlinkoBoardRuntimeGenerator)}] Slot prefab is missing {nameof(PlinkoSlotRuntime)}.", this);
                 }
 #endif
             }
@@ -124,9 +120,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             if (boardDefinition == null || layoutRoot == null)
             {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-                Debug.LogWarning(
-                    $"[{nameof(PlinkoBoardRuntimeGenerator)}] Missing board definition or layout root.",
-                    this);
+                Debug.LogWarning($"[{nameof(PlinkoBoardRuntimeGenerator)}] Missing board definition or layout root.", this);
 #endif
                 return;
             }
@@ -168,11 +162,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                 float x = (i * boardDefinition.SlotSpacing) - slotCenterOffsetX;
                 string slotId = $"slot.{i:00}";
 
-                slotDefinitions.Add(new PlinkoSlotDefinition(
-                    slotId,
-                    i,
-                    new Vector2(x, slotY),
-                    5));
+                slotDefinitions.Add(new PlinkoSlotDefinition(slotId, i, new Vector2(x, slotY), 5));
             }
 
             boardDefinition.ApplyAuthoringLayout(
@@ -207,18 +197,14 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (!valid)
             {
-                Debug.LogWarning(
-                    $"[{nameof(PlinkoBoardRuntimeGenerator)}] Missing required references.",
-                    this);
+                Debug.LogWarning($"[{nameof(PlinkoBoardRuntimeGenerator)}] Missing required references.", this);
             }
 #endif
 
             if (valid && layoutRoot.BoardCenterAnchor == null)
             {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-                Debug.LogWarning(
-                    $"[{nameof(PlinkoBoardRuntimeGenerator)}] Layout root is missing BoardCenterAnchor.",
-                    this);
+                Debug.LogWarning($"[{nameof(PlinkoBoardRuntimeGenerator)}] Layout root is missing BoardCenterAnchor.", this);
 #endif
                 return false;
             }
