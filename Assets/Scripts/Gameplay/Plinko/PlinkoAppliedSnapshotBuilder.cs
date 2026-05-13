@@ -8,7 +8,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
     public static class PlinkoAppliedSnapshotBuilder
     {
         //TODO: 임시로 여기에 구현, 추후 별개 설정 패널을 만들어 통합 관리 예정
-        private const float BaseErrorPinRate = 0.5f;
+        private const float BaseErrorPinRate = 0.25f;
         private const float BaseErrorSlotRate = 0.25f;
 
 
