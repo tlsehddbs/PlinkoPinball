@@ -5,14 +5,14 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
     /// </summary>
     public enum PlinkoBonusTokenType
     {
-        RandomPinValueBonus,
+        RandomPinValueBonus,        // 사용하지 않을 수 있음 -> 업그레이드 시스템으로 이관 가능성 있음
         RandomPinMultiplier,
 
-        RandomSlotValueBonus,
+        RandomSlotValueBonus,       // 사용하지 않을 수 있음
         RandomSlotMultiplier,
 
-        GlobalPinMultiplier,
-        GlobalSlotMultiplier,
+        GlobalPinMultiplier,        // 사용하지 않을 수 있음
+        GlobalSlotMultiplier,       // 사용하지 않을 수 있음
 
         ErrorPinRateReduction,
         ErrorSlotRateReduction

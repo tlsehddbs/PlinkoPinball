@@ -9,7 +9,7 @@ namespace PlinkoPinball.Gameplay.Components.Reactions
     /// - Trigger(감지)와 분리되어 있으므로, 범퍼/슬링샷/핀 등 어디든 조합 가능.
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class HitImpulse : MonoBehaviour, ITableEventReaction
+    public sealed class PinballHitImpulse : MonoBehaviour, ITableEventReaction
     {
         [Header("Filter")]
         [SerializeField] private bool onlyOnHitType = true;

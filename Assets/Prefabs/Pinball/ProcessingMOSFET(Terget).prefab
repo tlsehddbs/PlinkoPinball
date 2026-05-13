@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7430023637041184352
+--- !u!1 &983638488178513972
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,50 +8,49 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2516781997313802911}
-  - component: {fileID: 6673098619961578843}
-  - component: {fileID: 1219943089112533886}
-  - component: {fileID: 4432025590332816959}
-  - component: {fileID: 1598793109583244760}
-  - component: {fileID: 8539648652224343645}
-  - component: {fileID: 5778423591011717520}
+  - component: {fileID: 6205858636942196210}
+  - component: {fileID: 7208797143792002947}
+  - component: {fileID: 6789872971745299046}
+  - component: {fileID: 7208405715760147315}
+  - component: {fileID: 701157587447778551}
+  - component: {fileID: 5545383885859610461}
   m_Layer: 0
-  m_Name: TestBumper
+  m_Name: ProcessingMOSFET(Terget)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2516781997313802911
+--- !u!4 &6205858636942196210
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7430023637041184352}
+  m_GameObject: {fileID: 983638488178513972}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.522, y: -0.443, z: 0.00000032875}
-  m_LocalScale: {x: 3.7577, y: 0.98083484, z: 3.7577}
+  m_LocalPosition: {x: 0.16392, y: 0.04613, z: -0.5}
+  m_LocalScale: {x: 0.5, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &6673098619961578843
+--- !u!33 &7208797143792002947
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7430023637041184352}
-  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &1219943089112533886
+  m_GameObject: {fileID: 983638488178513972}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &6789872971745299046
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7430023637041184352}
+  m_GameObject: {fileID: 983638488178513972}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -94,13 +93,13 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &4432025590332816959
+--- !u!65 &7208405715760147315
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7430023637041184352}
+  m_GameObject: {fileID: 983638488178513972}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -113,53 +112,51 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.0000001, y: 2, z: 1.0000002}
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
---- !u!114 &1598793109583244760
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &701157587447778551
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7430023637041184352}
+  m_GameObject: {fileID: 983638488178513972}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 97babfd8e2e37374a91739dce75c681f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Components.Triggers.BallHitTrigger
-  autoGenerateEventId: 1
-  eventId: hit.testbumper
-  baseValue: 3
-  tags: []
+  autoGenerateEventId: 0
+  eventId: hit.mosfet.processing
+  baseValue: 5
+  tags:
+  - score
+  - chipset
+  - memory
   sourceId: 
   eventSourceOverride: {fileID: 0}
-  ballLayer: 10
+  ballLayer: -1
   cooldownSeconds: 0.05
---- !u!114 &8539648652224343645
+--- !u!114 &5545383885859610461
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7430023637041184352}
+  m_GameObject: {fileID: 983638488178513972}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d48ca72080653794581526c3334dab33, type: 3}
+  m_Script: {fileID: 11500000, guid: 866da38f522db40a19998c5c16912cfa, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Components.Reactions.ImpulseOnHit
-  onlyOnHitType: 1
-  impulseStrength: 6
-  upBias: 0
---- !u!114 &5778423591011717520
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7430023637041184352}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48caf43df72cc5a498cceb8802659291, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Components.Reactions.LocalEventLoggerReaction
-  logEnabled: 1
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Components.Reactions.SwitchState
+  autoGenerateSwitchId: 1
+  switchId: processingmosfet-terget
+  groupId: 
+  initialOn: 0
+  requiredEventIdExact: 
+  requiredEventIdPrefix: hit.
+  requiredTag: memory
+  latchOnOnly: 1
+  cooldownSeconds: 0.12
+  useEventTypeFilter: 1
+  requiredEventType: 0

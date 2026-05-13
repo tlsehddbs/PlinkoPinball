@@ -11,7 +11,7 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
     /// - TableEventBus로 글로벌 Publish
     /// - 같은 오브젝트의 로컬 ITableEventReaction들에게 전달 (옵저버)
     /// </summary>
-    [RequireComponent(typeof(Collider))]
+    //[RequireComponent(typeof(Collider))]
     [DisallowMultipleComponent]
     public sealed class BallHitTrigger : MonoBehaviour
     {
@@ -21,8 +21,9 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
         [SerializeField] private int baseValue = 1;
         [SerializeField] private string[] tags;
 
-        // 모듈에 포함되어 있는 트리거의 경우 모듈의 source 위치를 파악하기 위해 사용함
-        [SerializeField] private Transform eventSourceOverride;
+        [Header("Identity")]
+        [SerializeField] private string sourceId = "";
+        [SerializeField] private Transform eventSourceOverride;   // 모듈에 포함되어 있는 트리거의 경우 모듈의 source 위치를 파악하기 위해 사용함
 
         [Header("Ball Filter")]
         [Tooltip("공 레이어. -1이면 레이어 필터를 사용하지 않음")]

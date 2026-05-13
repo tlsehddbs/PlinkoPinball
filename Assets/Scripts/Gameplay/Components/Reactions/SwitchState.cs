@@ -43,6 +43,11 @@ namespace PlinkoPinball.Gameplay.Components.Reactions
         [Min(0f)]
         [SerializeField] private float cooldownSeconds = 0.05f;
 
+        [Header("Event Type Filter")]
+        [SerializeField] private bool useEventTypeFilter = true;
+        [SerializeField] private TableEventType requiredEventType = TableEventType.Hit;
+
+
         /// <summary>
         /// 스위치 식별자.
         /// </summary>
@@ -84,7 +89,8 @@ namespace PlinkoPinball.Gameplay.Components.Reactions
             }
 
             // 현재 설계에서는 Hit 입력만 스위치에 반응시킨다
-            if (e.eventType != TableEventType.Hit)
+            // if (e.eventType != TableEventType.Hit)
+            if (useEventTypeFilter && e.eventType != requiredEventType)
             {
                 return;
             }
@@ -167,20 +173,9 @@ namespace PlinkoPinball.Gameplay.Components.Reactions
 
             if (!string.IsNullOrEmpty(requiredTag))
             {
-                if (e.tags == null || e.tags.Length == 0)
-                {
-                    return false;
-                }
-
-                for (int i = 0; i < e.tags.Length; i++)
-                {
-                    if (string.Equals(e.tags[i], requiredTag, StringComparison.Ordinal))
-                    {
-                        return true;
-                    }
-                }
-                return false;
+                return e.HasTag(requiredTag);
             }
+            
             return true;
         }
 

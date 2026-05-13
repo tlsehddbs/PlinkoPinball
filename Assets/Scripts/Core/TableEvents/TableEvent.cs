@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 
 namespace PlinkoPinball.Core.TableEvents
@@ -38,6 +40,6 @@ namespace PlinkoPinball.Core.TableEvents
             return false;
         }
 
-        public override string ToString() => $"{eventType} | {eventId} | base={baseValue} | src={(source != null ? source.name : "null")}";
+        public override string ToString() => $"{eventId} | source={source} | base={baseValue} | tags={tags.Length}";
     }
 }

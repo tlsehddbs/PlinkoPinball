@@ -11,7 +11,7 @@ namespace PlinkoPinball.Pinball
 
     
     [RequireComponent(typeof(Rigidbody))]
-    public sealed class KinematicPinballActuatorFlipper : MonoBehaviour
+    public sealed class PinballFlipper : MonoBehaviour
     {
         [Header("Actuator")]
         [SerializeField] private FlipperSide side;
@@ -31,7 +31,6 @@ namespace PlinkoPinball.Pinball
         private Quaternion baseLocalRotation;
         private float currentAngle;
         private float targetAngle;
-        private float angleVelocity;
         private bool isActivated;
 
         private void Awake()
