@@ -15,12 +15,12 @@ MonoBehaviour:
   useEventTypeFilter: 1
   requiredEventType: 0
   requiredEventId: 
-  requiredTag: 
+  requiredTag: compression
   chance: 1
   rewards:
-  - grantStartBalls: 0
-    startBallAmount: 0
-    grantToken: 0
-    tokenType: 0
-    tokenAmount: 0
+  - grantStartBalls: 1
+    startBallAmount: 100
+    grantToken: 1
+    tokenType: 1
+    tokenAmount: 10
     tokenStackCount: 0
