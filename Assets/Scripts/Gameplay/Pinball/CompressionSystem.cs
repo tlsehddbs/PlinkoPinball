@@ -94,12 +94,14 @@ namespace PlinkoPinball.Gameplay.Core.Compression
 
         private float CalculateGain(in TableEvent tableEvent)
         {
-            float gain = settings.BaseGainPerEvent * gainMultiplier;
+            // float gain = settings.BaseGainPerEvent * gainMultiplier;
 
-            if (settings.MaxGainPerEvent > 0f)
-            {
-                gain = Mathf.Min(gain, settings.MaxGainPerEvent);
-            }
+            // if (settings.MaxGainPerEvent > 0f)
+            // {
+            //     gain = Mathf.Min(gain, settings.MaxGainPerEvent);
+            // }
+
+            float gain = tableEvent.baseValue * gainMultiplier;
 
             return gain;
         }
