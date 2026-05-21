@@ -25,6 +25,8 @@ namespace PlinkoPinball.Gameplay.Core.Compression
         [Header("Debug")]
         [SerializeField] private bool logEvents = false;
 
+        private CompressionReserveViewer _viewer;
+
         private float _progress;
 
         public float Progress => _progress;
@@ -43,6 +45,11 @@ namespace PlinkoPinball.Gameplay.Core.Compression
         private void OnDisable()
         {
             TableEventBus.OnEvent -= OnTableEvent;
+        }
+
+        public void Start()
+        {
+            _viewer = FindAnyObjectByType<CompressionReserveViewer>();
         }
 
         private void OnTableEvent(TableEvent tableEvent)
@@ -120,10 +127,12 @@ namespace PlinkoPinball.Gameplay.Core.Compression
                     break;
                 }
 
+                //TODO: 추후 grantedBalls가 2를 초과하여 작동하는 것에 대한 대응을 추가할 것
                 _progress -= threshold;
                 grantedBalls++;
 
                 snapshotBuilder.AddStartBalls(1);
+                _viewer.SpawnBall();
             }
 
             ProgressChanged?.Invoke(_progress, threshold);
