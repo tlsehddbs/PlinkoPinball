@@ -2057,7 +2057,7 @@ GameObject:
   - component: {fileID: 1401254995}
   - component: {fileID: 1401254994}
   m_Layer: 5
-  m_Name: CompressedBallViewer
+  m_Name: CompressedBallViewPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2200,7 +2200,7 @@ GameObject:
   - component: {fileID: 1545810966}
   - component: {fileID: 1545810965}
   m_Layer: 5
-  m_Name: TableEventLogViewer
+  m_Name: TableEventLogViewPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
