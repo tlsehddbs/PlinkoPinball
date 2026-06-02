@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using PlinkoPinball.Gameplay.Components.Plinko;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using Unity.Mathematics;
 
 

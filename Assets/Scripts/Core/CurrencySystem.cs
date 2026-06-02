@@ -87,13 +87,11 @@ namespace PlinkoPinball.Core
         }
 
 #if UNITY_EDITOR
-
         [ContextMenu("Add 100 Currency")]
         private void DebugAddCurrency()
         {
             AddCurrency(100);
         }
-
 #endif
     }
 }

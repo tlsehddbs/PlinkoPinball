@@ -72,7 +72,7 @@ namespace PlinkoPinball.UI
             if (timeText == null) return;
 
             // 0.1초 단위로 갱신 (notifyIntervalSeconds=0.1 과 동일)
-            timeText.text = $"Time {remainingSeconds:0.0}s";
+            timeText.text = $"{remainingSeconds:0.0}";
         }
     }
 }

@@ -5,6 +5,7 @@ namespace PlinkoPinball.Core.TableEvents
         public const string HitCapacitor = "hit.capacitor";
         public const string HitCoil = "hit.coil";
         public const string HitFanSpinner = "hit.fan_spinner";
+        public const string HitSling = "hit.sling";
 
         public const string HitMosfetMemory = "hit.mosfet.memory";
         public const string HitMosfetProcessing = "hit.mosfet.processing";

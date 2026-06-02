@@ -80,7 +80,20 @@ namespace PlinkoPinball.Gameplay.Modules
 
         private void OnEnable()
         {
+            if (State != null)
+            {
+                State.StateChanged += OnModuleStateChanged;
+            }
+
             RefreshRewardStates();
+        }
+
+        private void OnDisable()
+        {
+            if (State != null)
+            {
+                State.StateChanged -= OnModuleStateChanged;
+            }
         }
 
         /// <summary>
@@ -226,6 +239,11 @@ namespace PlinkoPinball.Gameplay.Modules
         private static bool IsValidRule(SwitchGroupRule rule)
         {
             return rule != null && !string.IsNullOrWhiteSpace(rule.groupId);
+        }
+
+        private void OnModuleStateChanged(ModuleState moduleState)
+        {
+            RefreshRewardStates();
         }
 
 #if UNITY_EDITOR

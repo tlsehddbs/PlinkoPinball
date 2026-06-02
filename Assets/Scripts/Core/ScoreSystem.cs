@@ -67,6 +67,7 @@ namespace PlinkoPinball.Core
         public void ResetForRound()
         {
             CurrentScore = 0;
+            OnScoreChanged?.Invoke(CurrentScore);
         }
 
         /// <summary>

@@ -18,13 +18,12 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 
         private void Awake()
         {
-            _reactions = GetComponents<IPlinkoPinReaction>();
-            
             if (runtime == null)
             {
                 runtime = GetComponentInParent<PlinkoPinRuntime>();
             }
 
+            _reactions = CollectReactions();
 
             if (boardContext == null)
             {
@@ -39,7 +38,8 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                 return;
             }
 
-            if (other.gameObject.GetComponentInParent<PlinkoBallActor>() == null)
+            PlinkoBallActor ball = other.gameObject.GetComponentInParent<PlinkoBallActor>();
+            if (ball == null)
             {
                 return;
             }
@@ -54,15 +54,41 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 
             if (boardContext.RewardAccumulator != null)
             {
-                boardContext.RewardAccumulator.RegisterPinHit(baseReward, modifier);
+                boardContext.RewardAccumulator.RegisterPinHit(ball, baseReward, modifier);
             }
 
             Vector3 hitPoint = other.contactCount > 0 ? other.GetContact(0).point : transform.position;
 
             for (int i = 0; i < _reactions.Length; i++)
             {
-                _reactions[i].OnPinHit(other.rigidbody, hitPoint);
+                _reactions[i]?.OnPinHit(other.rigidbody, hitPoint);
             }
+        }
+
+        private IPlinkoPinReaction[] CollectReactions()
+        {
+            IPlinkoPinReaction[] reactions = GetComponents<IPlinkoPinReaction>();
+            if (reactions != null && reactions.Length > 0)
+            {
+                return reactions;
+            }
+
+            if (runtime != null)
+            {
+                reactions = runtime.GetComponents<IPlinkoPinReaction>();
+                if (reactions != null && reactions.Length > 0)
+                {
+                    return reactions;
+                }
+
+                reactions = runtime.GetComponentsInChildren<IPlinkoPinReaction>(true);
+                if (reactions != null && reactions.Length > 0)
+                {
+                    return reactions;
+                }
+            }
+
+            return System.Array.Empty<IPlinkoPinReaction>();
         }
     }
 }

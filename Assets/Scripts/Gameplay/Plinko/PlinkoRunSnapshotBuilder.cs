@@ -21,6 +21,9 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         public float GlobalSlotMultiplier => globalSlotMultiplier;
         public float ErrorPinRateReduction => errorPinRateReduction;
         public float ErrorSlotRateReduction => errorSlotRateReduction;
+        public int StartBalls => startBalls;
+
+        public event System.Action<int> StartBallsChanged;
 
         private readonly List<PlinkoBonusToken> _tokens = new List<PlinkoBonusToken>(32);
 
@@ -32,6 +35,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             }
             
             startBalls += amount;
+            StartBallsChanged?.Invoke(startBalls);
 
             Debug.Log($"[PlinkoRunSnapshotBuilder] AddStartBalls +{amount} => {startBalls}", this);
         }
@@ -105,7 +109,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         /// </summary>
         public PlinkoRunSnapshot BuildSnapshot()
         {
-            int seed = Random.Range(int.MinValue, int.MaxValue);
+            int seed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             StringBuilder sb = new StringBuilder();
@@ -149,6 +153,8 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             errorPinRateReduction = 0f;
             errorSlotRateReduction = 0f;
             _tokens.Clear();
+
+            StartBallsChanged?.Invoke(startBalls);
         }
     }
 }

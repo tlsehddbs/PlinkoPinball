@@ -38,6 +38,10 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
             _lastPlayTime = Time.time;
 
             AudioClip clip = clips[Random.Range(0, clips.Length)];
+            if (clip == null)
+            {
+                return;
+            }
 
             GameObject tempAudio = new GameObject("PinSfx");
             tempAudio.transform.position = hitPoint;
@@ -54,7 +58,7 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
 
             source.Play();
 
-            Destroy(tempAudio, clip.length + 0.1f);
+            Destroy(tempAudio, clip.length / Mathf.Max(0.01f, Mathf.Abs(source.pitch)) + 0.1f);
         }
     }
 }

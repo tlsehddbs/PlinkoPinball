@@ -22,6 +22,7 @@ namespace PlinkoPinball.Core.TableEvents
 
         public const string Lane = "lane";
         public const string Route = "route";
+        public const string Sling = "sling";
 
         public const string Drain = "drain";
         public const string Warning = "warning";

@@ -95,13 +95,13 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 
         private Vector3 GetRandomPointInArea()
         {
-            Vector3 localOffset = spawnAnchor.position + new Vector3(
+            Vector3 center = spawnAnchor != null ? spawnAnchor.position : transform.position;
+
+            return center + transform.TransformVector(new Vector3(
                 Random.Range(-areaSize.x * 0.5f, areaSize.x * 0.5f),
                 Random.Range(-areaSize.y * 0.5f, areaSize.y * 0.5f),
                 0f
-            );
-
-            return transform.TransformPoint(localOffset);
+            ));
         }
 
         private bool IsFarEnoughFromRecentSpawns(Vector3 candidate)

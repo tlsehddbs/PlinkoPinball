@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using PlinkoPinball.Core.TableEvents;
+using PlinkoPinball.Core.Flow;
 using PlinkoPinball.Gameplay.Core.Plinko;
 
 namespace PlinkoPinball.Gameplay.Core.Compression
@@ -8,7 +9,7 @@ namespace PlinkoPinball.Gameplay.Core.Compression
     /// <summary>
     /// Pinball 기물 Hit 성과를 Plinko Start Ball로 변환하는 Global System.
     /// </summary>
-    public sealed class CompressionSystem : MonoBehaviour
+    public sealed class CompressionSystem : MonoBehaviour, IRoundResettable
     {
         [Header("References")]
         [SerializeField] private CompressionSettings settings;
@@ -99,6 +100,11 @@ namespace PlinkoPinball.Gameplay.Core.Compression
             ProgressChanged?.Invoke(_progress, Threshold);
         }
 
+        public void ResetForRound()
+        {
+            ResetProgress();
+        }
+
         private float CalculateGain(in TableEvent tableEvent)
         {
             // float gain = settings.BaseGainPerEvent * gainMultiplier;
@@ -115,6 +121,7 @@ namespace PlinkoPinball.Gameplay.Core.Compression
 
         private void AddProgress(float amount, string reason)
         {
+            // TODO: Topbar
             _progress += amount;
 
             int grantedBalls = 0;
@@ -127,12 +134,12 @@ namespace PlinkoPinball.Gameplay.Core.Compression
                     break;
                 }
 
-                //TODO: 추후 grantedBalls가 2를 초과하여 작동하는 것에 대한 대응을 추가할 것
+                //TODO: grantedBalls가 2를 초과하여 작동하는 것에 대한 대응을 추가할 것
                 _progress -= threshold;
                 grantedBalls++;
 
                 snapshotBuilder.AddStartBalls(1);
-                _viewer.SpawnBall();
+                _viewer?.SpawnBall();
             }
 
             ProgressChanged?.Invoke(_progress, threshold);

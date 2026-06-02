@@ -60,7 +60,7 @@ namespace PlinkoPinball.InputRuntime
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            //_gameManager = GameManager.Instance;
+            _gameManager = GameManager.Instance;
             _controls = new PlatformControls();
 
             _onStart = _ => HandleStartRound();
@@ -76,12 +76,21 @@ namespace PlinkoPinball.InputRuntime
             _onRightFlipperPerformed = _ => HandleRightFlipperPressed();
             _onRightFlipperCanceled = _ => HandleRightFlipperReleased();
 
-            _onReturnToPinball = _ => { if (_gameManager.Phase == GamePhase.Plinko) _gameManager.CompletePlinkoAndReturnToPinball(); };
+            _onReturnToPinball = _ =>
+            {
+                if (_gameManager != null && _gameManager.Phase == GamePhase.Plinko)
+                {
+                    _gameManager.CompletePlinkoAndReturnToPinball();
+                }
+            };
         }
 
         private void Start()
         {
-            _gameManager = GameManager.Instance;
+            if (_gameManager == null)
+            {
+                _gameManager = GameManager.Instance;
+            }
         }
 
         private void OnEnable()
@@ -155,12 +164,12 @@ namespace PlinkoPinball.InputRuntime
                 case GamePhase.Pinball:
                     _controls.GamePlay.Enable();
                     _controls.Pinball.Enable();
-                    Debug.Log($"[InputRouter] 현재 Phase={_gameManager.Phase}");
+                    Debug.Log($"[InputRouter] 현재 Phase={phase}");
                     break;
 
                 case GamePhase.Plinko:
                     _controls.Plinko.Enable();
-                    Debug.Log($"[InputRouter] 현재 Phase={_gameManager.Phase}");
+                    Debug.Log($"[InputRouter] 현재 Phase={phase}");
                     break;
             }
 

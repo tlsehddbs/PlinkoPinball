@@ -290,6 +290,7 @@ GameObject:
   - component: {fileID: 7251549262482919977}
   - component: {fileID: 8317072646818840536}
   - component: {fileID: 4077357105657861996}
+  - component: {fileID: 427739178807594730}
   m_Layer: 0
   m_Name: Trigger
   m_TagString: Untagged
@@ -347,6 +348,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Core.Plinko.PlinkoSlotResolver
   runtime: {fileID: 1914821812980415766}
   boardContext: {fileID: 0}
+--- !u!114 &427739178807594730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5420142126924328115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eaa51cf129874852b42c06b556f06d06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Components.Plinko.PlinkoSlotSoundReaction
+  clips:
+  - {fileID: 8300000, guid: 99001d6f0f253fd40b0c768f86436b29, type: 3}
+  volume: 1
+  spatialBlend: 0
+  randomPitch: 1
+  pitchRange: {x: 0.95, y: 1.1}
+  cooldown: 0.02
 --- !u!1 &5466832360094174675
 GameObject:
   m_ObjectHideFlags: 0
@@ -448,8 +468,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Components.Plinko.PlinkoSlotRuntime
   slotId: 
   baseReward: 5
-  flatCurrencyBonus: 0
-  jackpotMultiplier: 1
+  stateKind: 0
+  valueBonus: 0
+  multiplier: 1
 --- !u!1 &7835548958008424147
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,8 +13,8 @@ namespace PlinkoPinball.Core.Flow
 
         [Header("Scene Names")]
         [SerializeField] private string mainMenuSceneName = "MainMenu";
-        [SerializeField] private string mainTableSceneName = "MainTable";
-        [SerializeField] private string plinkoSceneName = "PlinkoPhase";
+        [SerializeField] private string mainTableSceneName = "PinballScene";
+        [SerializeField] private string plinkoSceneName = "PlinkoScene";
 
         private void Awake()
         {

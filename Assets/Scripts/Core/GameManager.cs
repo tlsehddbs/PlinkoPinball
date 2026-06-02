@@ -26,6 +26,7 @@ namespace PlinkoPinball.Core
         [SerializeField] private InputRouter inputRouter;
 
         public GamePhase Phase { get; private set; } = GamePhase.None;
+        public float StartTimeSeconds => startTimeSeconds;
         public TimeManager Time { get; private set; }
         public GameSessionState SessionState => sessionState;
         public InputRouter InputRouter => inputRouter;
@@ -77,7 +78,7 @@ namespace PlinkoPinball.Core
             Phase = newPhase;
             OnPhaseChanged?.Invoke(previous, newPhase);
 
-            inputRouter.ApplyPhase(newPhase);
+            inputRouter?.ApplyPhase(newPhase);
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             Debug.Log($"[GameManager] Phase => {newPhase}", this);

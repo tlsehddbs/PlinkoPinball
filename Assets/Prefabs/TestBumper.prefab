@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 1598793109583244760}
   - component: {fileID: 8539648652224343645}
   - component: {fileID: 5778423591011717520}
+  - component: {fileID: 7550786159439246932}
   m_Layer: 0
   m_Name: TestBumper
   m_TagString: Untagged
@@ -163,3 +164,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Components.Reactions.LocalEventLoggerReaction
   logEnabled: 1
+--- !u!114 &7550786159439246932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7430023637041184352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eef1a87b56f348ec8163f01664be95f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Components.Reactions.PinballSoundReaction
+  useEventTypeFilter: 0
+  eventType: 0
+  requiredEventId: 
+  requiredTag: 
+  clips:
+  - {fileID: 8300000, guid: 1340ba1fa579f674ab71453241682a8a, type: 3}
+  volume: 1
+  playAtEventPosition: 1
+  spatialBlend: 0
+  randomPitch: 1
+  pitchRange: {x: 0.74, y: 1.17}
+  cooldownSeconds: 0.03

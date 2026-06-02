@@ -10,7 +10,7 @@ namespace PlinkoPinball.Gameplay.Core.Flow
     public sealed class PinballToPlinkoTransitionController : MonoBehaviour
     {
         [SerializeField] private PlinkoRunSnapshotBuilder plinkoSnapshotBuilder;
-        [SerializeField] private string plinkoSceneName = "PlinkoPhase";
+        [SerializeField] private string plinkoSceneName = "PlinkoScene";
 
         /// <summary>
         /// 플링코 씬으로 전환
@@ -37,20 +37,15 @@ namespace PlinkoPinball.Gameplay.Core.Flow
 
             PlinkoRunSnapshot snapshot = plinkoSnapshotBuilder.BuildSnapshot();
 
-            var context = new PlinkoPhaseHandoffContext(
-                roundIndex,
-                pinballScore,
-                snapshot);
+            var context = new PlinkoPhaseHandoffContext(roundIndex, pinballScore, snapshot);
 
             PhaseHandoffService.Instance.SetPlinkoContext(context);
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            Debug.Log(
-                $"[PinballToPlinkoTransitionController] Transitioning to {plinkoSceneName} | Round={roundIndex} | Score={pinballScore}",
-                this);
+            Debug.Log($"[PinballToPlinkoTransitionController] Transitioning to {plinkoSceneName} | Round={roundIndex} | Score={pinballScore}", this);
 #endif
 
-            SceneManager.LoadScene("PlinkoTestScene");
+            SceneManager.LoadScene(plinkoSceneName);
         }
     }
 }
