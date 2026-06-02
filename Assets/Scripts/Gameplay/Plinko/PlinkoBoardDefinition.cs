@@ -66,7 +66,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         [Header("Spacing")]
         [SerializeField, Min(0.01f)] private float horizontalSpacing = 1.0f;
         [SerializeField, Min(0.01f)] private float verticalSpacing = 1.2f;
-        [SerializeField, Min(0.01f)] private float slotSpacing = 1.2f;
+        [SerializeField, Min(0.01f)] private float slotSpacing = 1.3f;
 
         [Header("Elements")]
         [SerializeField] private List<PlinkoPinDefinition> pins = new List<PlinkoPinDefinition>();

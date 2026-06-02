@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f81ae70e4252410b9b307cb17de1a6f, type: 3}
   m_Name: CRT_Overlay_Profile
   m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Rendering.CRTOverlayProfile
-  overlayStrength: 0.55
-  tintColor: {r: 0.55, g: 0.9, b: 1, a: 1}
+  overlayStrength: 0.098
+  tintColor: {r: 0, g: 0, b: 0, a: 1}
   scanlineStrength: 0.18
   scanlineCount: 720
   vignetteStrength: 0.35

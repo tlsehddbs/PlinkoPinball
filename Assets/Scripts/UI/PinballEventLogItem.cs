@@ -4,7 +4,7 @@ using UnityEngine;
 namespace PlinkoPinball.UI
 {
     /// <summary>
-    /// Pinball Event Log의 단일 로그 라인 UI다.
+    /// Pinball 시스템 로그 한 줄을 표시하는 UI 아이템이다.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class PinballEventLogItem : MonoBehaviour
@@ -13,10 +13,10 @@ namespace PlinkoPinball.UI
 
         public void SetMessage(string message)
         {
-            if (messageText == null)
-                return;
-
-            messageText.text = message;
+            if (messageText != null)
+            {
+                messageText.text = $"<mspace=20>{message}</mspcae>";
+            }
         }
     }
 }
