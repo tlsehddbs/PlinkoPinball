@@ -1,5 +1,6 @@
 using UnityEngine;
 using PlinkoPinball.Gameplay.Core.Plinko;
+using PlinkoPinball.Gameplay.Upgrade;
 
 namespace PlinkoPinball.Gameplay.Components.Plinko
 {
@@ -11,6 +12,7 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
 
         [Header("References")]
         [SerializeField] private PlinkoPinRuntime runtime;
+        [SerializeField] private UpgradeEffectResolver upgradeEffectResolver;
 
         [Header("Text")]
         [SerializeField] private string normalText = "+1";
@@ -70,15 +72,16 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
         {
             bool hasBonus = data.ValueBonus > 0;
             bool hasMultiplier = !Mathf.Approximately(data.Multiplier, 1f);
+            int baseValue = GetBaseValue();
 
             if (hasBonus && hasMultiplier)
             {
-                return string.Format(bonusMultiplierFormat, data.ValueBonus, data.Multiplier);
+                return string.Format(bonusMultiplierFormat, baseValue + data.ValueBonus, data.Multiplier);
             }
 
             if (hasBonus)
             {
-                return string.Format(bonusFormat, data.ValueBonus);
+                return string.Format(bonusFormat, baseValue + data.ValueBonus);
             }
 
             if (hasMultiplier)
@@ -86,7 +89,29 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
                 return string.Format(multiplierFormat, data.Multiplier);
             }
 
-            return normalText;
+            return baseValue > 0 ? $"+{baseValue}" : normalText;
+        }
+
+        private int GetBaseValue()
+        {
+            ResolveUpgradeEffectResolver();
+            return upgradeEffectResolver != null ? upgradeEffectResolver.GetBasePinValue() : 1;
+        }
+
+        private void ResolveUpgradeEffectResolver()
+        {
+            if (upgradeEffectResolver != null)
+            {
+                return;
+            }
+
+            upgradeEffectResolver = UpgradeEffectResolver.Instance;
+            if (upgradeEffectResolver != null)
+            {
+                return;
+            }
+
+            upgradeEffectResolver = FindFirstObjectByType<UpgradeEffectResolver>();
         }
     }
 }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using PlinkoPinball.Gameplay.Components.Plinko;
+using PlinkoPinball.Gameplay.Upgrade;
 
 namespace PlinkoPinball.Gameplay.Core.Plinko
 {
@@ -12,6 +13,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         [SerializeField, Min(0)] private int baseReward = 1;
         [SerializeField] private PlinkoPinRuntime runtime;
         [SerializeField] private PlinkoBoardContext boardContext;
+        [SerializeField] private UpgradeEffectResolver upgradeEffectResolver;
 
         private IPlinkoPinReaction[] _reactions;
 
@@ -29,6 +31,8 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             {
                 boardContext = FindAnyObjectByType<PlinkoBoardContext>();
             }
+
+            ResolveUpgradeEffectResolver();
         }
 
         private void OnCollisionEnter(Collision other)
@@ -45,16 +49,17 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             }
 
             PlinkoPinModifierData modifier = runtime.ExportState();
+            int effectiveBaseReward = GetBaseReward();
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            int previewReward = PlinkoRewardCalculator.CalculatePinHitReward(baseReward, modifier);
+            int previewReward = PlinkoRewardCalculator.CalculatePinHitReward(effectiveBaseReward, modifier);
             
-            Debug.Log($"[PlinkoPinResolver] Pin={runtime.PinId}, state={modifier.StateKind}, base={baseReward}, valueBonus={modifier.ValueBonus}, multiplier={modifier.Multiplier}, reward={previewReward}", this);
+            Debug.Log($"[PlinkoPinResolver] Pin={runtime.PinId}, state={modifier.StateKind}, base={effectiveBaseReward}, valueBonus={modifier.ValueBonus}, multiplier={modifier.Multiplier}, reward={previewReward}", this);
 #endif
 
             if (boardContext.RewardAccumulator != null)
             {
-                boardContext.RewardAccumulator.RegisterPinHit(ball, baseReward, modifier);
+                boardContext.RewardAccumulator.RegisterPinHit(ball, effectiveBaseReward, modifier);
             }
 
             Vector3 hitPoint = other.contactCount > 0 ? other.GetContact(0).point : transform.position;
@@ -89,6 +94,28 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             }
 
             return System.Array.Empty<IPlinkoPinReaction>();
+        }
+
+        private int GetBaseReward()
+        {
+            ResolveUpgradeEffectResolver();
+            return upgradeEffectResolver != null ? upgradeEffectResolver.GetBasePinValue() : baseReward;
+        }
+
+        private void ResolveUpgradeEffectResolver()
+        {
+            if (upgradeEffectResolver != null)
+            {
+                return;
+            }
+
+            upgradeEffectResolver = UpgradeEffectResolver.Instance;
+            if (upgradeEffectResolver != null)
+            {
+                return;
+            }
+
+            upgradeEffectResolver = FindFirstObjectByType<UpgradeEffectResolver>();
         }
     }
 }

@@ -2175,8 +2175,9 @@ MonoBehaviour:
   boardRuntimeGenerator: {fileID: 195935847}
   boardStateApplier: {fileID: 195935841}
   runController: {fileID: 195935845}
+  upgradeEffectResolver: {fileID: 0}
   useDebugSnapshotInEditor: 1
-  debugSnapshotProvider: {fileID: 2091891821}
+  debugSnapshotProvider: {fileID: 0}
 --- !u!4 &1446250228
 Transform:
   m_ObjectHideFlags: 0
@@ -3308,66 +3309,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2085549608}
   m_CullTransparentMesh: 1
---- !u!1 &2091891819
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2091891822}
-  - component: {fileID: 2091891821}
-  m_Layer: 0
-  m_Name: Debug
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &2091891821
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2091891819}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3e21d6bc80ae434c9034f369603c0f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Core.Plinko.PlinkoDebugSnapshotProvider
-  debugRoundIndex: 1
-  debugPinballScore: 1000
-  debugStartBalls: 5
-  debugSeed: 12345
-  debugGlobalPinMultiplier: 1
-  debugGlobalSlotMultiplier: 1
-  debugErrorPinRateReduction: 0
-  debugErrorSlotRateReduction: 0
-  randomPinMultiplierStacks: 3
-  randomPinValueBonusStacks: 4
-  randomSlotMultiplierStacks: 1
-  randomSlotValueBonusStacks: 2
-  randomPinMultiplierAmount: 1
-  randomPinValueBonusAmount: 2
-  randomSlotMultiplierAmount: 1
-  randomSlotValueBonusAmount: 3
---- !u!4 &2091891822
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2091891819}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.85305, y: -0, z: 1.77051}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -3385,6 +3326,5 @@ SceneRoots:
   - {fileID: 1822485617}
   - {fileID: 1585551817}
   - {fileID: 190095664}
-  - {fileID: 2091891822}
   - {fileID: 1395882673}
   - {fileID: 1549634609}

@@ -1840,6 +1840,10 @@ MonoBehaviour:
   timeChangedNotifyIntervalSeconds: 0.1
   gameSceneManager: {fileID: 401924095}
   sessionState: {fileID: 1661326595}
+  currencySystem: {fileID: 1828511000}
+  phaseHandoffService: {fileID: 0}
+  upgradeDatabase: {fileID: 11400000, guid: 9f98671fd286f84429dbe1964819a90c, type: 2}
+  upgradeSystem: {fileID: 0}
   inputRouter: {fileID: 839249987}
 --- !u!4 &1610211458
 Transform:

@@ -3,6 +3,7 @@ using UnityEngine;
 using PlinkoPinball.Core.TableEvents;
 using PlinkoPinball.Core.Flow;
 using PlinkoPinball.Gameplay.Core.Plinko;
+using PlinkoPinball.Gameplay.Upgrade;
 
 namespace PlinkoPinball.Gameplay.Core.Compression
 {
@@ -14,6 +15,7 @@ namespace PlinkoPinball.Gameplay.Core.Compression
         [Header("References")]
         [SerializeField] private CompressionSettings settings;
         [SerializeField] private PlinkoRunSnapshotBuilder snapshotBuilder;
+        [SerializeField] private UpgradeEffectResolver upgradeEffectResolver;
 
         [Header("Event Filter")]
         [SerializeField] private string requiredTag = "compression";
@@ -31,15 +33,21 @@ namespace PlinkoPinball.Gameplay.Core.Compression
         private float _progress;
 
         public float Progress => _progress;
-        public float Threshold => settings != null ? settings.Threshold : 1f;
+        public float Threshold => GetCompressionThreshold();
         public float NormalizedProgress => Threshold > 0f ? Mathf.Clamp01(_progress / Threshold) : 0f;
         public float GainMultiplier => gainMultiplier;
 
         public event Action<float, float> ProgressChanged;
         public event Action<int> StartBallsGranted;
 
+        private void Awake()
+        {
+            ResolveUpgradeEffectResolver();
+        }
+
         private void OnEnable()
         {
+            ResolveUpgradeEffectResolver();
             TableEventBus.OnEvent += OnTableEvent;
         }
 
@@ -117,6 +125,28 @@ namespace PlinkoPinball.Gameplay.Core.Compression
             float gain = tableEvent.baseValue * gainMultiplier;
 
             return gain;
+        }
+
+        private float GetCompressionThreshold()
+        {
+            ResolveUpgradeEffectResolver();
+            return upgradeEffectResolver != null ? upgradeEffectResolver.GetCompressionThreshold() : settings != null ? settings.Threshold : 1f;
+        }
+
+        private void ResolveUpgradeEffectResolver()
+        {
+            if (upgradeEffectResolver != null)
+            {
+                return;
+            }
+
+            upgradeEffectResolver = UpgradeEffectResolver.Instance;
+            if (upgradeEffectResolver != null)
+            {
+                return;
+            }
+
+            upgradeEffectResolver = FindFirstObjectByType<UpgradeEffectResolver>();
         }
 
         private void AddProgress(float amount, string reason)

@@ -1,5 +1,6 @@
 using UnityEngine;
 using PlinkoPinball.Gameplay.Components.Plinko;
+using PlinkoPinball.Gameplay.Upgrade;
 
 namespace PlinkoPinball.Gameplay.Core.Plinko
 {
@@ -12,6 +13,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         [Header("References")]
         [SerializeField] private PlinkoSlotRuntime runtime;
         [SerializeField] private PlinkoBoardContext boardContext;
+        [SerializeField] private UpgradeEffectResolver upgradeEffectResolver;
 
         private Collider _triggerCollider;
         private IPlinkoSlotReaction[] _reactions;
@@ -41,6 +43,8 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             {
                 boardContext = FindAnyObjectByType<PlinkoBoardContext>();
             }
+
+            ResolveUpgradeEffectResolver();
         }
 
         private void OnTriggerEnter(Collider other)
@@ -63,16 +67,17 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         private void ResolveSlot(PlinkoBallActor ball)
         {
             PlinkoSlotModifierData modifier = runtime.ExportState();
-            int finalReward = PlinkoRewardCalculator.CalculateSlotReward(runtime.BaseReward, modifier);
+            int effectiveBaseReward = GetBaseReward();
+            int finalReward = PlinkoRewardCalculator.CalculateSlotReward(effectiveBaseReward, modifier);
             Vector3 hitPoint = ball != null ? ball.transform.position : transform.position;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            Debug.Log($"[PlinkoSlotResolver] Slot={runtime.SlotId}, state={modifier.StateKind}, base={runtime.BaseReward}, valueBonus={modifier.ValueBonus}, multiplier={modifier.Multiplier}, final={finalReward}", this);
+            Debug.Log($"[PlinkoSlotResolver] Slot={runtime.SlotId}, state={modifier.StateKind}, base={effectiveBaseReward}, valueBonus={modifier.ValueBonus}, multiplier={modifier.Multiplier}, final={finalReward}", this);
 #endif
 
             if (boardContext.RewardAccumulator != null)
             {
-                boardContext.RewardAccumulator.RegisterSlotReward(ball, runtime.BaseReward, modifier);
+                boardContext.RewardAccumulator.RegisterSlotReward(ball, effectiveBaseReward, modifier);
             }
 
             NotifyReactions(ball, hitPoint, in modifier, finalReward);
@@ -117,6 +122,28 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             }
 
             return System.Array.Empty<IPlinkoSlotReaction>();
+        }
+
+        private int GetBaseReward()
+        {
+            ResolveUpgradeEffectResolver();
+            return upgradeEffectResolver != null ? upgradeEffectResolver.GetBaseSlotValue() : runtime.BaseReward;
+        }
+
+        private void ResolveUpgradeEffectResolver()
+        {
+            if (upgradeEffectResolver != null)
+            {
+                return;
+            }
+
+            upgradeEffectResolver = UpgradeEffectResolver.Instance;
+            if (upgradeEffectResolver != null)
+            {
+                return;
+            }
+
+            upgradeEffectResolver = FindFirstObjectByType<UpgradeEffectResolver>();
         }
 
         [System.Diagnostics.Conditional("UNITY_EDITOR")]

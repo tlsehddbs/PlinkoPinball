@@ -2,6 +2,7 @@ using UnityEngine;
 using PlinkoPinball.Gameplay.Components.Plinko;
 using PlinkoPinball.Gameplay.Core.Plinko;
 using PlinkoPinball.Gameplay.Core.Flow;
+using PlinkoPinball.Gameplay.Upgrade;
 
 namespace PlinkoPinball.Core.Flow
 {
@@ -11,6 +12,7 @@ namespace PlinkoPinball.Core.Flow
         [SerializeField] private PlinkoBoardRuntimeGenerator boardRuntimeGenerator;
         [SerializeField] private PlinkoBoardStateApplier boardStateApplier;
         [SerializeField] private PlinkoRunController runController;
+        [SerializeField] private UpgradeEffectResolver upgradeEffectResolver;
 
         [Header("Debug")]
         [SerializeField] private bool useDebugSnapshotInEditor;
@@ -22,6 +24,8 @@ namespace PlinkoPinball.Core.Flow
             {
                 return;
             }
+
+            ResolveUpgradeEffectResolver();
 
             GameManager.Instance.SetPhase(GamePhase.Plinko);
             //GameManager.Instance.InputRouter?.BindPinballTargets(null);
@@ -50,7 +54,8 @@ namespace PlinkoPinball.Core.Flow
             PlinkoBoardAppliedSnapshot appliedSnapshot = PlinkoAppliedSnapshotBuilder.Build(
                     generatedPins,
                     generatedSlots,
-                    context.RunSnapshot);
+                    context.RunSnapshot,
+                    upgradeEffectResolver);
 
             boardStateApplier.ResetBoardState();
             boardStateApplier.ApplySnapshot(appliedSnapshot);
@@ -77,6 +82,22 @@ namespace PlinkoPinball.Core.Flow
 #endif
 
             return false;
+        }
+
+        private void ResolveUpgradeEffectResolver()
+        {
+            if (upgradeEffectResolver != null)
+            {
+                return;
+            }
+
+            upgradeEffectResolver = UpgradeEffectResolver.Instance;
+            if (upgradeEffectResolver != null)
+            {
+                return;
+            }
+
+            upgradeEffectResolver = FindFirstObjectByType<UpgradeEffectResolver>();
         }
     }
 }

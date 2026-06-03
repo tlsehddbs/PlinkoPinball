@@ -1,5 +1,6 @@
 using UnityEngine;
 using PlinkoPinball.Core;
+using PlinkoPinball.Gameplay.Core.Flow;
 using PlinkoPinball.UI.Presenters;
 
 namespace PlinkoPinball.Gameplay.Core.Plinko
@@ -24,6 +25,8 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             Debug.Log($"[PlinkoSettlement] Round={roundIndex}, PinballScore={pinballScore}, EarnedCurrency={result.EarnedCurrency}", this);
 #endif
+
+            GameSessionState.Instance?.RecordPlinkoRunResult(roundIndex, pinballScore, in result);
 
         }
 

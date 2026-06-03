@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using PlinkoPinball.Gameplay.Components.Plinko;
+using PlinkoPinball.Gameplay.Upgrade;
 
 namespace PlinkoPinball.UI.Presenters
 {
@@ -14,6 +15,7 @@ namespace PlinkoPinball.UI.Presenters
         [SerializeField] private TMP_Text rewardText;
         [SerializeField] private TMP_Text multiplierText;
         [SerializeField] private GameObject jackpotMarker;
+        [SerializeField] private UpgradeEffectResolver upgradeEffectResolver;
 
         /// <summary>
         /// 현재 슬롯 표시를 갱신
@@ -27,7 +29,7 @@ namespace PlinkoPinball.UI.Presenters
 
             var state = slotRuntime.ExportState();
 
-            int displayedReward = slotRuntime.BaseReward + state.ValueBonus;
+            int displayedReward = GetBaseReward() + state.ValueBonus;
             float displayedMultiplier = state.Multiplier;
 
             if (rewardText != null)
@@ -44,6 +46,28 @@ namespace PlinkoPinball.UI.Presenters
             {
                 jackpotMarker.SetActive(displayedMultiplier > 1f || state.ValueBonus > 0);
             }
+        }
+
+        private int GetBaseReward()
+        {
+            ResolveUpgradeEffectResolver();
+            return upgradeEffectResolver != null ? upgradeEffectResolver.GetBaseSlotValue() : slotRuntime.BaseReward;
+        }
+
+        private void ResolveUpgradeEffectResolver()
+        {
+            if (upgradeEffectResolver != null)
+            {
+                return;
+            }
+
+            upgradeEffectResolver = UpgradeEffectResolver.Instance;
+            if (upgradeEffectResolver != null)
+            {
+                return;
+            }
+
+            upgradeEffectResolver = FindFirstObjectByType<UpgradeEffectResolver>();
         }
     }
 }

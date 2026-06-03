@@ -23,6 +23,8 @@ namespace PlinkoPinball.Gameplay.Upgrade.UI
 
         private void OnEnable()
         {
+            ResolveReferences();
+
             if (upgradeSystem != null)
             {
                 upgradeSystem.OnUpgradeStateChanged += BuildTree;
@@ -49,11 +51,14 @@ namespace PlinkoPinball.Gameplay.Upgrade.UI
 
         private void Start()
         {
+            ResolveReferences();
             BuildTree();
         }
 
         private void BuildTree()
         {
+            ResolveReferences();
+
             if (database == null ||
                 upgradeSystem == null ||
                 nodeRoot == null ||
@@ -224,6 +229,8 @@ namespace PlinkoPinball.Gameplay.Upgrade.UI
 
         private void RequestPurchase(UpgradeDefinition definition)
         {
+            ResolveReferences();
+
             if (upgradeSystem == null)
             {
                 return;
@@ -247,6 +254,23 @@ namespace PlinkoPinball.Gameplay.Upgrade.UI
             foreach (var node in spawnedNodes)
             {
                 node.Refresh();
+            }
+        }
+
+        private void ResolveReferences()
+        {
+            if (UpgradeSystem.Instance != null)
+            {
+                upgradeSystem = UpgradeSystem.Instance;
+            }
+            else if (upgradeSystem == null)
+            {
+                upgradeSystem = FindFirstObjectByType<UpgradeSystem>();
+            }
+
+            if (database == null && upgradeSystem != null)
+            {
+                database = upgradeSystem.Database;
             }
         }
     }

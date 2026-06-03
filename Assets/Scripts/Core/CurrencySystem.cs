@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using PlinkoPinball.Gameplay.Core.Flow;
 
 namespace PlinkoPinball.Core
 {
@@ -17,6 +18,7 @@ namespace PlinkoPinball.Core
 
         [SerializeField, Min(0)]
         private long currentCurrency;
+        [SerializeField] private GameSessionState sessionState;
 
         /// <summary>
         /// 현재 보유 재화
@@ -33,6 +35,9 @@ namespace PlinkoPinball.Core
 
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            ResolveSessionState();
+            SyncSessionState();
         }
 
         /// <summary>
@@ -49,6 +54,7 @@ namespace PlinkoPinball.Core
 
             Debug.Log($"[CurrencySystem] Add Currency amount={amount} total={currentCurrency}");
 
+            SyncSessionState();
             OnCurrencyChanged?.Invoke(currentCurrency);
         }
 
@@ -73,6 +79,7 @@ namespace PlinkoPinball.Core
 
             Debug.Log($"[CurrencySystem] Spend Currency amount={amount} remain={currentCurrency}");
 
+            SyncSessionState();
             OnCurrencyChanged?.Invoke(currentCurrency);
 
             return true;
@@ -84,6 +91,33 @@ namespace PlinkoPinball.Core
         public bool CanAfford(long amount)
         {
             return currentCurrency >= amount;
+        }
+
+        public void SetCurrency(long amount)
+        {
+            currentCurrency = amount < 0 ? 0 : amount;
+            SyncSessionState();
+            OnCurrencyChanged?.Invoke(currentCurrency);
+        }
+
+        private void SyncSessionState()
+        {
+            ResolveSessionState();
+            sessionState?.SetPlayerCurrency(currentCurrency);
+        }
+
+        private void ResolveSessionState()
+        {
+            if (sessionState != null)
+            {
+                return;
+            }
+
+            sessionState = GameSessionState.Instance;
+            if (sessionState == null)
+            {
+                sessionState = FindFirstObjectByType<GameSessionState>();
+            }
         }
 
 #if UNITY_EDITOR

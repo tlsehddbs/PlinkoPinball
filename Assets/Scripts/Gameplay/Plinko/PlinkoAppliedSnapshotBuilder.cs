@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using PlinkoPinball.Gameplay.Components.Plinko;
+using PlinkoPinball.Gameplay.Upgrade;
 
 namespace PlinkoPinball.Gameplay.Core.Plinko
 {
@@ -14,12 +15,17 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 
         public static PlinkoBoardAppliedSnapshot Build(PlinkoPinRuntime[] pinRuntimes, PlinkoSlotRuntime[] slotRuntimes, in PlinkoRunSnapshot runSnapshot)
         {
+            return Build(pinRuntimes, slotRuntimes, in runSnapshot, null);
+        }
+
+        public static PlinkoBoardAppliedSnapshot Build(PlinkoPinRuntime[] pinRuntimes, PlinkoSlotRuntime[] slotRuntimes, in PlinkoRunSnapshot runSnapshot, UpgradeEffectResolver upgradeEffectResolver)
+        {
             var rng = new System.Random(runSnapshot.BoardSeed);
 
             List<PlinkoPinStateSnapshot> pinStates = CreateDefaultPinStates(pinRuntimes);
             List<PlinkoSlotStateSnapshot> slotStates = CreateDefaultSlotStates(slotRuntimes);
 
-            ApplyErrorStates(pinStates, slotStates, runSnapshot.ErrorPinRateReduction, runSnapshot.ErrorSlotRateReduction, rng);
+            ApplyErrorStates(pinStates, slotStates, runSnapshot.ErrorPinRateReduction, runSnapshot.ErrorSlotRateReduction, rng, upgradeEffectResolver);
             ApplyTokens(runSnapshot.Tokens, pinStates, slotStates, rng);
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -186,10 +192,12 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 
 
 
-        private static void ApplyErrorStates(List<PlinkoPinStateSnapshot> pinStates, List<PlinkoSlotStateSnapshot> slotStates, float errorPinRateReduction, float errorSlotRateReduction, System.Random rng)
+        private static void ApplyErrorStates(List<PlinkoPinStateSnapshot> pinStates, List<PlinkoSlotStateSnapshot> slotStates, float errorPinRateReduction, float errorSlotRateReduction, System.Random rng, UpgradeEffectResolver upgradeEffectResolver)
         {
-            float finalPinErrorRate = Mathf.Clamp01(BaseErrorPinRate - errorPinRateReduction);
-            float finalSlotErrorRate = Mathf.Clamp01(BaseErrorSlotRate - errorSlotRateReduction);
+            float basePinErrorRate = upgradeEffectResolver != null ? upgradeEffectResolver.GetErrorPinRate() : BaseErrorPinRate;
+            float baseSlotErrorRate = upgradeEffectResolver != null ? upgradeEffectResolver.GetErrorSlotRate() : BaseErrorSlotRate;
+            float finalPinErrorRate = Mathf.Clamp01(basePinErrorRate - errorPinRateReduction);
+            float finalSlotErrorRate = Mathf.Clamp01(baseSlotErrorRate - errorSlotRateReduction);
 
             ApplyRandomErrorPins(pinStates, finalPinErrorRate, rng);
             ApplyRandomErrorSlots(slotStates, finalSlotErrorRate, rng);
