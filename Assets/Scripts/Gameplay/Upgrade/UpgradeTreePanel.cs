@@ -4,22 +4,22 @@ using PlinkoPinball.Core;
 
 namespace PlinkoPinball.Gameplay.Upgrade.UI
 {
-    /// <summary>
-    /// UpgradeDefinition의 prerequisite 데이터를 기반으로 업그레이드 노드를 자동 생성하고 4방향 격자 형태로 배치
-    /// </summary>
     public sealed class UpgradeTreePanel : MonoBehaviour
     {
         [Header("References")]
         [SerializeField] private UpgradeDatabase database;
         [SerializeField] private UpgradeSystem upgradeSystem;
         [SerializeField] private RectTransform nodeRoot;
+        [SerializeField] private RectTransform lineRoot;
         [SerializeField] private UpgradeNodeButton nodePrefab;
+        [SerializeField] private UpgradeConnectionLine linePrefab;
 
         [Header("Grid Layout")]
         [SerializeField] private Vector2 gridSize = new Vector2(280f, 140f);
-        [SerializeField] private bool centerVerticalGroup = true;
 
         private readonly List<UpgradeNodeButton> spawnedNodes = new();
+        private readonly List<UpgradeConnectionLine> spawnedLines = new();
+        private readonly Dictionary<UpgradeDefinition, UpgradeNodeButton> nodeMap = new();
 
         private void OnEnable()
         {
@@ -54,68 +54,146 @@ namespace PlinkoPinball.Gameplay.Upgrade.UI
 
         private void BuildTree()
         {
-            if (database == null || upgradeSystem == null || nodeRoot == null || nodePrefab == null)
+            if (database == null ||
+                upgradeSystem == null ||
+                nodeRoot == null ||
+                lineRoot == null ||
+                nodePrefab == null ||
+                linePrefab == null)
             {
                 Debug.LogError("[UpgradeTreePanel] Missing reference.");
                 return;
             }
 
-            ClearNodes();
+            ClearTree();
 
-            Dictionary<UpgradeDefinition, int> depthMap = BuildDepthMap();
-            Dictionary<int, List<UpgradeDefinition>> depthGroups = BuildDepthGroups(depthMap);
-
-            foreach (var pair in depthGroups)
+            foreach (var upgrade in database.upgrades)
             {
-                int depth = pair.Key;
-
-                List<UpgradeDefinition> visibleUpgrades = new();
-
-                foreach (var upgrade in pair.Value)
+                if (!ShouldShowNode(upgrade))
                 {
-                    if (ShouldShowNode(upgrade))
-                    {
-                        visibleUpgrades.Add(upgrade);
-                    }
+                    continue;
                 }
 
-                for (int index = 0; index < visibleUpgrades.Count; index++)
+                SpawnNode(upgrade);
+            }
+
+            foreach (var upgrade in database.upgrades)
+            {
+                if (!ShouldShowNode(upgrade))
                 {
-                    UpgradeDefinition upgrade = visibleUpgrades[index];
-
-                    Vector2Int gridPosition = CalculateGridPosition(depth, index, visibleUpgrades.Count);
-
-                    SpawnNode(upgrade, gridPosition);
+                    continue;
                 }
+
+                SpawnLines(upgrade);
             }
         }
 
-        private void ClearNodes()
+        private void ClearTree()
         {
             foreach (Transform child in nodeRoot)
             {
                 Destroy(child.gameObject);
             }
 
+            foreach (Transform child in lineRoot)
+            {
+                Destroy(child.gameObject);
+            }
+
             spawnedNodes.Clear();
+            spawnedLines.Clear();
+            nodeMap.Clear();
         }
 
-        private void SpawnNode(UpgradeDefinition upgrade, Vector2Int gridPosition)
+        private void SpawnNode(UpgradeDefinition upgrade)
         {
             UpgradeNodeButton node = Instantiate(nodePrefab, nodeRoot);
 
             RectTransform rect = node.GetComponent<RectTransform>();
-
-            rect.anchoredPosition = new Vector2(gridPosition.x * gridSize.x, gridPosition.y * gridSize.y);
+            rect.anchoredPosition = GridToAnchoredPosition(upgrade.gridPosition);
 
             node.Initialize(upgrade, upgradeSystem, RequestPurchase);
+
             spawnedNodes.Add(node);
+            nodeMap.Add(upgrade, node);
         }
 
-        /// <summary>
-        /// 선행 업그레이드가 없으면 항상 표시
-        /// 선행 업그레이드가 있으면 모든 prerequisite이 최소 1레벨 이상이어야 표시함.
-        /// </summary>
+        private void SpawnLines(UpgradeDefinition upgrade)
+        {
+            if (upgrade == null || upgrade.prerequisites == null)
+            {
+                return;
+            }
+
+            if (!nodeMap.TryGetValue(upgrade, out UpgradeNodeButton childNode))
+            {
+                return;
+            }
+
+            Vector2 childPosition = childNode.GetComponent<RectTransform>().anchoredPosition;
+
+            foreach (var prerequisite in upgrade.prerequisites)
+            {
+                if (prerequisite == null)
+                {
+                    continue;
+                }
+
+                if (!nodeMap.TryGetValue(prerequisite, out UpgradeNodeButton parentNode))
+                {
+                    continue;
+                }
+
+                Vector2 parentPosition = parentNode.GetComponent<RectTransform>().anchoredPosition;
+
+                SpawnOrthogonalLine(parentPosition, childPosition);
+            }
+        }
+
+        private void SpawnOrthogonalLine(Vector2 from, Vector2 to)
+        {
+            float midX = (from.x + to.x) * 0.5f;
+
+            Vector2 p0 = from;
+            Vector2 p1 = new Vector2(midX, from.y);
+            Vector2 p2 = new Vector2(midX, to.y);
+            Vector2 p3 = to;
+
+            SpawnLineSegment(p0, p1);
+            SpawnLineSegment(p1, p2);
+            SpawnLineSegment(p2, p3);
+        }
+
+        private void SpawnLineSegment(Vector2 from, Vector2 to)
+        {
+            if (Vector2.Distance(from, to) <= 0.01f)
+            {
+                return;
+            }
+
+            UpgradeConnectionLine line = Instantiate(linePrefab, lineRoot);
+            line.SetPoints(from, to);
+            spawnedLines.Add(line);
+        }
+
+        private Vector2 GridToAnchoredPosition(Vector2Int gridPosition)
+        {
+            return new Vector2(
+                gridPosition.x * gridSize.x,
+                gridPosition.y * gridSize.y
+            );
+        }
+
+        private bool IsPrerequisiteSatisfied(UpgradeDefinition child, UpgradeDefinition prerequisite)
+        {
+            if (child.requirePrerequisitesMaxLevel)
+            {
+                return upgradeSystem.IsMaxLevel(prerequisite);
+            }
+
+            return upgradeSystem.GetLevel(prerequisite) > 0;
+        }
+
         private bool ShouldShowNode(UpgradeDefinition definition)
         {
             if (definition == null)
@@ -135,134 +213,13 @@ namespace PlinkoPinball.Gameplay.Upgrade.UI
                     continue;
                 }
 
-                if (upgradeSystem.GetLevel(prerequisite) <= 0)
+                if (!IsPrerequisiteSatisfied(definition, prerequisite))
                 {
                     return false;
                 }
             }
 
             return true;
-        }
-
-        /// <summary>
-        /// depth는 좌우 방향, index는 상하 방향으로 변환
-        /// 따라서 노드 위치는 항상 4방향 격자 위에 놓임.
-        /// </summary>
-        private Vector2Int CalculateGridPosition(int depth, int index, int groupCount)
-        {
-            int x = depth;
-            int y;
-
-            if (!centerVerticalGroup)
-            {
-                y = -index;
-            }
-            else
-            {
-                int offset = groupCount - 1;
-                y = offset - index * 2;
-            }
-
-            return new Vector2Int(x, y);
-        }
-
-        /// <summary>
-        /// DAG Depth Layout.
-        /// prerequisite 그래프를 DFS로 순회하여 각 업그레이드의 depth를 계산한다.
-        /// prerequisite이 없는 노드는 depth 0이다.
-        /// prerequisite이 있는 노드는 가장 깊은 prerequisite depth + 1이 된다.
-        /// </summary>
-        private Dictionary<UpgradeDefinition, int> BuildDepthMap()
-        {
-            Dictionary<UpgradeDefinition, int> result = new();
-
-            foreach (var upgrade in database.upgrades)
-            {
-                if (upgrade == null)
-                {
-                    continue;
-                }
-
-                int depth = CalculateDepth(upgrade, result, new HashSet<UpgradeDefinition>());
-
-                result[upgrade] = depth;
-            }
-
-            return result;
-        }
-
-        private int CalculateDepth(UpgradeDefinition upgrade, Dictionary<UpgradeDefinition, int> cache, HashSet<UpgradeDefinition> visiting)
-        {
-            if (upgrade == null)
-            {
-                return 0;
-            }
-
-            if (cache.TryGetValue(upgrade, out int cachedDepth))
-            {
-                return cachedDepth;
-            }
-
-            if (visiting.Contains(upgrade))
-            {
-                Debug.LogError($"[UpgradeTreePanel] Circular prerequisite detected: {upgrade.name}");
-                return 0;
-            }
-
-            visiting.Add(upgrade);
-
-            int maxPrerequisiteDepth = -1;
-
-            if (upgrade.prerequisites != null)
-            {
-                foreach (var prerequisite in upgrade.prerequisites)
-                {
-                    if (prerequisite == null)
-                    {
-                        continue;
-                    }
-
-                    int prerequisiteDepth = CalculateDepth(prerequisite, cache, visiting);
-
-                    if (prerequisiteDepth > maxPrerequisiteDepth)
-                    {
-                        maxPrerequisiteDepth = prerequisiteDepth;
-                    }
-                }
-            }
-
-            visiting.Remove(upgrade);
-
-            int depth = maxPrerequisiteDepth + 1;
-            cache[upgrade] = depth;
-
-            return depth;
-        }
-
-        private Dictionary<int, List<UpgradeDefinition>> BuildDepthGroups(Dictionary<UpgradeDefinition, int> depthMap)
-        {
-            Dictionary<int, List<UpgradeDefinition>> result = new();
-
-            foreach (var pair in depthMap)
-            {
-                UpgradeDefinition upgrade = pair.Key;
-                int depth = pair.Value;
-
-                if (!result.TryGetValue(depth, out List<UpgradeDefinition> group))
-                {
-                    group = new List<UpgradeDefinition>();
-                    result.Add(depth, group);
-                }
-
-                group.Add(upgrade);
-            }
-
-            foreach (var pair in result)
-            {
-                pair.Value.Sort((a, b) => string.CompareOrdinal(a.upgradeId, b.upgradeId));
-            }
-
-            return result;
         }
 
         private void RequestPurchase(UpgradeDefinition definition)

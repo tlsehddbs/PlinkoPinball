@@ -64,7 +64,18 @@ namespace PlinkoPinball.Gameplay.Upgrade.UI
 
             if (costText != null)
             {
-                costText.text = maxed ? "MAX" : $"{cost:N0}";
+                if (maxed)
+                {
+                    costText.text = "MAX";
+                }
+                else if (cost <= 0)
+                {
+                    costText.text = "FREE";
+                }
+                else
+                {
+                    costText.text = $"{cost:N0}";
+                }
             }
 
             SetInteractable(unlocked && affordable && !maxed);

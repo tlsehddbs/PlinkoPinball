@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52090fe42095f4f73b6851b2d96beed9, type: 3}
+  m_Name: analog_mainframe_sync
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Upgrade.UpgradeDefinition
+  upgradeId: analog_mainframe_sync
+  displayName: Analog Mainframe Sync
+  description: true
+  category: 
+  flavorText: 
+  requirePrerequisitesMaxLevel: 0
+  isMajorNode: 0
+  baseCost: 720
+  costMultiplier: 1.7
+  maxLevel: 2
+  prerequisites:
+  - {fileID: 11400000, guid: 8614483e665dad74ebd9d01d0b82c7dd, type: 2}
+  - {fileID: 11400000, guid: ada0a3a86cf79834fbac2f54777c5a9f, type: 2}
+  - {fileID: 11400000, guid: 00475a6f97dc5fb479c0bd3dd0c47c6e, type: 2}
+  gridPosition: {x: 5, y: 5}
+  upgradeType: 0
+  valuePerLevel: 1

@@ -10,14 +10,26 @@ namespace PlinkoPinball.Gameplay.Upgrade
         public string displayName;
         [TextArea] public string description;
 
-        [Header("Tree")]
-        public UpgradeDefinition[] prerequisites;
-        public Vector2 treePosition;
+
+        [Header("Presentation")]
+        public string category;
+        public string flavorText;
+
+        [Header("Unlock")]
+        public bool requirePrerequisitesMaxLevel;
+
+        [Header("Balance")]
+        public bool isMajorNode;
 
         [Header("Cost")]
         public int baseCost = 10;
         public float costMultiplier = 1.35f;
         public int maxLevel = 5;
+
+
+        [Header("Tree")]
+        public UpgradeDefinition[] prerequisites;
+        public Vector2Int gridPosition;
 
         [Header("Effect")]
         public UpgradeType upgradeType;

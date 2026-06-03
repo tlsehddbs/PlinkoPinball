@@ -81,37 +81,39 @@ namespace PlinkoPinball.Gameplay.Upgrade
 
             if (!IsUnlocked(definition))
             {
+                Debug.LogWarning($"[UpgradeSystem] Locked upgrade: {definition.upgradeId}");
                 return false;
             }
 
             if (IsMaxLevel(definition))
             {
+                Debug.LogWarning($"[UpgradeSystem] Already max level: {definition.upgradeId}");
                 return false;
             }
 
             int currentLevel = GetLevel(definition);
             int cost = definition.GetCost(currentLevel);
 
-            CurrencySystem currencySystem = CurrencySystem.Instance;
-
-            if (currencySystem == null)
+            if (cost > 0)
             {
-                return false;
-            }
+                if (CurrencySystem.Instance == null)
+                {
+                    Debug.LogError("[UpgradeSystem] CurrencySystem.Instance is null.");
+                    return false;
+                }
 
-            if (!currencySystem.CanAfford(cost))
-            {
-                return false;
-            }
+                if (!CurrencySystem.Instance.SpendCurrency(cost))
+                {
+                    Debug.LogWarning($"[UpgradeSystem] Not enough currency. upgrade={definition.upgradeId}, cost={cost}");
 
-            if (!currencySystem.SpendCurrency(cost))
-            {
-                return false;
+                    return false;
+                }
             }
 
             levels[definition.upgradeId] = currentLevel + 1;
 
-            Debug.Log($"[PermanentUpgrade] Purchased {definition.displayName} level={currentLevel + 1}");
+            Debug.Log(
+                $"[UpgradeSystem] Purchased upgrade={definition.upgradeId}, level={currentLevel + 1}/{definition.maxLevel}, cost={cost}");
 
             OnUpgradeStateChanged?.Invoke();
 
@@ -134,7 +136,8 @@ namespace PlinkoPinball.Gameplay.Upgrade
                     continue;
                 }
 
-                total += upgrade.GetTotalValue(GetLevel(upgrade));
+                int level = GetLevel(upgrade);
+                total += upgrade.GetTotalValue(level);
             }
 
             return total;

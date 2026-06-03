@@ -48,6 +48,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             Quaternion rotation = useSpawnerRotation ? transform.rotation : Quaternion.identity;
 
             PlinkoBallActor actor = Instantiate(ballPrefab, position, rotation);
+            actor.GetComponent<Rigidbody>().AddForce(Vector3.down * 3, ForceMode.Impulse);
             actor.Initialize(runController);
 
             RegisterSpawnPosition(position);
