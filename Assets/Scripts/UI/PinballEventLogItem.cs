@@ -15,7 +15,7 @@ namespace PlinkoPinball.UI
         {
             if (messageText != null)
             {
-                messageText.text = $"<mspace=20>{message}</mspcae>";
+                messageText.text = $"<mspace=20>{message}";
             }
         }
     }

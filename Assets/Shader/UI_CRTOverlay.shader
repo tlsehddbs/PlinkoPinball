@@ -2,20 +2,20 @@ Shader "PlinkoPinball/UI/CRT Overlay"
 {
     Properties
     {
-        _TintColor ("Tint Color", Color) = (0.55, 0.9, 1.0, 1.0)
+        _TintColor ("Tint Color", Color) = (0, 0, 0, 1.0)
 
-        _OverlayStrength ("Overlay Strength", Range(0, 1)) = 0.55
+        _OverlayStrength ("Overlay Strength", Range(0, 1)) = 0.3
 
-        _ScanlineStrength ("Scanline Strength", Range(0, 1)) = 0.18
-        _ScanlineCount ("Scanline Count", Range(100, 1600)) = 720
+        _ScanlineStrength ("Scanline Strength", Range(0, 1)) = 0.45
+        _ScanlineCount ("Scanline Count", Range(100, 1600)) = 300
 
-        _VignetteStrength ("Vignette Strength", Range(0, 1)) = 0.35
+        _VignetteStrength ("Vignette Strength", Range(0, 1)) = 0.3
         _CornerDarkness ("Corner Darkness", Range(0, 2)) = 0.8
 
-        _NoiseStrength ("Noise Strength", Range(0, 1)) = 0.035
+        _NoiseStrength ("Noise Strength", Range(0, 1)) = 0.6
         _NoiseSpeed ("Noise Speed", Range(0, 30)) = 12
 
-        _HorizontalJitter ("Horizontal Jitter", Range(0, 0.02)) = 0.002
+        _HorizontalJitter ("Horizontal Jitter", Range(0, 0.02)) = 0.01
         _JitterSpeed ("Jitter Speed", Range(0, 30)) = 8
 
         _GlassAlpha ("Glass Alpha", Range(0, 1)) = 0.08

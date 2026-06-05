@@ -981,10 +981,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8323641801824972979}
-  - component: {fileID: 6732235398137937929}
   - component: {fileID: 1557761862650800385}
   - component: {fileID: 1408984328019459959}
-  - component: {fileID: 6674391279401617053}
   m_Layer: 5
   m_Name: TopBar
   m_TagString: Untagged
@@ -1005,8 +1003,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6539594723395344488}
-  - {fileID: 9113222961495822129}
   - {fileID: 722554392622418661}
+  - {fileID: 9113222961495822129}
   - {fileID: 6175311204805090378}
   - {fileID: 3802636725397215020}
   m_Father: {fileID: 0}
@@ -1016,32 +1014,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -10}
   m_SizeDelta: {x: 0, y: 72}
   m_Pivot: {x: 0.5, y: 1}
---- !u!114 &6732235398137937929
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3955577833940045823}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.HorizontalLayoutGroup
-  m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
-  m_ChildAlignment: 4
-  m_Spacing: 8
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 1
-  m_ChildControlHeight: 1
-  m_ChildScaleWidth: 0
-  m_ChildScaleHeight: 0
-  m_ReverseArrangement: 0
 --- !u!114 &1557761862650800385
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1054,6 +1026,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afae0485e5af24eea939e8d3905d4fc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.UI.TopBarView
+  asciiBarLength: 16
+  filledChar: 35
+  emptyChar: 45
+  powerWarningThreshold: 0.25
+  powerCriticalThreshold: 0.1
+  powerNormalColor: {r: 1, g: 1, b: 1, a: 1}
+  powerWarningColor: {r: 1, g: 0.72, b: 0.25, a: 1}
+  powerCriticalColor: {r: 1, g: 0.25, b: 0.25, a: 1}
   powerRoot: {fileID: 1876312092278846985}
   powerLabelText: {fileID: 5201903388383945396}
   powerValueText: {fileID: 5420707165838370735}
@@ -1096,34 +1076,6 @@ MonoBehaviour:
   compressionThreshold: 10
   startBallCount: 12
   credits: 12480
---- !u!114 &6674391279401617053
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3955577833940045823}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5c69cfed73e4fbdaa269004ea87443a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.UI.OptionsMenuController
-  targetCanvas: {fileID: 0}
-  root: {fileID: 0}
-  masterVolumeSlider: {fileID: 0}
-  masterVolumeValueText: {fileID: 0}
-  fullscreenToggle: {fileID: 0}
-  vSyncToggle: {fileID: 0}
-  targetFpsButton: {fileID: 0}
-  targetFpsValueText: {fileID: 0}
-  openButton: {fileID: 0}
-  closeButton: {fileID: 0}
-  resetButton: {fileID: 0}
-  buildDefaultUI: 1
-  buildDefaultOpenButton: 1
-  openWithEscape: 1
-  pauseGameWhileOpen: 1
-  startOpen: 0
 --- !u!1 &4201309612395411163
 GameObject:
   m_ObjectHideFlags: 0
