@@ -188,8 +188,8 @@ namespace PlinkoPinball.Core
         public void CompletePlinkoAndReturnToPinball()
         {
             sessionState?.AdvanceRound();
-            gameSceneManager?.LoadMainTable();
-            _roundEnded = false;
+            phaseHandoffService?.ClearPlinkoContext();
+            StartPinballRound();
         }
 
         private void HandleTimeOver()

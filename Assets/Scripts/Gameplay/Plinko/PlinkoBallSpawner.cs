@@ -32,6 +32,11 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         private readonly List<bool> _debugResults = new(); // true = success, false = rejected
         private Vector3 _debugFinalPosition;
         private bool _debugUsedFallback;
+
+        public void ConfigureSpawnAnchor(Transform anchor)
+        {
+            spawnAnchor = anchor;
+        }
         
 
         /// <summary>
@@ -135,6 +140,11 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         private void OnDrawGizmos()
         {
             if (!debugDrawSpawnPoints)
+            {
+                return;
+            }
+
+            if (spawnAnchor == null)
             {
                 return;
             }

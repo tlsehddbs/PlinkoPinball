@@ -17,7 +17,7 @@ MonoBehaviour:
   slotCount: 11
   staggerOddRows: 1
   staggerRatio: 0.5
-  pinAreaYOffset: -1
+  pinAreaYOffset: 0
   slotAreaYOffset: -1
   horizontalSpacing: 1
   verticalSpacing: 1.22

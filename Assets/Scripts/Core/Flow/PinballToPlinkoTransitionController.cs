@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using PlinkoPinball.Gameplay.Core.Plinko;
+using PlinkoPinball.Core;
 
 namespace PlinkoPinball.Gameplay.Core.Flow
 {
@@ -11,6 +12,7 @@ namespace PlinkoPinball.Gameplay.Core.Flow
     {
         [SerializeField] private PlinkoRunSnapshotBuilder plinkoSnapshotBuilder;
         [SerializeField] private string plinkoSceneName = "PlinkoScene";
+        [SerializeField] private bool loadSceneOnTransition;
 
         /// <summary>
         /// 플링코 씬으로 전환
@@ -42,10 +44,18 @@ namespace PlinkoPinball.Gameplay.Core.Flow
             PhaseHandoffService.Instance.SetPlinkoContext(context);
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            Debug.Log($"[PinballToPlinkoTransitionController] Transitioning to {plinkoSceneName} | Round={roundIndex} | Score={pinballScore}", this);
+            Debug.Log($"[PinballToPlinkoTransitionController] Transitioning to Plinko phase | Round={roundIndex} | Score={pinballScore}", this);
 #endif
 
-            SceneManager.LoadScene(plinkoSceneName);
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.SetPhase(GamePhase.Plinko);
+            }
+
+            if (loadSceneOnTransition)
+            {
+                SceneManager.LoadScene(plinkoSceneName);
+            }
         }
     }
 }

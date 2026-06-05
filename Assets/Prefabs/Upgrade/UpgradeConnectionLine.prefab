@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5485725190748015568}
   - component: {fileID: 1670208612705035001}
   m_Layer: 5
-  m_Name: TestUpgradeConnectionLine
+  m_Name: UpgradeConnectionLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

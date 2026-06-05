@@ -28,6 +28,13 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         [SerializeField] private GameObject pinPrefab;
         [SerializeField] private GameObject slotPrefab;
 
+        public void ConfigureRuntimeRoots(PlinkoBoardLayoutRoot layout, Transform pinsRoot, Transform slotsRoot)
+        {
+            layoutRoot = layout;
+            pinRoot = pinsRoot;
+            slotRoot = slotsRoot;
+        }
+
         /// <summary>
         /// 보드 정의를 기준으로 핀과 슬롯을 생성
         /// </summary>
