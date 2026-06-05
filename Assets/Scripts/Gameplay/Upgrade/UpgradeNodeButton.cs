@@ -1,11 +1,12 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using PlinkoPinball.Core;
 
 namespace PlinkoPinball.Gameplay.Upgrade.UI
 {
-    public sealed class UpgradeNodeButton : MonoBehaviour
+    public sealed class UpgradeNodeButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
     {
         [SerializeField] private Button button;
         [SerializeField] private TMP_Text titleText;
@@ -16,12 +17,21 @@ namespace PlinkoPinball.Gameplay.Upgrade.UI
         private UpgradeDefinition definition;
         private UpgradeSystem upgradeSystem;
         private System.Action<UpgradeDefinition> purchaseRequested;
+        private System.Action<UpgradeDefinition> infoRequested;
+        private System.Action<UpgradeDefinition> infoCleared;
 
-        public void Initialize(UpgradeDefinition definition, UpgradeSystem upgradeSystem, System.Action<UpgradeDefinition> purchaseRequested)
+        public void Initialize(
+            UpgradeDefinition definition,
+            UpgradeSystem upgradeSystem,
+            System.Action<UpgradeDefinition> purchaseRequested,
+            System.Action<UpgradeDefinition> infoRequested = null,
+            System.Action<UpgradeDefinition> infoCleared = null)
         {
             this.definition = definition;
             this.upgradeSystem = upgradeSystem;
             this.purchaseRequested = purchaseRequested;
+            this.infoRequested = infoRequested;
+            this.infoCleared = infoCleared;
 
             if (button != null)
             {
@@ -84,6 +94,26 @@ namespace PlinkoPinball.Gameplay.Upgrade.UI
         private void OnClicked()
         {
             purchaseRequested?.Invoke(definition);
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            infoRequested?.Invoke(definition);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            infoCleared?.Invoke(definition);
+        }
+
+        public void OnSelect(BaseEventData eventData)
+        {
+            infoRequested?.Invoke(definition);
+        }
+
+        public void OnDeselect(BaseEventData eventData)
+        {
+            infoCleared?.Invoke(definition);
         }
 
         private void SetInteractable(bool value)
