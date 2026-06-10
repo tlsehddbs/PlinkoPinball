@@ -12,6 +12,7 @@ namespace PlinkoPinball.UI.MainMenu
         private Color color = Color.white;
         private int hoverDepth;
         private bool selected;
+        private bool createdArrowText;
 
         public void Initialize(Color arrowColor, TMP_FontAsset fontAsset)
         {
@@ -65,6 +66,12 @@ namespace PlinkoPinball.UI.MainMenu
                 arrowObject.layer = 5;
                 arrowObject.transform.SetParent(transform, false);
                 arrowText = arrowObject.GetComponent<TMP_Text>();
+                createdArrowText = true;
+            }
+
+            if (!createdArrowText)
+            {
+                return;
             }
 
             RectTransform rect = arrowText.GetComponent<RectTransform>();
@@ -73,7 +80,6 @@ namespace PlinkoPinball.UI.MainMenu
             rect.pivot = new Vector2(0f, 0.5f);
             rect.anchoredPosition = new Vector2(38f, 0f);
             rect.sizeDelta = new Vector2(36f, 0f);
-
             arrowText.text = ">";
             arrowText.fontSize = 24f;
             arrowText.alignment = TextAlignmentOptions.MidlineLeft;
@@ -90,7 +96,10 @@ namespace PlinkoPinball.UI.MainMenu
         private void Refresh()
         {
             EnsureArrow();
-            arrowText.color = color;
+            if (createdArrowText)
+            {
+                arrowText.color = color;
+            }
             arrowText.gameObject.SetActive(selected || hoverDepth > 0);
         }
     }

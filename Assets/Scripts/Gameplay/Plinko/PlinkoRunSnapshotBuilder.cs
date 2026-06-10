@@ -27,6 +27,26 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 
         private readonly List<PlinkoBonusToken> _tokens = new List<PlinkoBonusToken>(32);
 
+        public static PlinkoRunSnapshotBuilder ResolveFor(Component owner)
+        {
+            if (owner != null)
+            {
+                Transform current = owner.transform;
+                while (current != null)
+                {
+                    PlinkoRunSnapshotBuilder builder = current.GetComponentInChildren<PlinkoRunSnapshotBuilder>(true);
+                    if (builder != null)
+                    {
+                        return builder;
+                    }
+
+                    current = current.parent;
+                }
+            }
+
+            return FindFirstObjectByType<PlinkoRunSnapshotBuilder>();
+        }
+
         public void AddStartBalls(int amount)
         {
             if (amount <= 0)

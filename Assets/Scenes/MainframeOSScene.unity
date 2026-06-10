@@ -169,21 +169,21 @@ MonoBehaviour:
   statusViewPrefab: {fileID: 3238732384295179727, guid: 3a7e4d80057504818bdc8f738055e3cb, type: 3}
   logViewPrefab: {fileID: 5463336030379361297, guid: bfff40ec7a6fb476faba67fd1cc89b17, type: 3}
   taskbarPrefab: {fileID: 910000001, guid: 7ab3df6308074393b6f7021c9bbff8d4, type: 3}
-  pinballRuntimePrefab: {fileID: 7333901243273992118, guid: 4c39f1cef493743f4b2d43a3e1493391, type: 3}
+  popupDialogPrefab: {fileID: 910000001, guid: 090b4da9b6764c78a56c36da29315572, type: 3}
   plinkoBoardRootPrefab: {fileID: 101591938093668014, guid: da5e5006de62540c6b8e05f2d9de05fb, type: 3}
   plinkoRuntimeSystemsPrefab: {fileID: 5790220704149448561, guid: 4d4f2130697d04cdca4460139cea821a, type: 3}
   pinballRenderTexture: {fileID: 8400000, guid: 9b8ad5cc2b192403f8b4e2ab1fec4581, type: 2}
   plinkoRenderTexture: {fileID: 8400000, guid: db466e00b90a246249b0c021ed2602e2, type: 2}
   theme: {fileID: 11400000, guid: eb031e452c7147178001657f387f53db, type: 2}
   font: {fileID: 11400000, guid: 576f66877fae04443a42d34cca817b31, type: 2}
-  accentColor: {r: 0.78, g: 0.78, b: 0.75, a: 1}
-  dimAccentColor: {r: 0.43, g: 0.44, b: 0.42, a: 0.78}
+  accentColor: {r: 0.05, g: 0.05, b: 0.05, a: 1}
+  dimAccentColor: {r: 0.24, g: 0.24, b: 0.24, a: 0.86}
   pinballIcon: {fileID: 0}
   plinkoIcon: {fileID: 0}
   upgradeIcon: {fileID: 0}
   statusIcon: {fileID: 0}
   logIcon: {fileID: 0}
-  showPinballOnStart: 0
+  showPinballOnStart: 1
   showStatusOnStart: 0
   showLogOnStart: 0
   memoryLimit: 8
@@ -217,7 +217,7 @@ Transform:
   m_GameObject: {fileID: 233292460}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.6155472, y: -1.77019, z: 0}
+  m_LocalPosition: {x: 0.71, y: -1.77019, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -245,7 +245,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: daa09c5694553471784b8c39eb034a33, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.57445145
+      value: -0.91
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: daa09c5694553471784b8c39eb034a33, type: 3}
       propertyPath: m_LocalPosition.y
@@ -289,7 +289,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 269949401136507318, guid: daa09c5694553471784b8c39eb034a33, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9848078
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 269949401136507318, guid: daa09c5694553471784b8c39eb034a33, type: 3}
       propertyPath: m_LocalRotation.y
@@ -297,11 +297,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 269949401136507318, guid: daa09c5694553471784b8c39eb034a33, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.17364825
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 269949401136507318, guid: daa09c5694553471784b8c39eb034a33, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -20
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: daa09c5694553471784b8c39eb034a33, type: 3}
       propertyPath: m_Name
@@ -312,6 +312,12 @@ PrefabInstance:
     - {fileID: 5081449223666889978, guid: daa09c5694553471784b8c39eb034a33, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: daa09c5694553471784b8c39eb034a33, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 266855861}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: daa09c5694553471784b8c39eb034a33, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 266855860}
     - targetCorrespondingSourceObject: {fileID: -6644561056568694084, guid: daa09c5694553471784b8c39eb034a33, type: 3}
       insertIndex: -1
       addedObject: {fileID: 266855857}
@@ -348,6 +354,58 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: daa09c5694553471784b8c39eb034a33, type: 3}
   m_PrefabInstance: {fileID: 266855855}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &266855859 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: daa09c5694553471784b8c39eb034a33, type: 3}
+  m_PrefabInstance: {fileID: 266855855}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &266855860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 266855859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6cdb9faba34efb45bb9159fd4646daa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Pinball.PinballFlipper
+  side: 1
+  localRotationAxis: {x: 0, y: 0, z: 1}
+  restAngle: -25
+  activatedAngle: 35
+  activationDuration: 0.035
+  returnDuration: 0.065
+  applyBallImpulseAssist: 1
+  impulseStrength: 22
+--- !u!54 &266855861
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 266855859}
+  serializedVersion: 5
+  m_Mass: 10
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 3
 --- !u!1 &727187477
 GameObject:
   m_ObjectHideFlags: 0
@@ -717,8 +775,8 @@ Transform:
   m_GameObject: {fileID: 1015054257}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.5735764, w: 0.8191521}
-  m_LocalPosition: {x: 0.006549835, y: -0.7091899, z: 0.101}
-  m_LocalScale: {x: 0.11250001, y: 0.9362999, z: 1}
+  m_LocalPosition: {x: -0.16, y: -0.71, z: 0.101}
+  m_LocalScale: {x: 0.11250001, y: 1.2542074, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1593548046}
@@ -829,8 +887,8 @@ Transform:
   m_GameObject: {fileID: 1130396823}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.5735764, w: 0.8191521}
-  m_LocalPosition: {x: -4.6554527, y: -0.7091899, z: 0.101}
-  m_LocalScale: {x: 0.11250001, y: 0.9362999, z: 1}
+  m_LocalPosition: {x: -4.54, y: -0.68, z: 0.101}
+  m_LocalScale: {x: 0.11250001, y: 1.2012728, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1593548046}
@@ -965,13 +1023,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1275742545}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.08863348, y: 0.036444604, z: -0.0032453807, w: -0.9953921}
-  m_LocalPosition: {x: 1.1068009, y: 2.7763634, z: -21.511486}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: -15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &1455800522
 GameObject:
   m_ObjectHideFlags: 0
@@ -1074,6 +1132,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4bce263ef385244d59474bcc51b01113, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1572543795}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4bce263ef385244d59474bcc51b01113, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1572543797}
   m_SourcePrefab: {fileID: 100100000, guid: 4bce263ef385244d59474bcc51b01113, type: 3}
 --- !u!1 &1572543794 stripped
 GameObject:
@@ -1107,6 +1168,34 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4bce263ef385244d59474bcc51b01113, type: 3}
   m_PrefabInstance: {fileID: 1572543793}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1572543797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1572543794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5d71f7aaa7a4857ad04c37d0b238565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Pinball.PinballSling
+  eventId: hit.sling
+  baseValue: 5
+  tags:
+  - score
+  - compression
+  - sling
+  eventSourceOverride: {fileID: 0}
+  ballLayer: -1
+  directionMode: 0
+  directionAnchor: {fileID: 0}
+  localDirection: {x: 0, y: 0, z: 1}
+  impulseStrength: 28
+  upwardBias: 0.05
+  forceMode: 1
+  cooldownSeconds: 0.06
+  logEvents: 0
 --- !u!1 &1593548043
 GameObject:
   m_ObjectHideFlags: 0
@@ -1152,10 +1241,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.PlungerLauncher
   launchDirection: {fileID: 1455800523}
-  maxChargeSeconds: 3
-  minVelocityChange: 6
-  maxVelocityChange: 18
-  releaseCooldown: 0.3
+  maxChargeSeconds: 0.7
+  minVelocityChange: 30
+  maxVelocityChange: 110
+  releaseCooldown: 0.15
   clearForwardVelocityDeforeLaunch: 1
 --- !u!4 &1593548046
 Transform:
@@ -1168,7 +1257,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -47.92555, y: 3.03019, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 962047812}
   - {fileID: 266855858}
@@ -1199,6 +1288,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.BallSpawner
   ballPrefab: {fileID: 2631998667298213232, guid: 1ae5f2198ed8d7044ab6a177260cbf2b, type: 3}
   spawnPoint: {fileID: 233292461}
+  gravityMultiplier: 3.5
+  maxLinearSpeed: 90.5
+  applyExtraGravityOnlyWhenDescending: 1
 --- !u!1 &1794275783
 GameObject:
   m_ObjectHideFlags: 0
@@ -1325,6 +1417,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4bce263ef385244d59474bcc51b01113, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1814779315}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4bce263ef385244d59474bcc51b01113, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1814779317}
   m_SourcePrefab: {fileID: 100100000, guid: 4bce263ef385244d59474bcc51b01113, type: 3}
 --- !u!1 &1814779314 stripped
 GameObject:
@@ -1358,6 +1453,34 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4bce263ef385244d59474bcc51b01113, type: 3}
   m_PrefabInstance: {fileID: 1814779313}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1814779317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1814779314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5d71f7aaa7a4857ad04c37d0b238565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Pinball.PinballSling
+  eventId: hit.sling
+  baseValue: 5
+  tags:
+  - score
+  - compression
+  - sling
+  eventSourceOverride: {fileID: 0}
+  ballLayer: -1
+  directionMode: 0
+  directionAnchor: {fileID: 0}
+  localDirection: {x: 0, y: 0, z: 1}
+  impulseStrength: 28
+  upwardBias: 0.05
+  forceMode: 1
+  cooldownSeconds: 0.06
+  logEvents: 0
 --- !u!1001 &1820488621
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1380,7 +1503,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: daa09c5694553471784b8c39eb034a33, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.0744514
+      value: -3.79
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: daa09c5694553471784b8c39eb034a33, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1396,7 +1519,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: daa09c5694553471784b8c39eb034a33, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: daa09c5694553471784b8c39eb034a33, type: 3}
       propertyPath: m_LocalRotation.y
@@ -1404,7 +1527,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: daa09c5694553471784b8c39eb034a33, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: daa09c5694553471784b8c39eb034a33, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1424,7 +1547,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 269949401136507318, guid: daa09c5694553471784b8c39eb034a33, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9848078
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 269949401136507318, guid: daa09c5694553471784b8c39eb034a33, type: 3}
       propertyPath: m_LocalRotation.y
@@ -1432,11 +1555,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 269949401136507318, guid: daa09c5694553471784b8c39eb034a33, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.17364816
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 269949401136507318, guid: daa09c5694553471784b8c39eb034a33, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 20
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: daa09c5694553471784b8c39eb034a33, type: 3}
       propertyPath: m_Name
@@ -1447,6 +1570,12 @@ PrefabInstance:
     - {fileID: 5081449223666889978, guid: daa09c5694553471784b8c39eb034a33, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: daa09c5694553471784b8c39eb034a33, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1820488627}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: daa09c5694553471784b8c39eb034a33, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1820488626}
     - targetCorrespondingSourceObject: {fileID: -6644561056568694084, guid: daa09c5694553471784b8c39eb034a33, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1820488623}
@@ -1483,6 +1612,58 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: daa09c5694553471784b8c39eb034a33, type: 3}
   m_PrefabInstance: {fileID: 1820488621}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1820488625 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: daa09c5694553471784b8c39eb034a33, type: 3}
+  m_PrefabInstance: {fileID: 1820488621}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1820488626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1820488625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6cdb9faba34efb45bb9159fd4646daa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Pinball.PinballFlipper
+  side: 0
+  localRotationAxis: {x: 0, y: 0, z: 1}
+  restAngle: 20
+  activatedAngle: -35
+  activationDuration: 0.035
+  returnDuration: 0.065
+  applyBallImpulseAssist: 1
+  impulseStrength: 22
+--- !u!54 &1820488627
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1820488625}
+  serializedVersion: 5
+  m_Mass: 10
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 3
 --- !u!1 &1931097033
 GameObject:
   m_ObjectHideFlags: 0
@@ -1589,7 +1770,7 @@ Transform:
   m_GameObject: {fileID: 1931097033}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.30554962, y: 0.90221, z: 0}
+  m_LocalPosition: {x: 0.41, y: 0.90221, z: 0}
   m_LocalScale: {x: 0.1125, y: 8.050311, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -32,8 +32,17 @@ namespace PlinkoPinball.Core.Grant
 
         private readonly HashSet<string> _oncePerRoundGrantedKeys = new();
 
+        public void ConfigureSnapshotBuilder(PlinkoRunSnapshotBuilder builder)
+        {
+            if (builder != null)
+            {
+                snapshotBuilder = builder;
+            }
+        }
+
         private void OnEnable()
         {
+            ResolveSnapshotBuilder();
             TableEventBus.OnEvent += OnTableEvent;
             SubscribeModules();
         }
@@ -47,7 +56,7 @@ namespace PlinkoPinball.Core.Grant
 
         private void OnTableEvent(TableEvent tableEvent)
         {
-            if (snapshotBuilder == null || grantDefinitions == null)
+            if (ResolveSnapshotBuilder() == null || grantDefinitions == null)
             {
                 return;
             }
@@ -112,7 +121,7 @@ namespace PlinkoPinball.Core.Grant
 
         private void OnModuleRewardStateChanged(string moduleId, string groupId, ModuleRewardState state)
         {
-            if (snapshotBuilder == null || moduleGrantDefinitions == null)
+            if (ResolveSnapshotBuilder() == null || moduleGrantDefinitions == null)
             {
                 return;
             }
@@ -258,6 +267,17 @@ namespace PlinkoPinball.Core.Grant
                     }
                     break;
             }
+        }
+
+        private PlinkoRunSnapshotBuilder ResolveSnapshotBuilder()
+        {
+            if (snapshotBuilder != null)
+            {
+                return snapshotBuilder;
+            }
+
+            snapshotBuilder = PlinkoRunSnapshotBuilder.ResolveFor(this);
+            return snapshotBuilder;
         }
     }
 }

@@ -21,7 +21,7 @@ namespace PlinkoPinball.UI.Mainframe
 
         [SerializeField] private RectTransform buttonRoot;
         [SerializeField] private TMP_FontAsset font;
-        [SerializeField] private Color accentColor = new Color(0.78f, 0.78f, 0.75f, 1f);
+        [SerializeField] private Color accentColor = new Color(0.05f, 0.05f, 0.05f, 1f);
 
         private readonly List<Entry> entries = new();
 
@@ -78,13 +78,13 @@ namespace PlinkoPinball.UI.Mainframe
             rect.sizeDelta = new Vector2(0f, 28f);
 
             Image image = buttonObject.GetComponent<Image>();
-            image.color = new Color(0.08f, 0.08f, 0.08f, 0.34f);
+            image.color = new Color(0.76f, 0.76f, 0.74f, 1f);
 
             Button button = buttonObject.GetComponent<Button>();
             ColorBlock colors = button.colors;
-            colors.normalColor = new Color(0.08f, 0.08f, 0.08f, 0.34f);
-            colors.highlightedColor = new Color(0.24f, 0.24f, 0.23f, 0.68f);
-            colors.pressedColor = new Color(0.36f, 0.36f, 0.34f, 0.84f);
+            colors.normalColor = new Color(0.76f, 0.76f, 0.74f, 1f);
+            colors.highlightedColor = new Color(0.88f, 0.88f, 0.86f, 1f);
+            colors.pressedColor = new Color(0.56f, 0.56f, 0.54f, 1f);
             colors.selectedColor = colors.highlightedColor;
             button.colors = colors;
 

@@ -131,14 +131,14 @@ namespace PlinkoPinball.UI.Mainframe
             rect.sizeDelta = size;
 
             Image background = windowObject.GetComponent<Image>();
-            background.color = theme != null ? theme.windowBackgroundColor : new Color(0.025f, 0.025f, 0.025f, 0.58f);
+            background.color = theme != null ? theme.windowBackgroundColor : new Color(0.78f, 0.78f, 0.76f, 0.96f);
             background.raycastTarget = true;
 
             MainframeWindowFrame frame = windowObject.AddComponent<MainframeWindowFrame>();
             frame.root = rect;
             frame.canvasGroup = windowObject.GetComponent<CanvasGroup>();
 
-            Color headerColor = theme != null ? theme.windowHeaderColor : new Color(0.04f, 0.04f, 0.04f, 0.82f);
+            Color headerColor = theme != null ? theme.windowHeaderColor : new Color(0.62f, 0.62f, 0.6f, 1f);
             RectTransform header = CreatePanel("Header", rect, headerColor, true);
             header.anchorMin = new Vector2(0f, 1f);
             header.anchorMax = new Vector2(1f, 1f);
@@ -195,14 +195,14 @@ namespace PlinkoPinball.UI.Mainframe
             rect.sizeDelta = new Vector2(18f, 18f);
 
             Image image = buttonObject.GetComponent<Image>();
-            image.color = theme != null ? theme.closeNormalColor : new Color(0.08f, 0.08f, 0.08f, 0.32f);
+            image.color = theme != null ? theme.closeNormalColor : new Color(0.74f, 0.74f, 0.72f, 1f);
             image.raycastTarget = true;
 
             Button button = buttonObject.GetComponent<Button>();
             ColorBlock colors = button.colors;
-            colors.normalColor = theme != null ? theme.closeNormalColor : new Color(0.08f, 0.08f, 0.08f, 0.32f);
-            colors.highlightedColor = theme != null ? theme.closeHighlightedColor : new Color(0.42f, 0.25f, 0.16f, 0.78f);
-            colors.pressedColor = theme != null ? theme.closePressedColor : new Color(0.58f, 0.32f, 0.18f, 0.9f);
+            colors.normalColor = theme != null ? theme.closeNormalColor : new Color(0.74f, 0.74f, 0.72f, 1f);
+            colors.highlightedColor = theme != null ? theme.closeHighlightedColor : new Color(0.88f, 0.88f, 0.86f, 1f);
+            colors.pressedColor = theme != null ? theme.closePressedColor : new Color(0.58f, 0.18f, 0.16f, 1f);
             colors.selectedColor = colors.highlightedColor;
             button.colors = colors;
 

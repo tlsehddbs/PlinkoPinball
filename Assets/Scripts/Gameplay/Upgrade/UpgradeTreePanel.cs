@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Text;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using PlinkoPinball.Core;
+using PlinkoPinball.UI.Mainframe;
 
 namespace PlinkoPinball.Gameplay.Upgrade.UI
 {
@@ -15,6 +17,7 @@ namespace PlinkoPinball.Gameplay.Upgrade.UI
         [SerializeField] private RectTransform lineRoot;
         [SerializeField] private UpgradeNodeButton nodePrefab;
         [SerializeField] private UpgradeConnectionLine linePrefab;
+        [SerializeField] private MainframeTheme theme;
 
         [Header("Info Panel")]
         [SerializeField] private GameObject upgradeInfoPanel;
@@ -32,6 +35,7 @@ namespace PlinkoPinball.Gameplay.Upgrade.UI
         private void OnEnable()
         {
             ResolveReferences();
+            ApplyTheme();
 
             if (upgradeSystem != null)
             {
@@ -62,6 +66,7 @@ namespace PlinkoPinball.Gameplay.Upgrade.UI
         private void Start()
         {
             ResolveReferences();
+            ApplyTheme();
             BuildTree();
         }
 
@@ -129,7 +134,7 @@ namespace PlinkoPinball.Gameplay.Upgrade.UI
             RectTransform rect = node.GetComponent<RectTransform>();
             rect.anchoredPosition = GridToAnchoredPosition(upgrade.gridPosition);
 
-            node.Initialize(upgrade, upgradeSystem, RequestPurchase, ShowUpgradeInfo, HideUpgradeInfo);
+            node.Initialize(upgrade, upgradeSystem, RequestPurchase, ShowUpgradeInfo, HideUpgradeInfo, theme);
 
             spawnedNodes.Add(node);
             nodeMap.Add(upgrade, node);
@@ -189,6 +194,7 @@ namespace PlinkoPinball.Gameplay.Upgrade.UI
             }
 
             UpgradeConnectionLine line = Instantiate(linePrefab, lineRoot);
+            line.ConfigureTheme(theme);
             line.SetPoints(from, to);
             spawnedLines.Add(line);
         }
@@ -291,7 +297,60 @@ namespace PlinkoPinball.Gameplay.Upgrade.UI
                 database = upgradeSystem.Database;
             }
 
+            if (theme == null)
+            {
+                MainframeOSBootstrap bootstrap = FindFirstObjectByType<MainframeOSBootstrap>();
+                if (bootstrap != null)
+                {
+                    theme = bootstrap.Theme;
+                }
+            }
+
             ResolveInfoPanelReferences();
+        }
+
+        private void ApplyTheme()
+        {
+            if (theme == null)
+            {
+                return;
+            }
+
+            Image[] images = GetComponentsInChildren<Image>(true);
+            for (int i = 0; i < images.Length; i++)
+            {
+                Image image = images[i];
+                if (image == null)
+                {
+                    continue;
+                }
+
+                if (image.GetComponent<UpgradeNodeButton>() != null ||
+                    image.GetComponent<UpgradeConnectionLine>() != null)
+                {
+                    continue;
+                }
+
+                string objectName = image.gameObject.name;
+                if (objectName.Contains("Info") || objectName.Contains("Panel") || objectName.Contains("Content"))
+                {
+                    image.color = theme.windowBackgroundColor;
+                }
+                else if (objectName.Contains("Viewport"))
+                {
+                    image.color = theme.transparentColor;
+                }
+            }
+
+            TMP_Text[] texts = GetComponentsInChildren<TMP_Text>(true);
+            for (int i = 0; i < texts.Length; i++)
+            {
+                if (texts[i] != null)
+                {
+                    texts[i].color = theme.accentColor;
+                    texts[i].font = theme.ResolveFont(texts[i].font);
+                }
+            }
         }
 
         private void ResolveInfoPanelReferences()

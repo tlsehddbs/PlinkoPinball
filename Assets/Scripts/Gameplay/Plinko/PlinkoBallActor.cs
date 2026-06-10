@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 namespace PlinkoPinball.Gameplay.Core.Plinko
 {
@@ -8,14 +9,16 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
     public sealed class PlinkoBallActor : MonoBehaviour
     {
         private PlinkoRunController _runController;
+        private Action<PlinkoBallActor> _releaseRequested;
         private bool _isResolved;
 
         /// <summary>
         /// 볼을 현재 플링코 런에 바인딩
         /// </summary>
-        public void Initialize(PlinkoRunController runController)
+        public void Initialize(PlinkoRunController runController, Action<PlinkoBallActor> releaseRequested = null)
         {
             _runController = runController;
+            _releaseRequested = releaseRequested;
             _isResolved = false;
         }
 
@@ -33,6 +36,13 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             _isResolved = true;
 
             _runController?.OnBallResolved(this);
+            _runController = null;
+
+            if (_releaseRequested != null)
+            {
+                _releaseRequested.Invoke(this);
+                return;
+            }
 
             Destroy(gameObject);
         }

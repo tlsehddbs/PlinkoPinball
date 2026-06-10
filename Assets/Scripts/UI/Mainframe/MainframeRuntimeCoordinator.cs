@@ -2,7 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using PlinkoPinball.Core;
 using PlinkoPinball.Core.Flow;
+using PlinkoPinball.Core.Grant;
+using PlinkoPinball.Core.Rewards;
+using PlinkoPinball.Gameplay;
+using PlinkoPinball.Gameplay.Core.Compression;
 using PlinkoPinball.Gameplay.Core.Flow;
+using PlinkoPinball.Gameplay.Components.Plinko;
 using PlinkoPinball.Gameplay.Core.Plinko;
 using PlinkoPinball.Gameplay.Upgrade;
 
@@ -16,7 +21,6 @@ namespace PlinkoPinball.UI.Mainframe
         private const string UpgradeProcessLabel = "UPGRADE.EXE";
 
         [Header("Runtime Prefabs")]
-        [SerializeField] private GameObject pinballRuntimePrefab;
         [SerializeField] private GameObject plinkoBoardRootPrefab;
         [SerializeField] private GameObject plinkoRuntimeSystemsPrefab;
 
@@ -26,7 +30,7 @@ namespace PlinkoPinball.UI.Mainframe
 
         [Header("Runtime Placement")]
         [SerializeField] private Vector3 pinballRuntimePosition = Vector3.zero;
-        [SerializeField] private Vector3 plinkoRuntimePosition = new Vector3(24f, 0f, 0f);
+        [SerializeField] private Vector3 plinkoRuntimePosition = new Vector3(-30f, 0f, 0f);
 
         [Header("Cameras")]
         [SerializeField] private Vector3 pinballCameraPosition = new Vector3(-0.04f, 3.32f, -16.02f);
@@ -43,21 +47,24 @@ namespace PlinkoPinball.UI.Mainframe
         private GameObject pinballRuntimeRoot;
         private GameObject plinkoBoardRoot;
         private GameObject plinkoRuntimeRoot;
+        private Camera plinkoRenderCamera;
         private PlinkoSceneBootstrap plinkoBootstrap;
+        private PlinkoBoardRuntimeGenerator plinkoRuntimeGenerator;
+        private PlinkoBoardStateApplier plinkoStateApplier;
         private bool runtimeReady;
+        private bool plinkoRuntimeReady;
+        private bool plinkoBoardGenerated;
         private bool subscribed;
         private bool initialPinballRoundStarted;
 
         public void Initialize(
             MainframeProcessManager manager,
-            GameObject pinballPrefab,
             GameObject boardRootPrefab,
             GameObject runtimeSystemsPrefab,
             RenderTexture pinballTexture,
             RenderTexture plinkoTexture)
         {
             processManager = manager;
-            pinballRuntimePrefab = pinballPrefab;
             plinkoBoardRootPrefab = boardRootPrefab;
             plinkoRuntimeSystemsPrefab = runtimeSystemsPrefab;
             pinballRenderTexture = pinballTexture;
@@ -148,43 +155,65 @@ namespace PlinkoPinball.UI.Mainframe
                 return;
             }
 
-            if (pinballRuntimePrefab == null || plinkoBoardRootPrefab == null || plinkoRuntimeSystemsPrefab == null)
+            runtimeRoot = new GameObject("MainframeRuntimeRoot");
+            runtimeRoot.transform.SetParent(transform, false);
+
+            pinballRuntimeRoot = ResolveWorldPinballRuntimeRoot();
+            if (pinballRuntimeRoot == null)
             {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-                Debug.LogWarning($"[{nameof(MainframeRuntimeCoordinator)}] Missing runtime prefab references.", this);
+                Debug.LogWarning($"[{nameof(MainframeRuntimeCoordinator)}] Missing world pinball runtime. Place a Pinball object with {nameof(BallSpawner)} in the scene.", this);
 #endif
                 return;
             }
 
-            runtimeRoot = new GameObject("MainframeRuntimeRoot");
-            runtimeRoot.transform.SetParent(transform, false);
+            ConfigurePinballPlinkoBonusWiring();
+            ConfigurePinballRenderCamera();
 
-            pinballRuntimeRoot = Instantiate(pinballRuntimePrefab, pinballRuntimePosition, Quaternion.identity, runtimeRoot.transform);
-            pinballRuntimeRoot.name = pinballRuntimePrefab.name;
-
-            plinkoBoardRoot = Instantiate(plinkoBoardRootPrefab, plinkoRuntimePosition, Quaternion.identity, runtimeRoot.transform);
-            plinkoBoardRoot.name = plinkoBoardRootPrefab.name;
-
-            plinkoRuntimeRoot = Instantiate(plinkoRuntimeSystemsPrefab, plinkoRuntimePosition, Quaternion.identity, runtimeRoot.transform);
-            plinkoRuntimeRoot.name = plinkoRuntimeSystemsPrefab.name;
-
-            CreateRenderCamera(
-                "PinballRenderCamera",
-                pinballCameraPosition,
-                pinballCameraOrthographicSize,
-                pinballRenderTexture);
-
-            CreateRenderCamera(
-                "PlinkoRenderCamera",
-                plinkoRuntimePosition + new Vector3(0f, 0f, -15f),
-                plinkoCameraOrthographicSize,
-                plinkoRenderTexture);
-
-            ConfigurePlinkoRuntime();
             runtimeReady = true;
         }
 
-        private void CreateRenderCamera(string cameraName, Vector3 position, float orthographicSize, RenderTexture targetTexture)
+        private GameObject ResolveWorldPinballRuntimeRoot()
+        {
+            BallSpawner[] spawners = FindObjectsByType<BallSpawner>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (int i = 0; i < spawners.Length; i++)
+            {
+                BallSpawner spawner = spawners[i];
+                if (spawner == null)
+                {
+                    continue;
+                }
+
+                Transform root = spawner.transform.root;
+                if (root == transform || root == runtimeRoot.transform)
+                {
+                    continue;
+                }
+
+                return root.gameObject;
+            }
+
+            return null;
+        }
+
+        private void ConfigurePinballRenderCamera()
+        {
+            Camera existingCamera = pinballRuntimeRoot.GetComponentInChildren<Camera>(true);
+            if (existingCamera != null)
+            {
+                existingCamera.targetTexture = pinballRenderTexture;
+                existingCamera.enabled = true;
+                return;
+            }
+
+            CreateRenderCamera(
+                "PinballRenderCamera",
+                pinballRuntimeRoot.transform.position + pinballCameraPosition,
+                pinballCameraOrthographicSize,
+                pinballRenderTexture);
+        }
+
+        private Camera CreateRenderCamera(string cameraName, Vector3 position, float orthographicSize, RenderTexture targetTexture)
         {
             GameObject cameraObject = new GameObject(cameraName, typeof(Camera));
             cameraObject.transform.SetParent(runtimeRoot.transform, false);
@@ -199,6 +228,46 @@ namespace PlinkoPinball.UI.Mainframe
             camera.farClipPlane = 1000f;
             camera.targetTexture = targetTexture;
             camera.depth = -10f;
+            return camera;
+        }
+
+        private bool EnsurePlinkoRuntime()
+        {
+            if (plinkoRuntimeReady)
+            {
+                return true;
+            }
+
+            if (plinkoBoardRootPrefab == null || plinkoRuntimeSystemsPrefab == null)
+            {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                Debug.LogWarning($"[{nameof(MainframeRuntimeCoordinator)}] Missing plinko runtime prefab references.", this);
+#endif
+                return false;
+            }
+
+            if (runtimeRoot == null)
+            {
+                runtimeRoot = new GameObject("MainframeRuntimeRoot");
+                runtimeRoot.transform.SetParent(transform, false);
+            }
+
+            plinkoBoardRoot = Instantiate(plinkoBoardRootPrefab, plinkoRuntimePosition, Quaternion.identity, runtimeRoot.transform);
+            plinkoBoardRoot.name = plinkoBoardRootPrefab.name;
+
+            plinkoRuntimeRoot = Instantiate(plinkoRuntimeSystemsPrefab, plinkoRuntimePosition, Quaternion.identity, runtimeRoot.transform);
+            plinkoRuntimeRoot.name = plinkoRuntimeSystemsPrefab.name;
+
+            plinkoRenderCamera = CreateRenderCamera(
+                "PlinkoRenderCamera",
+                plinkoRuntimePosition + new Vector3(0f, 0f, -15f),
+                plinkoCameraOrthographicSize,
+                plinkoRenderTexture);
+
+            ConfigurePlinkoRuntime();
+            plinkoRuntimeReady = true;
+            SetPlinkoRuntimeActive(false);
+            return true;
         }
 
         private void ConfigurePlinkoRuntime()
@@ -207,10 +276,10 @@ namespace PlinkoPinball.UI.Mainframe
             Transform pinRoot = FindChildByName(plinkoBoardRoot.transform, "PinRoot");
             Transform slotRoot = FindChildByName(plinkoBoardRoot.transform, "SlotRoot");
 
-            PlinkoBoardRuntimeGenerator runtimeGenerator = plinkoRuntimeRoot.GetComponent<PlinkoBoardRuntimeGenerator>();
-            if (runtimeGenerator != null)
+            plinkoRuntimeGenerator = plinkoRuntimeRoot.GetComponent<PlinkoBoardRuntimeGenerator>();
+            if (plinkoRuntimeGenerator != null)
             {
-                runtimeGenerator.ConfigureRuntimeRoots(layoutRoot, pinRoot, slotRoot);
+                plinkoRuntimeGenerator.ConfigureRuntimeRoots(layoutRoot, pinRoot, slotRoot);
             }
 
             PlinkoBallSpawner ballSpawner = plinkoRuntimeRoot.GetComponent<PlinkoBallSpawner>();
@@ -219,7 +288,7 @@ namespace PlinkoPinball.UI.Mainframe
                 ballSpawner.ConfigureSpawnAnchor(layoutRoot.BallSpawnAnchor);
             }
 
-            PlinkoBoardStateApplier stateApplier = plinkoRuntimeRoot.GetComponent<PlinkoBoardStateApplier>();
+            plinkoStateApplier = plinkoRuntimeRoot.GetComponent<PlinkoBoardStateApplier>();
             PlinkoRunController runController = plinkoRuntimeRoot.GetComponent<PlinkoRunController>();
 
             plinkoBootstrap = plinkoRuntimeRoot.GetComponent<PlinkoSceneBootstrap>();
@@ -229,8 +298,8 @@ namespace PlinkoPinball.UI.Mainframe
             }
 
             plinkoBootstrap.Configure(
-                runtimeGenerator,
-                stateApplier,
+                plinkoRuntimeGenerator,
+                plinkoStateApplier,
                 runController,
                 UpgradeEffectResolver.Instance,
                 false);
@@ -260,6 +329,22 @@ namespace PlinkoPinball.UI.Mainframe
 
         private void HandleProcessVisibilityChanged(string label, bool isVisible)
         {
+            if (label == PlinkoProcessLabel)
+            {
+                if (isVisible)
+                {
+                    EnsurePlinkoRuntime();
+                    SetPlinkoRuntimeActive(true);
+                    EnsurePlinkoBoardGenerated();
+                }
+                else
+                {
+                    SetPlinkoRuntimeActive(false);
+                }
+
+                return;
+            }
+
             if (!isVisible || initialPinballRoundStarted)
             {
                 return;
@@ -284,6 +369,8 @@ namespace PlinkoPinball.UI.Mainframe
 
         private void RegisterPinballRuntime()
         {
+            ConfigurePinballPlinkoBonusWiring();
+
             ScoreSystem scoreSystem = pinballRuntimeRoot.GetComponentInChildren<ScoreSystem>(true);
             PinballToPlinkoTransitionController transitionController = pinballRuntimeRoot.GetComponentInChildren<PinballToPlinkoTransitionController>(true);
 
@@ -298,6 +385,47 @@ namespace PlinkoPinball.UI.Mainframe
             }
 
             gameManager.RegisterPinballScene(scoreSystem, transitionController, roundResettables);
+        }
+
+        private void ConfigurePinballPlinkoBonusWiring()
+        {
+            if (pinballRuntimeRoot == null)
+            {
+                return;
+            }
+
+            PlinkoRunSnapshotBuilder snapshotBuilder = pinballRuntimeRoot.GetComponentInChildren<PlinkoRunSnapshotBuilder>(true);
+            if (snapshotBuilder == null)
+            {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                Debug.LogWarning($"[{nameof(MainframeRuntimeCoordinator)}] Missing PlinkoRunSnapshotBuilder in pinball runtime.", this);
+#endif
+                return;
+            }
+
+            PinballToPlinkoTransitionController[] transitionControllers = pinballRuntimeRoot.GetComponentsInChildren<PinballToPlinkoTransitionController>(true);
+            for (int i = 0; i < transitionControllers.Length; i++)
+            {
+                transitionControllers[i].ConfigureSnapshotBuilder(snapshotBuilder);
+            }
+
+            GrantSystem[] grantSystems = pinballRuntimeRoot.GetComponentsInChildren<GrantSystem>(true);
+            for (int i = 0; i < grantSystems.Length; i++)
+            {
+                grantSystems[i].ConfigureSnapshotBuilder(snapshotBuilder);
+            }
+
+            PinballRewardSystem[] rewardSystems = pinballRuntimeRoot.GetComponentsInChildren<PinballRewardSystem>(true);
+            for (int i = 0; i < rewardSystems.Length; i++)
+            {
+                rewardSystems[i].ConfigureSnapshotBuilder(snapshotBuilder);
+            }
+
+            CompressionSystem[] compressionSystems = pinballRuntimeRoot.GetComponentsInChildren<CompressionSystem>(true);
+            for (int i = 0; i < compressionSystems.Length; i++)
+            {
+                compressionSystems[i].ConfigureSnapshotBuilder(snapshotBuilder);
+            }
         }
 
         private void HandlePhaseChanged(GamePhase previous, GamePhase next)
@@ -326,6 +454,9 @@ namespace PlinkoPinball.UI.Mainframe
                 case GamePhase.Plinko:
                     processManager.HideByLabel(PinballProcessLabel);
                     processManager.TryOpenByLabel(PlinkoProcessLabel);
+                    EnsurePlinkoRuntime();
+                    SetPlinkoRuntimeActive(true);
+                    EnsurePlinkoBoardGenerated();
                     BeginPlinkoRun();
                     break;
             }
@@ -333,12 +464,53 @@ namespace PlinkoPinball.UI.Mainframe
 
         private void BeginPlinkoRun()
         {
+            EnsurePlinkoRuntime();
+
             if (plinkoBootstrap == null)
             {
                 return;
             }
 
-            plinkoBootstrap.BeginFromPendingContext();
+            if (plinkoBootstrap.BeginFromPendingContext())
+            {
+                plinkoBoardGenerated = true;
+            }
+        }
+
+        private void EnsurePlinkoBoardGenerated()
+        {
+            if (plinkoBoardGenerated)
+            {
+                return;
+            }
+
+            if (plinkoRuntimeGenerator == null || plinkoStateApplier == null)
+            {
+                return;
+            }
+
+            plinkoRuntimeGenerator.GenerateBoard(out PlinkoPinRuntime[] generatedPins, out PlinkoSlotRuntime[] generatedSlots);
+            plinkoStateApplier.RegisterRuntimeObjects(generatedPins, generatedSlots);
+            plinkoStateApplier.ResetBoardState();
+            plinkoBoardGenerated = true;
+        }
+
+        private void SetPlinkoRuntimeActive(bool active)
+        {
+            if (plinkoBoardRoot != null)
+            {
+                plinkoBoardRoot.SetActive(active);
+            }
+
+            if (plinkoRuntimeRoot != null)
+            {
+                plinkoRuntimeRoot.SetActive(active);
+            }
+
+            if (plinkoRenderCamera != null)
+            {
+                plinkoRenderCamera.enabled = active;
+            }
         }
 
         private static Transform FindChildByName(Transform root, string childName)

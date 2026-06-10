@@ -16,9 +16,9 @@ namespace PlinkoPinball.UI.Mainframe
         [SerializeField] private GameObject statusViewPrefab;
         [SerializeField] private GameObject logViewPrefab;
         [SerializeField] private GameObject taskbarPrefab;
+        [SerializeField] private GameObject popupDialogPrefab;
 
         [Header("Runtime Prefabs")]
-        [SerializeField] private GameObject pinballRuntimePrefab;
         [SerializeField] private GameObject plinkoBoardRootPrefab;
         [SerializeField] private GameObject plinkoRuntimeSystemsPrefab;
 
@@ -29,8 +29,8 @@ namespace PlinkoPinball.UI.Mainframe
         [Header("Style")]
         [SerializeField] private MainframeTheme theme;
         [SerializeField] private TMP_FontAsset font;
-        [SerializeField] private Color accentColor = new Color(0.78f, 0.78f, 0.75f, 1f);
-        [SerializeField] private Color dimAccentColor = new Color(0.43f, 0.44f, 0.42f, 0.78f);
+        [SerializeField] private Color accentColor = new Color(0.05f, 0.05f, 0.05f, 1f);
+        [SerializeField] private Color dimAccentColor = new Color(0.24f, 0.24f, 0.24f, 0.86f);
 
         [Header("Taskbar Icons")]
         [SerializeField] private Sprite pinballIcon;
@@ -57,11 +57,13 @@ namespace PlinkoPinball.UI.Mainframe
         private TMP_Text memoryText;
         private TMP_Text processStatusText;
         private MainframeProcessManager processManager;
+        private MainframePopupDialog popupDialog;
         private readonly List<MainframeLauncher.Entry> launcherEntries = new();
         private static readonly Vector2 WindowChromeSize = new Vector2(12f, 42f);
         private TMP_FontAsset EffectiveFont => theme != null ? theme.ResolveFont(font) : font;
         private Color AccentColor => theme != null ? theme.accentColor : accentColor;
         private Color DimAccentColor => theme != null ? theme.dimAccentColor : dimAccentColor;
+        public MainframeTheme Theme => theme;
 
         private void Awake()
         {
@@ -128,10 +130,38 @@ namespace PlinkoPinball.UI.Mainframe
             processManager.SetEntries(launcherEntries);
 
             MainframeTaskbar taskbar = CreateTaskbar(desktopRoot);
+            taskbar.SetShutdownHandler(ShowShutdownConfirmation);
             taskbar.SetEntries(launcherEntries);
+
+            popupDialog = CreatePopupDialog(desktopRoot);
+            processManager.MemoryLimitExceeded -= HandleMemoryLimitExceeded;
+            processManager.MemoryLimitExceeded += HandleMemoryLimitExceeded;
 
             ConfigureRuntimeCoordinator();
             BringVisibleStartupWindowsToFront(pinballWindow, statusWindow, logWindow);
+        }
+
+        private MainframePopupDialog CreatePopupDialog(RectTransform parent)
+        {
+            MainframePopupDialog dialog = null;
+
+            if (popupDialogPrefab != null)
+            {
+                GameObject instance = Instantiate(popupDialogPrefab, parent);
+                instance.name = popupDialogPrefab.name;
+                dialog = instance.GetComponent<MainframePopupDialog>();
+            }
+
+            if (dialog == null)
+            {
+                GameObject dialogObject = new GameObject("MainframePopupDialog", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(CanvasGroup));
+                dialogObject.layer = 5;
+                dialogObject.transform.SetParent(parent, false);
+                dialog = dialogObject.AddComponent<MainframePopupDialog>();
+            }
+
+            dialog.Initialize(theme, EffectiveFont);
+            return dialog;
         }
 
         private void ConfigureRuntimeCoordinator()
@@ -149,7 +179,6 @@ namespace PlinkoPinball.UI.Mainframe
 
             coordinator.Initialize(
                 processManager,
-                pinballRuntimePrefab,
                 plinkoBoardRootPrefab,
                 plinkoRuntimeSystemsPrefab,
                 pinballRenderTexture,
@@ -170,6 +199,11 @@ namespace PlinkoPinball.UI.Mainframe
 
         private void ClearGeneratedChildren()
         {
+            if (processManager != null)
+            {
+                processManager.MemoryLimitExceeded -= HandleMemoryLimitExceeded;
+            }
+
             for (int i = transform.childCount - 1; i >= 0; i--)
             {
                 Transform child = transform.GetChild(i);
@@ -185,6 +219,7 @@ namespace PlinkoPinball.UI.Mainframe
             }
 
             launcherEntries.Clear();
+            popupDialog = null;
         }
 
         private Canvas CreateCanvas()
@@ -208,7 +243,7 @@ namespace PlinkoPinball.UI.Mainframe
 
         private void CreateBackground(RectTransform parent)
         {
-            Color backgroundColor = theme != null ? theme.desktopBackgroundColor : new Color(0.02f, 0.022f, 0.022f, 0.96f);
+            Color backgroundColor = theme != null ? theme.desktopBackgroundColor : new Color(0f, 0.36f, 0.45f, 1f);
             RectTransform background = MainframeWindowFrame.CreatePanel("DesktopBackground", parent, backgroundColor, false);
             background.anchorMin = Vector2.zero;
             background.anchorMax = Vector2.one;
@@ -233,7 +268,7 @@ namespace PlinkoPinball.UI.Mainframe
 
         private void CreateSystemHeader(RectTransform parent)
         {
-            Color headerColor = theme != null ? theme.systemHeaderColor : new Color(0.03f, 0.03f, 0.03f, 0.78f);
+            Color headerColor = theme != null ? theme.systemHeaderColor : new Color(0.72f, 0.72f, 0.7f, 1f);
             RectTransform header = MainframeWindowFrame.CreatePanel("SystemHeader", parent, headerColor, false);
             header.anchorMin = new Vector2(0f, 1f);
             header.anchorMax = new Vector2(1f, 1f);
@@ -328,7 +363,7 @@ namespace PlinkoPinball.UI.Mainframe
 
         private MainframeTaskbar CreateRuntimeTaskbar(RectTransform parent)
         {
-            Color taskbarColor = theme != null ? theme.taskbarBackgroundColor : new Color(0.025f, 0.025f, 0.025f, 0.78f);
+            Color taskbarColor = theme != null ? theme.taskbarBackgroundColor : new Color(0.72f, 0.72f, 0.7f, 1f);
             RectTransform taskbar = MainframeWindowFrame.CreatePanel("Taskbar", parent, taskbarColor, true);
             ApplyTaskbarRect(taskbar);
 
@@ -460,7 +495,7 @@ namespace PlinkoPinball.UI.Mainframe
                 memoryText,
                 processStatusText,
                 AccentColor,
-                theme != null ? theme.warningColor : new Color(1f, 0.64f, 0.32f));
+                theme != null ? theme.warningColor : new Color(0.62f, 0.12f, 0.08f));
             return manager;
         }
 
@@ -474,6 +509,44 @@ namespace PlinkoPinball.UI.Mainframe
                 memoryCost = memoryCost,
                 processManager = processManager
             });
+        }
+
+        private void HandleMemoryLimitExceeded(string processLabel, int requestedMemory, int usedMemory, int limit)
+        {
+            if (popupDialog == null)
+            {
+                return;
+            }
+
+            popupDialog.ShowAlert(
+                "MEMORY LIMIT",
+                $"{processLabel} cannot be loaded.\n\nRequired: {requestedMemory}MB\nAvailable: {Mathf.Max(0, limit - usedMemory)}MB\n\nSuspend another window and try again.",
+                "OK");
+        }
+
+        private void ShowShutdownConfirmation()
+        {
+            if (popupDialog == null)
+            {
+                QuitGame();
+                return;
+            }
+
+            popupDialog.ShowConfirm(
+                "SHUT DOWN",
+                "It is now safe to shut down Plinko Pinball.\n\nDo you want to terminate the system?",
+                "SHUT DOWN",
+                "CANCEL",
+                QuitGame);
+        }
+
+        private static void QuitGame()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
         }
 
         private static void EnsureEventSystem()

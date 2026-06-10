@@ -19,8 +19,8 @@ namespace PlinkoPinball.UI.MainMenu
         [SerializeField] private TMP_FontAsset font;
 
         [Header("Style")]
-        [SerializeField] private Color backgroundColor = new Color(0.02f, 0.022f, 0.022f, 0.94f);
-        [SerializeField] private Color terminalColor = new Color(0.78f, 0.78f, 0.75f, 1f);
+        [SerializeField] private Color backgroundColor = new Color(0f, 0.36f, 0.45f, 1f);
+        [SerializeField] private Color terminalColor = new Color(0.05f, 0.05f, 0.05f, 1f);
         [SerializeField] private Vector2 panelSize = new Vector2(760f, 430f);
 
         private RectTransform panelRoot;
@@ -31,7 +31,7 @@ namespace PlinkoPinball.UI.MainMenu
 
         private void Start()
         {
-            Build();
+            InitializePrefabInstance();
         }
 
         [ContextMenu("Build DOS Main Menu")]
@@ -68,6 +68,32 @@ namespace PlinkoPinball.UI.MainMenu
             CreateLabels(panelRoot);
             ConfigureButton(startButton, "BOOT SYSTEM", new Vector2(0f, -78f), controller.StartGame);
             ConfigureButton(quitButton, "TERMINATE", new Vector2(0f, -132f), controller.QuitGame);
+            ConfigureNavigation();
+
+            if (EventSystem.current != null)
+            {
+                EventSystem.current.SetSelectedGameObject(startButton.gameObject);
+            }
+        }
+
+        private void InitializePrefabInstance()
+        {
+            ResolveReferences();
+
+            if (canvas == null || startButton == null || quitButton == null)
+            {
+                Debug.LogWarning("[MainMenuDosView] Missing menu references.", this);
+                return;
+            }
+
+            EnsureEventSystem();
+            HideLegacyTitleTexts();
+            optionButton?.SetActive(false);
+
+            BindButton(startButton, controller.StartGame);
+            BindButton(quitButton, controller.QuitGame);
+            InitializeSelectionArrow(startButton);
+            InitializeSelectionArrow(quitButton);
             ConfigureNavigation();
 
             if (EventSystem.current != null)
@@ -298,6 +324,31 @@ namespace PlinkoPinball.UI.MainMenu
 
             button.onClick.RemoveListener(action);
             button.onClick.AddListener(action);
+        }
+
+        private void BindButton(Button button, UnityEngine.Events.UnityAction action)
+        {
+            if (button == null || action == null)
+            {
+                return;
+            }
+
+            button.onClick.RemoveListener(action);
+            button.onClick.AddListener(action);
+        }
+
+        private void InitializeSelectionArrow(Button button)
+        {
+            if (button == null)
+            {
+                return;
+            }
+
+            MainMenuSelectionArrow arrow = button.GetComponent<MainMenuSelectionArrow>();
+            if (arrow != null)
+            {
+                arrow.Initialize(TerminalColor, EffectiveFont);
+            }
         }
 
         private void ConfigureNavigation()

@@ -95,7 +95,7 @@ MonoBehaviour:
   tooltipText: {fileID: 0}
   theme: {fileID: 11400000, guid: eb031e452c7147178001657f387f53db, type: 2}
   font: {fileID: 0}
-  accentColor: {r: 0.78, g: 0.78, b: 0.75, a: 1}
+  accentColor: {r: 0.05, g: 0.05, b: 0.05, a: 1}
   tooltipOffset: {x: 0, y: 40}
 --- !u!1 &910000100
 GameObject:
@@ -190,7 +190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.78, g: 0.78, b: 0.75, a: 1}
+  m_Color: {r: 0.05, g: 0.05, b: 0.05, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

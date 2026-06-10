@@ -13,20 +13,20 @@ MonoBehaviour:
   m_Name: MainframeTheme
   m_EditorClassIdentifier: 
   font: {fileID: 11400000, guid: 576f66877fae04443a42d34cca817b31, type: 2}
-  accentColor: {r: 0.78, g: 0.78, b: 0.75, a: 1}
-  dimAccentColor: {r: 0.43, g: 0.44, b: 0.42, a: 0.78}
-  warningColor: {r: 1, g: 0.64, b: 0.32, a: 1}
-  desktopBackgroundColor: {r: 0.02, g: 0.022, b: 0.022, a: 0.96}
-  systemHeaderColor: {r: 0.03, g: 0.03, b: 0.03, a: 0.78}
-  taskbarBackgroundColor: {r: 0.025, g: 0.025, b: 0.025, a: 0.78}
-  windowBackgroundColor: {r: 0.025, g: 0.025, b: 0.025, a: 0.58}
-  windowHeaderColor: {r: 0.04, g: 0.04, b: 0.04, a: 0.82}
+  accentColor: {r: 0.05, g: 0.05, b: 0.05, a: 1}
+  dimAccentColor: {r: 0.24, g: 0.24, b: 0.24, a: 0.86}
+  warningColor: {r: 0.62, g: 0.12, b: 0.08, a: 1}
+  desktopBackgroundColor: {r: 0, g: 0.36, b: 0.45, a: 1}
+  systemHeaderColor: {r: 0.72, g: 0.72, b: 0.7, a: 1}
+  taskbarBackgroundColor: {r: 0.72, g: 0.72, b: 0.7, a: 1}
+  windowBackgroundColor: {r: 0.78, g: 0.78, b: 0.76, a: 0.96}
+  windowHeaderColor: {r: 0.62, g: 0.62, b: 0.6, a: 1}
   transparentColor: {r: 0, g: 0, b: 0, a: 0}
-  buttonNormalColor: {r: 0.08, g: 0.08, b: 0.08, a: 0.42}
-  buttonHighlightedColor: {r: 0.24, g: 0.24, b: 0.23, a: 0.74}
-  buttonPressedColor: {r: 0.36, g: 0.36, b: 0.34, a: 0.88}
-  closeNormalColor: {r: 0.08, g: 0.08, b: 0.08, a: 0.32}
-  closeHighlightedColor: {r: 0.42, g: 0.25, b: 0.16, a: 0.78}
-  closePressedColor: {r: 0.58, g: 0.32, b: 0.18, a: 0.9}
-  mainMenuBackgroundColor: {r: 0.02, g: 0.022, b: 0.022, a: 0.94}
+  buttonNormalColor: {r: 0.76, g: 0.76, b: 0.74, a: 1}
+  buttonHighlightedColor: {r: 0.88, g: 0.88, b: 0.86, a: 1}
+  buttonPressedColor: {r: 0.56, g: 0.56, b: 0.54, a: 1}
+  closeNormalColor: {r: 0.74, g: 0.74, b: 0.72, a: 1}
+  closeHighlightedColor: {r: 0.88, g: 0.88, b: 0.86, a: 1}
+  closePressedColor: {r: 0.58, g: 0.18, b: 0.16, a: 1}
+  mainMenuBackgroundColor: {r: 0, g: 0.36, b: 0.45, a: 1}
   mainMenuPanelSize: {x: 760, y: 430}

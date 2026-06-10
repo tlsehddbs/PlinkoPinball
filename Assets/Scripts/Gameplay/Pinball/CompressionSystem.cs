@@ -40,13 +40,23 @@ namespace PlinkoPinball.Gameplay.Core.Compression
         public event Action<float, float> ProgressChanged;
         public event Action<int> StartBallsGranted;
 
+        public void ConfigureSnapshotBuilder(PlinkoRunSnapshotBuilder builder)
+        {
+            if (builder != null)
+            {
+                snapshotBuilder = builder;
+            }
+        }
+
         private void Awake()
         {
+            ResolveSnapshotBuilder();
             ResolveUpgradeEffectResolver();
         }
 
         private void OnEnable()
         {
+            ResolveSnapshotBuilder();
             ResolveUpgradeEffectResolver();
             TableEventBus.OnEvent += OnTableEvent;
         }
@@ -63,7 +73,7 @@ namespace PlinkoPinball.Gameplay.Core.Compression
 
         private void OnTableEvent(TableEvent tableEvent)
         {
-            if (settings == null || snapshotBuilder == null)
+            if (settings == null || ResolveSnapshotBuilder() == null)
             {
                 return;
             }
@@ -147,6 +157,17 @@ namespace PlinkoPinball.Gameplay.Core.Compression
             }
 
             upgradeEffectResolver = FindFirstObjectByType<UpgradeEffectResolver>();
+        }
+
+        private PlinkoRunSnapshotBuilder ResolveSnapshotBuilder()
+        {
+            if (snapshotBuilder != null)
+            {
+                return snapshotBuilder;
+            }
+
+            snapshotBuilder = PlinkoRunSnapshotBuilder.ResolveFor(this);
+            return snapshotBuilder;
         }
 
         private void AddProgress(float amount, string reason)

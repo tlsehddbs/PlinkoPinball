@@ -17,7 +17,7 @@ namespace PlinkoPinball.Gameplay.Components.Reactions
         [Header("Impulse")]
         [Tooltip("임펄스 강도. 값은 물리 튜닝으로 조절.")]
         [Min(0f)]
-        [SerializeField] private float impulseStrength = 6f;
+        [SerializeField] private float impulseStrength = 20f;
 
         [Tooltip("수직(Up) 방향 보너스. 공이 너무 평평하게만 움직일 때 도움됨.")]
         [SerializeField] private float upBias = 0f;

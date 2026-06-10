@@ -134,8 +134,17 @@ namespace PlinkoPinball.Core.Rewards
         [SerializeField] private PinballRewardDefinition[] rewardDefinitions;
         [SerializeField] private PlinkoRunSnapshotBuilder snapshotBuilder;
 
+        public void ConfigureSnapshotBuilder(PlinkoRunSnapshotBuilder builder)
+        {
+            if (builder != null)
+            {
+                snapshotBuilder = builder;
+            }
+        }
+
         private void OnEnable()
         {
+            ResolveSnapshotBuilder();
             TableEventBus.OnEvent += OnTableEvent;
         }
 
@@ -165,7 +174,7 @@ namespace PlinkoPinball.Core.Rewards
 
         private void ApplyRewards(PinballRewardEntry[] rewards)
         {
-            if (rewards == null || snapshotBuilder == null)
+            if (rewards == null || ResolveSnapshotBuilder() == null)
             {
                 return;
             }
@@ -221,6 +230,17 @@ namespace PlinkoPinball.Core.Rewards
                     snapshotBuilder.AddErrorSlotRateReduction(reward.Amount);
                     break;
             }
+        }
+
+        private PlinkoRunSnapshotBuilder ResolveSnapshotBuilder()
+        {
+            if (snapshotBuilder != null)
+            {
+                return snapshotBuilder;
+            }
+
+            snapshotBuilder = PlinkoRunSnapshotBuilder.ResolveFor(this);
+            return snapshotBuilder;
         }
     }
 }

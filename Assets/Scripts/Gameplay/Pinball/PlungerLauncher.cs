@@ -23,14 +23,14 @@ namespace PlinkoPinball.Gameplay
 
         [Header("Charge")]
         [Tooltip("풀 차지까지 걸리는 시간(초)")]
-        [SerializeField] private float maxChargeSeconds = 1.0f;
+        [SerializeField] private float maxChargeSeconds = 0.7f;
 
         [Tooltip("차지 최소/최대 속도 변화")]
-        [SerializeField] private float minVelocityChange = 6f;
-        [SerializeField] private float maxVelocityChange = 18f;
+        [SerializeField] private float minVelocityChange = 30f;
+        [SerializeField] private float maxVelocityChange = 110f;
 
         [Tooltip("릴리즈 직후 재차지/발사 방지룔 쿨다운(초)")]
-        [SerializeField] private float releaseCooldown = 0.1f;
+        [SerializeField] private float releaseCooldown = 0.15f;
 
         [Header("Tuning")]
         [Tooltip("발사 시 기존 속도의 발사방향 성분을 제거하여 이상 튕김을 방지")]
@@ -134,8 +134,7 @@ namespace PlinkoPinball.Gameplay
             }
 
             float dv = Mathf.Lerp(minVelocityChange, maxVelocityChange, _charge01);
-            Vector3 dir = (launchDirection != null) ? launchDirection.forward : transform.forward;
-            dir.Normalize();
+            Vector3 dir = ResolveLaunchDirection();
 
             if (clearForwardVelocityDeforeLaunch)
             {
@@ -152,6 +151,26 @@ namespace PlinkoPinball.Gameplay
 
             _cooldownTimer = releaseCooldown;
             _charge01 = 0f;
+        }
+
+        private Vector3 ResolveLaunchDirection()
+        {
+            if (launchDirection != null)
+            {
+                Vector3 explicitDirection = launchDirection.forward;
+                if (explicitDirection.sqrMagnitude > 0.0001f)
+                {
+                    return explicitDirection.normalized;
+                }
+            }
+
+            Vector3 fallbackDirection = transform.up;
+            if (fallbackDirection.sqrMagnitude > 0.0001f)
+            {
+                return fallbackDirection.normalized;
+            }
+
+            return Vector3.up;
         }
     }
 }

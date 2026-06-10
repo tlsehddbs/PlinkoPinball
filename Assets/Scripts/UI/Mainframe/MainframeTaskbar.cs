@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -14,10 +15,12 @@ namespace PlinkoPinball.UI.Mainframe
         [SerializeField] private TMP_Text tooltipText;
         [SerializeField] private MainframeTheme theme;
         [SerializeField] private TMP_FontAsset font;
-        [SerializeField] private Color accentColor = new Color(0.78f, 0.78f, 0.75f, 1f);
+        [SerializeField] private Color accentColor = new Color(0.05f, 0.05f, 0.05f, 1f);
         [SerializeField] private Vector2 tooltipOffset = new Vector2(0f, 40f);
 
         private readonly List<MainframeLauncher.Entry> entries = new();
+        private Button shutdownButton;
+        private Action shutdownRequested;
 
         public void Initialize(RectTransform root, TMP_FontAsset fontAsset, Color accent, MainframeTheme mainframeTheme = null)
         {
@@ -44,6 +47,11 @@ namespace PlinkoPinball.UI.Mainframe
             BuildButtons();
         }
 
+        public void SetShutdownHandler(Action handler)
+        {
+            shutdownRequested = handler;
+        }
+
         private void BuildButtons()
         {
             ResolveReferences();
@@ -57,6 +65,8 @@ namespace PlinkoPinball.UI.Mainframe
             {
                 Destroy(child.gameObject);
             }
+
+            CreateOrUpdateShutdownButton();
 
             for (int i = 0; i < entries.Count; i++)
             {
@@ -85,13 +95,13 @@ namespace PlinkoPinball.UI.Mainframe
             rect.sizeDelta = new Vector2(44f, 34f);
 
             Image image = buttonObject.GetComponent<Image>();
-            image.color = theme != null ? theme.buttonNormalColor : new Color(0.08f, 0.08f, 0.08f, 0.42f);
+            image.color = theme != null ? theme.buttonNormalColor : new Color(0.76f, 0.76f, 0.74f, 1f);
 
             Button button = buttonObject.GetComponent<Button>();
             ColorBlock colors = button.colors;
-            colors.normalColor = theme != null ? theme.buttonNormalColor : new Color(0.08f, 0.08f, 0.08f, 0.42f);
-            colors.highlightedColor = theme != null ? theme.buttonHighlightedColor : new Color(0.24f, 0.24f, 0.23f, 0.74f);
-            colors.pressedColor = theme != null ? theme.buttonPressedColor : new Color(0.36f, 0.36f, 0.34f, 0.88f);
+            colors.normalColor = theme != null ? theme.buttonNormalColor : new Color(0.76f, 0.76f, 0.74f, 1f);
+            colors.highlightedColor = theme != null ? theme.buttonHighlightedColor : new Color(0.88f, 0.88f, 0.86f, 1f);
+            colors.pressedColor = theme != null ? theme.buttonPressedColor : new Color(0.56f, 0.56f, 0.54f, 1f);
             colors.selectedColor = colors.highlightedColor;
             button.colors = colors;
 
@@ -120,6 +130,69 @@ namespace PlinkoPinball.UI.Mainframe
             return button;
         }
 
+        private void CreateOrUpdateShutdownButton()
+        {
+            RectTransform parent = transform as RectTransform;
+            if (parent == null)
+            {
+                return;
+            }
+
+            if (shutdownButton == null)
+            {
+                Transform existing = transform.Find("ShutdownButton");
+                shutdownButton = existing != null ? existing.GetComponent<Button>() : null;
+            }
+
+            if (shutdownButton == null)
+            {
+                GameObject buttonObject = new GameObject("ShutdownButton", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
+                buttonObject.layer = 5;
+                buttonObject.transform.SetParent(parent, false);
+                shutdownButton = buttonObject.GetComponent<Button>();
+
+                TMP_Text text = MainframeWindowFrame.CreateText(
+                    "FallbackIcon",
+                    buttonObject.GetComponent<RectTransform>(),
+                    "OFF",
+                    font,
+                    12f,
+                    TextAlignmentOptions.Center);
+                text.color = accentColor;
+                StretchToParent(text.GetComponent<RectTransform>(), new Vector2(5f, 0f), new Vector2(-5f, 0f));
+
+                buttonObject.AddComponent<MainframeShutdownButton>();
+            }
+
+            RectTransform rect = shutdownButton.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0f, 0.5f);
+            rect.anchorMax = new Vector2(0f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = new Vector2(34f, 0f);
+            rect.sizeDelta = new Vector2(58f, 34f);
+
+            Image image = shutdownButton.GetComponent<Image>();
+            image.color = theme != null ? theme.buttonNormalColor : new Color(0.76f, 0.76f, 0.74f, 1f);
+
+            ColorBlock colors = shutdownButton.colors;
+            colors.normalColor = theme != null ? theme.buttonNormalColor : new Color(0.76f, 0.76f, 0.74f, 1f);
+            colors.highlightedColor = theme != null ? theme.buttonHighlightedColor : new Color(0.88f, 0.88f, 0.86f, 1f);
+            colors.pressedColor = theme != null ? theme.buttonPressedColor : new Color(0.56f, 0.56f, 0.54f, 1f);
+            colors.selectedColor = colors.highlightedColor;
+            shutdownButton.colors = colors;
+
+            shutdownButton.onClick.RemoveAllListeners();
+            shutdownButton.onClick.AddListener(RequestShutdown);
+
+            MainframeShutdownButton shutdownHover = shutdownButton.GetComponent<MainframeShutdownButton>();
+            if (shutdownHover == null)
+            {
+                shutdownHover = shutdownButton.gameObject.AddComponent<MainframeShutdownButton>();
+            }
+
+            shutdownHover.Initialize(this, rect);
+        }
+
         public void ShowTooltip(MainframeLauncher.Entry entry, RectTransform source)
         {
             ResolveReferences();
@@ -130,6 +203,20 @@ namespace PlinkoPinball.UI.Mainframe
             }
 
             tooltipText.text = entry.label;
+            tooltipRoot.gameObject.SetActive(true);
+            tooltipRoot.position = source.position + new Vector3(tooltipOffset.x, tooltipOffset.y, 0f);
+        }
+
+        public void ShowTextTooltip(string label, RectTransform source)
+        {
+            ResolveReferences();
+
+            if (string.IsNullOrWhiteSpace(label) || tooltipRoot == null || tooltipText == null || source == null)
+            {
+                return;
+            }
+
+            tooltipText.text = label;
             tooltipRoot.gameObject.SetActive(true);
             tooltipRoot.position = source.position + new Vector3(tooltipOffset.x, tooltipOffset.y, 0f);
         }
@@ -199,7 +286,7 @@ namespace PlinkoPinball.UI.Mainframe
                 return;
             }
 
-            Color tooltipColor = theme != null ? theme.systemHeaderColor : new Color(0.03f, 0.03f, 0.03f, 0.86f);
+            Color tooltipColor = theme != null ? theme.systemHeaderColor : new Color(0.72f, 0.72f, 0.7f, 1f);
             tooltipRoot = MainframeWindowFrame.CreatePanel("Tooltip", parent, tooltipColor, false);
             tooltipRoot.anchorMin = new Vector2(0.5f, 0f);
             tooltipRoot.anchorMax = new Vector2(0.5f, 0f);
@@ -261,6 +348,19 @@ namespace PlinkoPinball.UI.Mainframe
             return value.PadRight(2, '-');
         }
 
+        private void RequestShutdown()
+        {
+            shutdownRequested?.Invoke();
+        }
+
+        private static void StretchToParent(RectTransform rect, Vector2 offsetMin, Vector2 offsetMax)
+        {
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.offsetMin = offsetMin;
+            rect.offsetMax = offsetMax;
+        }
+
         private static void Activate(MainframeLauncher.Entry entry)
         {
             if (entry?.window == null)
@@ -299,6 +399,28 @@ namespace PlinkoPinball.UI.Mainframe
         public void OnPointerExit(PointerEventData eventData)
         {
             owner?.HideTooltip(entry);
+        }
+    }
+
+    public sealed class MainframeShutdownButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    {
+        private MainframeTaskbar owner;
+        private RectTransform rect;
+
+        public void Initialize(MainframeTaskbar taskbar, RectTransform source)
+        {
+            owner = taskbar;
+            rect = source;
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            owner?.ShowTextTooltip("SHUT DOWN", rect);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            owner?.HideTooltip(null);
         }
     }
 }

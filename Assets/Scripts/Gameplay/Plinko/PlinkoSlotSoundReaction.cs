@@ -48,23 +48,16 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
 
             _lastPlayTime = Time.time;
 
-            GameObject tempAudio = new GameObject("SlotSfx");
-            tempAudio.transform.position = hitPoint;
-
-            AudioSource source = tempAudio.AddComponent<AudioSource>();
-            source.clip = clip;
-            source.volume = volume;
-            source.spatialBlend = spatialBlend;
+            float pitch = 1f;
 
             if (randomPitch)
             {
                 float min = Mathf.Min(pitchRange.x, pitchRange.y);
                 float max = Mathf.Max(pitchRange.x, pitchRange.y);
-                source.pitch = Mathf.Approximately(min, max) ? min : Random.Range(min, max);
+                pitch = Mathf.Approximately(min, max) ? min : Random.Range(min, max);
             }
 
-            source.Play();
-            Destroy(tempAudio, clip.length / Mathf.Max(0.01f, Mathf.Abs(source.pitch)) + 0.1f);
+            PlinkoAudioPool.Play(clip, hitPoint, volume, spatialBlend, pitch);
         }
     }
 }

@@ -11,14 +11,15 @@ namespace PlinkoPinball.UI.Mainframe
         [SerializeField, Min(4)] private int barLength = 16;
         [SerializeField] private TMP_Text memoryText;
         [SerializeField] private TMP_Text statusText;
-        [SerializeField] private Color normalColor = new Color(0.78f, 0.78f, 0.75f);
-        [SerializeField] private Color warningColor = new Color(1f, 0.64f, 0.32f);
+        [SerializeField] private Color normalColor = new Color(0.05f, 0.05f, 0.05f);
+        [SerializeField] private Color warningColor = new Color(0.62f, 0.12f, 0.08f);
 
         private readonly List<MainframeLauncher.Entry> entries = new();
 
         public int UsedMemory { get; private set; }
         public int MemoryLimit => memoryLimit;
         public event System.Action<string, bool> ProcessVisibilityChanged;
+        public event System.Action<string, int, int, int> MemoryLimitExceeded;
 
         public void Initialize(
             int limit,
@@ -79,6 +80,7 @@ namespace PlinkoPinball.UI.Mainframe
             if (projectedMemory > memoryLimit)
             {
                 RefreshDisplay($"MEMORY LIMIT: {entry.label} DENIED");
+                MemoryLimitExceeded?.Invoke(entry.label, cost, CalculateUsedMemory(), memoryLimit);
                 return false;
             }
 

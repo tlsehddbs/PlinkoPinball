@@ -20,12 +20,12 @@ namespace PlinkoPinball.Pinball
         [SerializeField] private Vector3 localRotationAxis = Vector3.up;
         [SerializeField] private float restAngle = -25f;
         [SerializeField] private float activatedAngle = 35f;
-        [SerializeField] private float activationDuration = 0.045f;
-        [SerializeField] private float returnDuration = 0.08f;
+        [SerializeField] private float activationDuration = 0.035f;
+        [SerializeField] private float returnDuration = 0.065f;
 
         [Header("Ball Assist")]
         [SerializeField] private bool applyBallImpulseAssist = true;
-        [SerializeField] private float impulseStrength = 6f;
+        [SerializeField] private float impulseStrength = 22f;
 
         private Rigidbody rb;
         private Quaternion baseLocalRotation;

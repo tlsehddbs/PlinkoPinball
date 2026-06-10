@@ -14,6 +14,14 @@ namespace PlinkoPinball.Gameplay.Core.Flow
         [SerializeField] private string plinkoSceneName = "PlinkoScene";
         [SerializeField] private bool loadSceneOnTransition;
 
+        public void ConfigureSnapshotBuilder(PlinkoRunSnapshotBuilder snapshotBuilder)
+        {
+            if (snapshotBuilder != null)
+            {
+                plinkoSnapshotBuilder = snapshotBuilder;
+            }
+        }
+
         /// <summary>
         /// 플링코 씬으로 전환
         /// </summary>
@@ -21,7 +29,7 @@ namespace PlinkoPinball.Gameplay.Core.Flow
         /// <param name="pinballScore">현재 핀볼 점수</param>
         public void TransitionToPlinko(int roundIndex, int pinballScore)
         {
-            if (plinkoSnapshotBuilder == null)
+            if (ResolveSnapshotBuilder() == null)
             {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 Debug.LogWarning("[PinballToPlinkoTransitionController] Missing snapshot builder.", this);
@@ -56,6 +64,17 @@ namespace PlinkoPinball.Gameplay.Core.Flow
             {
                 SceneManager.LoadScene(plinkoSceneName);
             }
+        }
+
+        private PlinkoRunSnapshotBuilder ResolveSnapshotBuilder()
+        {
+            if (plinkoSnapshotBuilder != null)
+            {
+                return plinkoSnapshotBuilder;
+            }
+
+            plinkoSnapshotBuilder = PlinkoRunSnapshotBuilder.ResolveFor(this);
+            return plinkoSnapshotBuilder;
         }
     }
 }

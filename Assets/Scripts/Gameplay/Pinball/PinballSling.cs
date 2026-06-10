@@ -33,12 +33,12 @@ namespace PlinkoPinball.Gameplay.Pinball
         [SerializeField] private DirectionMode directionMode = DirectionMode.TransformForward;
         [SerializeField] private Transform directionAnchor;
         [SerializeField] private Vector3 localDirection = Vector3.forward;
-        [SerializeField, Min(0f)] private float impulseStrength = 10f;
+        [SerializeField, Min(0f)] private float impulseStrength = 28f;
         [SerializeField] private float upwardBias = 0.05f;
         [SerializeField] private ForceMode forceMode = ForceMode.Impulse;
 
         [Header("Rate Limit")]
-        [SerializeField, Min(0f)] private float cooldownSeconds = 0.08f;
+        [SerializeField, Min(0f)] private float cooldownSeconds = 0.06f;
 
         [Header("Debug")]
         [SerializeField] private bool logEvents;
