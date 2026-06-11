@@ -19,6 +19,7 @@ namespace PlinkoPinball.UI.Mainframe
         [SerializeField] private GameObject logViewPrefab;
         [SerializeField] private GameObject taskbarPrefab;
         [SerializeField] private GameObject popupDialogPrefab;
+        [SerializeField] private GameObject crtOverlayPrefab;
 
         [Header("Runtime Prefabs")]
         [SerializeField] private GameObject plinkoBoardRootPrefab;
@@ -140,8 +141,34 @@ namespace PlinkoPinball.UI.Mainframe
             processManager.MemoryLimitExceeded -= HandleMemoryLimitExceeded;
             processManager.MemoryLimitExceeded += HandleMemoryLimitExceeded;
 
+            CreateCrtOverlay(desktopRoot);
+
             ConfigureRuntimeCoordinator();
             BringVisibleStartupWindowsToFront(pinballWindow, statusWindow, logWindow);
+        }
+
+        private void CreateCrtOverlay(RectTransform parent)
+        {
+            if (crtOverlayPrefab == null || parent == null)
+            {
+                return;
+            }
+
+            GameObject instance = Instantiate(crtOverlayPrefab, parent);
+            instance.name = crtOverlayPrefab.name;
+            instance.transform.SetAsLastSibling();
+
+            RectTransform rect = instance.GetComponent<RectTransform>();
+            MainframeWindowFrame.StretchToParent(rect);
+
+            Graphic[] graphics = instance.GetComponentsInChildren<Graphic>(true);
+            for (int i = 0; i < graphics.Length; i++)
+            {
+                if (graphics[i] != null)
+                {
+                    graphics[i].raycastTarget = false;
+                }
+            }
         }
 
         private MainframePopupDialog CreatePopupDialog(RectTransform parent)
@@ -479,12 +506,16 @@ namespace PlinkoPinball.UI.Mainframe
 
             if (content.GetComponentInChildren<TopBarView>(true) != null)
             {
+                TopBarView topBarView = content.GetComponentInChildren<TopBarView>(true);
+                topBarView.SetTextColor(Color.black);
                 StretchNamedChild(content.transform, "TopBar", new Vector2(8f, 8f), new Vector2(-8f, -8f));
                 ArrangeStatusSections(content.transform);
             }
 
-            if (content.GetComponentInChildren<PinballEventLogView>(true) != null)
+            PinballEventLogView logView = content.GetComponentInChildren<PinballEventLogView>(true);
+            if (logView != null)
             {
+                logView.SetTextColor(Color.black);
                 StretchNamedChild(content.transform, "ViewPort", Vector2.zero, Vector2.zero);
                 StretchNamedChild(content.transform, "Content", new Vector2(6f, 0f), new Vector2(-6f, 0f));
                 ConfigureLogContentLayout(content.transform);
@@ -529,9 +560,9 @@ namespace PlinkoPinball.UI.Mainframe
                 "Credits"
             };
 
-            const float topPadding = 8f;
-            const float rowHeight = 34f;
-            const float rowGap = 4f;
+            const float topPadding = 6f;
+            const float rowHeight = 29f;
+            const float rowGap = 3f;
 
             for (int i = 0; i < sectionNames.Length; i++)
             {

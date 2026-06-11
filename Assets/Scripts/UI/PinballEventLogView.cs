@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,6 +21,7 @@ namespace PlinkoPinball.UI
         [SerializeField, Min(1)] private int maxVisibleLogs = 14;
         [SerializeField] private bool collapseRepeatedLogs = true;
         [SerializeField] private bool lockContentToViewport = true;
+        [SerializeField] private Color textColor = Color.black;
 
         private readonly Queue<PinballEventLogItem> items = new();
 
@@ -30,6 +32,13 @@ namespace PlinkoPinball.UI
         private void OnEnable()
         {
             ConfigureLayout();
+            ApplyTextColor();
+        }
+
+        public void SetTextColor(Color color)
+        {
+            textColor = color;
+            ApplyTextColor();
         }
 
         /// <summary>
@@ -54,6 +63,7 @@ namespace PlinkoPinball.UI
             lastRawMessage = message;
 
             PinballEventLogItem item = Instantiate(itemPrefab, contentRoot);
+            item.SetTextColor(textColor);
             item.SetMessage(message);
             item.transform.SetAsLastSibling();
 
@@ -143,6 +153,23 @@ namespace PlinkoPinball.UI
 
             ConfigureLayout();
             LayoutRebuilder.ForceRebuildLayoutImmediate(contentRoot);
+        }
+
+        private void ApplyTextColor()
+        {
+            foreach (PinballEventLogItem item in items)
+            {
+                item?.SetTextColor(textColor);
+            }
+
+            TMP_Text[] texts = GetComponentsInChildren<TMP_Text>(true);
+            for (int i = 0; i < texts.Length; i++)
+            {
+                if (texts[i] != null)
+                {
+                    texts[i].color = textColor;
+                }
+            }
         }
     }
 }

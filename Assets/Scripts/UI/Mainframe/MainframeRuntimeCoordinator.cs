@@ -9,7 +9,9 @@ using PlinkoPinball.Gameplay.Core.Compression;
 using PlinkoPinball.Gameplay.Core.Flow;
 using PlinkoPinball.Gameplay.Components.Plinko;
 using PlinkoPinball.Gameplay.Core.Plinko;
+using PlinkoPinball.Gameplay.Modules;
 using PlinkoPinball.Gameplay.Upgrade;
+using PlinkoPinball.Pinball;
 using PlinkoPinball.UI;
 
 namespace PlinkoPinball.UI.Mainframe
@@ -42,6 +44,7 @@ namespace PlinkoPinball.UI.Mainframe
         [Header("Window Flow")]
         [SerializeField] private bool openWindowOnPhaseChange = true;
         [SerializeField] private bool openPinballWindowOnInitialRound;
+        [SerializeField] private bool resetPinballWhenWindowCloses = true;
 
         private MainframeProcessManager processManager;
         private GameManager gameManager;
@@ -351,12 +354,44 @@ namespace PlinkoPinball.UI.Mainframe
                 return;
             }
 
+            if (label == PinballProcessLabel && !isVisible)
+            {
+                ResetPinballRuntimeForWindowClose();
+                return;
+            }
+
+            if (label == PinballProcessLabel && isVisible)
+            {
+                HandlePinballProcessOpened();
+                return;
+            }
+
             if (!isVisible || initialPinballRoundStarted)
             {
                 return;
             }
 
             if (label == PinballProcessLabel && gameManager != null && gameManager.Phase == GamePhase.Pinball)
+            {
+                StartInitialPinballRound();
+            }
+        }
+
+        private void HandlePinballProcessOpened()
+        {
+            if (gameManager == null)
+            {
+                return;
+            }
+
+            if (gameManager.Phase == GamePhase.Plinko)
+            {
+                initialPinballRoundStarted = true;
+                gameManager.CompletePlinkoAndReturnToPinball();
+                return;
+            }
+
+            if (!initialPinballRoundStarted && gameManager.Phase == GamePhase.Pinball)
             {
                 StartInitialPinballRound();
             }
@@ -371,6 +406,38 @@ namespace PlinkoPinball.UI.Mainframe
 
             initialPinballRoundStarted = true;
             gameManager.StartPinballRound();
+        }
+
+        private void ResetPinballRuntimeForWindowClose()
+        {
+            if (!resetPinballWhenWindowCloses || pinballRuntimeRoot == null)
+            {
+                return;
+            }
+
+            PlungerLauncher[] launchers = pinballRuntimeRoot.GetComponentsInChildren<PlungerLauncher>(true);
+            for (int i = 0; i < launchers.Length; i++)
+            {
+                launchers[i]?.ClearBall();
+            }
+
+            PinballFlipper[] flippers = pinballRuntimeRoot.GetComponentsInChildren<PinballFlipper>(true);
+            for (int i = 0; i < flippers.Length; i++)
+            {
+                flippers[i]?.ResetToRest();
+            }
+
+            ModuleRoot[] moduleRoots = pinballRuntimeRoot.GetComponentsInChildren<ModuleRoot>(true);
+            for (int i = 0; i < moduleRoots.Length; i++)
+            {
+                moduleRoots[i]?.ResetModuleState();
+            }
+
+            BallSpawner[] spawners = pinballRuntimeRoot.GetComponentsInChildren<BallSpawner>(true);
+            for (int i = 0; i < spawners.Length; i++)
+            {
+                spawners[i]?.Spawn();
+            }
         }
 
         private void RegisterPinballRuntime()

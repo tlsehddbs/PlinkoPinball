@@ -116,7 +116,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Components.Reactions.PinballHitImpulse
   onlyOnHitType: 1
-  impulseStrength: 22
+  impulseStrength: 10
   upBias: 0.25
 --- !u!114 &3751596462626338355
 MonoBehaviour:

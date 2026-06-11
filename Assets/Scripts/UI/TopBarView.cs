@@ -26,6 +26,8 @@ namespace PlinkoPinball.UI
         [SerializeField] private Color powerNormalColor = Color.white;
         [SerializeField] private Color powerWarningColor = new Color(1f, 0.72f, 0.25f);
         [SerializeField] private Color powerCriticalColor = new Color(1f, 0.25f, 0.25f);
+        [SerializeField] private bool forceTextColor;
+        [SerializeField] private Color forcedTextColor = Color.black;
 
         [Header("Power")]
         [SerializeField] private GameObject powerRoot;
@@ -59,6 +61,21 @@ namespace PlinkoPinball.UI
         private const string MonospaceOpenTag = "<mspace=0.6em>";
         private const string MonospaceCloseTag = "</mspace>";
 
+        public void SetTextColor(Color color, bool forceDynamicColors = true)
+        {
+            forcedTextColor = color;
+            forceTextColor = forceDynamicColors;
+
+            TMP_Text[] texts = GetComponentsInChildren<TMP_Text>(true);
+            for (int i = 0; i < texts.Length; i++)
+            {
+                if (texts[i] != null)
+                {
+                    texts[i].color = color;
+                }
+            }
+        }
+
         private void Update()
         {
             UpdateCompressionFill();
@@ -78,14 +95,14 @@ namespace PlinkoPinball.UI
             if (powerLabelText != null)
             {
                 powerLabelText.text = "POWER";
-                powerLabelText.color = GetPowerColor(normalized);
+                powerLabelText.color = GetTextColor(GetPowerColor(normalized));
             }
 
             if (powerValueText != null)
             {
                 string bar = BuildAsciiBar(normalized);
                 powerValueText.text = $"{MonospaceOpenTag}{bar} {percent}%{MonospaceCloseTag}";
-                powerValueText.color = GetPowerColor(normalized);
+                powerValueText.color = GetTextColor(GetPowerColor(normalized));
             }
 
             if (powerFill != null)
@@ -108,14 +125,14 @@ namespace PlinkoPinball.UI
             if (powerLabelText != null)
             {
                 powerLabelText.text = "SYSTEM";
-                powerLabelText.color = powerNormalColor;
+                powerLabelText.color = GetTextColor(powerNormalColor);
             }
 
             if (powerValueText != null)
             {
                 string bar = BuildAsciiBar(normalized);
                 powerValueText.text = $"{MonospaceOpenTag}{bar} {status}{MonospaceCloseTag}";
-                powerValueText.color = powerNormalColor;
+                powerValueText.color = GetTextColor(powerNormalColor);
             }
 
             if (powerFill != null)
@@ -242,6 +259,11 @@ namespace PlinkoPinball.UI
             }
 
             return powerNormalColor;
+        }
+
+        private Color GetTextColor(Color fallback)
+        {
+            return forceTextColor ? forcedTextColor : fallback;
         }
 
         private static void SetSectionVisible(GameObject root, bool visible, params Component[] fallbackComponents)

@@ -11,6 +11,14 @@ namespace PlinkoPinball.UI
     {
         [SerializeField] private TMP_Text messageText;
 
+        public void SetTextColor(Color color)
+        {
+            if (messageText != null)
+            {
+                messageText.color = color;
+            }
+        }
+
         public void SetMessage(string message)
         {
             if (messageText != null)

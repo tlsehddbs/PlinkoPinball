@@ -32,20 +32,38 @@ namespace PlinkoPinball.Pinball
         private float currentAngle;
         private float targetAngle;
         private bool isActivated;
+        private bool initialized;
 
         private void Awake()
         {
+            EnsureInitialized();
+            currentAngle = restAngle;
+            targetAngle = restAngle;
+
+            ApplyRotation(restAngle);
+        }
+
+        private void EnsureInitialized()
+        {
+            if (initialized)
+            {
+                return;
+            }
+
             rb = GetComponent<Rigidbody>();
+            if (rb == null)
+            {
+                Debug.LogWarning($"[{nameof(PinballFlipper)}] Missing Rigidbody.", this);
+                return;
+            }
+
             rb.isKinematic = true;
             rb.useGravity = false;
             rb.interpolation = RigidbodyInterpolation.Interpolate;
             rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
 
             baseLocalRotation = transform.localRotation;
-            currentAngle = restAngle;
-            targetAngle = restAngle;
-
-            ApplyRotation(restAngle);
+            initialized = true;
         }
 
         private void OnEnable()
@@ -108,8 +126,24 @@ namespace PlinkoPinball.Pinball
             targetAngle = restAngle;
         }
 
+        public void ResetToRest()
+        {
+            EnsureInitialized();
+
+            isActivated = false;
+            currentAngle = restAngle;
+            targetAngle = restAngle;
+            ApplyRotation(restAngle);
+        }
+
         private void ApplyRotation(float angle)
         {
+            EnsureInitialized();
+            if (rb == null)
+            {
+                return;
+            }
+
             Quaternion offset = Quaternion.AngleAxis(angle, localRotationAxis.normalized);
             rb.MoveRotation(transform.parent != null ? transform.parent.rotation * baseLocalRotation * offset : baseLocalRotation * offset);
         }
