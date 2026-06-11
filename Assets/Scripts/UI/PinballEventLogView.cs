@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace PlinkoPinball.UI
 {
@@ -18,12 +19,18 @@ namespace PlinkoPinball.UI
         [Header("Log")]
         [SerializeField, Min(1)] private int maxVisibleLogs = 14;
         [SerializeField] private bool collapseRepeatedLogs = true;
+        [SerializeField] private bool lockContentToViewport = true;
 
         private readonly Queue<PinballEventLogItem> items = new();
 
         private string lastRawMessage;
         private int repeatCount;
         private PinballEventLogItem lastItem;
+
+        private void OnEnable()
+        {
+            ConfigureLayout();
+        }
 
         /// <summary>
         /// 로그 한 줄을 추가한다.
@@ -48,6 +55,7 @@ namespace PlinkoPinball.UI
 
             PinballEventLogItem item = Instantiate(itemPrefab, contentRoot);
             item.SetMessage(message);
+            item.transform.SetAsLastSibling();
 
             items.Enqueue(item);
             lastItem = item;
@@ -66,6 +74,8 @@ namespace PlinkoPinball.UI
                     Destroy(oldItem.gameObject);
                 }
             }
+
+            RebuildLayout();
         }
 
         /// <summary>
@@ -86,6 +96,53 @@ namespace PlinkoPinball.UI
             lastRawMessage = null;
             repeatCount = 0;
             lastItem = null;
+            RebuildLayout();
+        }
+
+        private void ConfigureLayout()
+        {
+            if (contentRoot == null)
+            {
+                return;
+            }
+
+            if (lockContentToViewport)
+            {
+                contentRoot.anchorMin = Vector2.zero;
+                contentRoot.anchorMax = Vector2.one;
+                contentRoot.pivot = new Vector2(0.5f, 0f);
+                contentRoot.anchoredPosition = Vector2.zero;
+                contentRoot.offsetMin = Vector2.zero;
+                contentRoot.offsetMax = Vector2.zero;
+
+                ContentSizeFitter fitter = contentRoot.GetComponent<ContentSizeFitter>();
+                if (fitter != null)
+                {
+                    fitter.enabled = false;
+                }
+            }
+
+            VerticalLayoutGroup layout = contentRoot.GetComponent<VerticalLayoutGroup>();
+            if (layout != null)
+            {
+                layout.childAlignment = TextAnchor.LowerLeft;
+                layout.childControlWidth = true;
+                layout.childControlHeight = true;
+                layout.childForceExpandWidth = true;
+                layout.childForceExpandHeight = false;
+                layout.reverseArrangement = false;
+            }
+        }
+
+        private void RebuildLayout()
+        {
+            if (contentRoot == null)
+            {
+                return;
+            }
+
+            ConfigureLayout();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(contentRoot);
         }
     }
 }

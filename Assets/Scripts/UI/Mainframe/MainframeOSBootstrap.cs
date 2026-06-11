@@ -3,6 +3,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using PlinkoPinball.Gameplay.Core.Compression;
+using PlinkoPinball.UI;
 
 namespace PlinkoPinball.UI.Mainframe
 {
@@ -21,6 +23,7 @@ namespace PlinkoPinball.UI.Mainframe
         [Header("Runtime Prefabs")]
         [SerializeField] private GameObject plinkoBoardRootPrefab;
         [SerializeField] private GameObject plinkoRuntimeSystemsPrefab;
+        [SerializeField] private CompressionSettings compressionSettings;
 
         [Header("Runtime Render Textures")]
         [SerializeField] private RenderTexture pinballRenderTexture;
@@ -181,6 +184,7 @@ namespace PlinkoPinball.UI.Mainframe
                 processManager,
                 plinkoBoardRootPrefab,
                 plinkoRuntimeSystemsPrefab,
+                compressionSettings,
                 pinballRenderTexture,
                 plinkoRenderTexture);
         }
@@ -430,6 +434,8 @@ namespace PlinkoPinball.UI.Mainframe
                 {
                     FitRenderTextureContent(content);
                 }
+
+                FitStatusAndLogContent(content);
             }
             else
             {
@@ -462,6 +468,169 @@ namespace PlinkoPinball.UI.Mainframe
                 MainframeWindowFrame.StretchToParent(rect);
                 rawImages[i].raycastTarget = false;
             }
+        }
+
+        private static void FitStatusAndLogContent(GameObject content)
+        {
+            if (content == null)
+            {
+                return;
+            }
+
+            if (content.GetComponentInChildren<TopBarView>(true) != null)
+            {
+                StretchNamedChild(content.transform, "TopBar", new Vector2(8f, 8f), new Vector2(-8f, -8f));
+                ArrangeStatusSections(content.transform);
+            }
+
+            if (content.GetComponentInChildren<PinballEventLogView>(true) != null)
+            {
+                StretchNamedChild(content.transform, "ViewPort", Vector2.zero, Vector2.zero);
+                StretchNamedChild(content.transform, "Content", new Vector2(6f, 0f), new Vector2(-6f, 0f));
+                ConfigureLogContentLayout(content.transform);
+            }
+        }
+
+        private static void StretchNamedChild(Transform root, string childName, Vector2 offsetMin, Vector2 offsetMax)
+        {
+            if (root == null)
+            {
+                return;
+            }
+
+            RectTransform[] rects = root.GetComponentsInChildren<RectTransform>(true);
+            for (int i = 0; i < rects.Length; i++)
+            {
+                RectTransform rect = rects[i];
+                if (rect == null || rect.name != childName)
+                {
+                    continue;
+                }
+
+                rect.anchorMin = Vector2.zero;
+                rect.anchorMax = Vector2.one;
+                rect.pivot = new Vector2(0.5f, 0.5f);
+                rect.anchoredPosition = Vector2.zero;
+                rect.sizeDelta = Vector2.zero;
+                rect.offsetMin = offsetMin;
+                rect.offsetMax = offsetMax;
+                return;
+            }
+        }
+
+        private static void ArrangeStatusSections(Transform root)
+        {
+            string[] sectionNames =
+            {
+                "Power",
+                "Compression",
+                "StartBall",
+                "Throughput",
+                "Credits"
+            };
+
+            const float topPadding = 8f;
+            const float rowHeight = 34f;
+            const float rowGap = 4f;
+
+            for (int i = 0; i < sectionNames.Length; i++)
+            {
+                RectTransform section = FindRect(root, sectionNames[i]);
+                if (section == null)
+                {
+                    continue;
+                }
+
+                float top = topPadding + i * (rowHeight + rowGap);
+                section.anchorMin = new Vector2(0f, 1f);
+                section.anchorMax = new Vector2(1f, 1f);
+                section.pivot = new Vector2(0.5f, 1f);
+                section.anchoredPosition = new Vector2(0f, -top);
+                section.sizeDelta = new Vector2(0f, rowHeight);
+
+                ArrangeStatusText(section, "Label", 0f, 0.34f, TextAlignmentOptions.MidlineLeft);
+                ArrangeStatusText(section, "Value", 0.36f, 1f, TextAlignmentOptions.MidlineRight);
+            }
+        }
+
+        private static void ArrangeStatusText(RectTransform section, string childName, float anchorMinX, float anchorMaxX, TextAlignmentOptions alignment)
+        {
+            RectTransform child = FindDirectRect(section, childName);
+            if (child == null)
+            {
+                return;
+            }
+
+            child.anchorMin = new Vector2(anchorMinX, 0f);
+            child.anchorMax = new Vector2(anchorMaxX, 1f);
+            child.pivot = new Vector2(0.5f, 0.5f);
+            child.anchoredPosition = Vector2.zero;
+            child.offsetMin = Vector2.zero;
+            child.offsetMax = Vector2.zero;
+
+            TMP_Text text = child.GetComponent<TMP_Text>();
+            if (text != null)
+            {
+                text.alignment = alignment;
+                text.fontSize = Mathf.Min(text.fontSize, 16f);
+                text.enableAutoSizing = true;
+                text.fontSizeMin = 10f;
+                text.fontSizeMax = 16f;
+            }
+        }
+
+        private static RectTransform FindRect(Transform root, string childName)
+        {
+            RectTransform[] rects = root.GetComponentsInChildren<RectTransform>(true);
+            for (int i = 0; i < rects.Length; i++)
+            {
+                if (rects[i] != null && rects[i].name == childName)
+                {
+                    return rects[i];
+                }
+            }
+
+            return null;
+        }
+
+        private static void ConfigureLogContentLayout(Transform root)
+        {
+            RectTransform content = FindRect(root, "Content");
+            if (content == null)
+            {
+                return;
+            }
+
+            ContentSizeFitter fitter = content.GetComponent<ContentSizeFitter>();
+            if (fitter != null)
+            {
+                fitter.enabled = false;
+            }
+
+            VerticalLayoutGroup layout = content.GetComponent<VerticalLayoutGroup>();
+            if (layout != null)
+            {
+                layout.childAlignment = TextAnchor.LowerLeft;
+                layout.childControlWidth = true;
+                layout.childControlHeight = true;
+                layout.childForceExpandWidth = true;
+                layout.childForceExpandHeight = false;
+                layout.reverseArrangement = false;
+            }
+        }
+
+        private static RectTransform FindDirectRect(Transform root, string childName)
+        {
+            for (int i = 0; i < root.childCount; i++)
+            {
+                Transform child = root.GetChild(i);
+                if (child != null && child.name == childName)
+                {
+                    return child as RectTransform;
+                }
+            }
+
+            return null;
         }
 
         private void CreatePlaceholder(RectTransform parent, string message)

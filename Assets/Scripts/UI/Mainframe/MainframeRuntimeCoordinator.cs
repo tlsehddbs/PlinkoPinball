@@ -10,6 +10,7 @@ using PlinkoPinball.Gameplay.Core.Flow;
 using PlinkoPinball.Gameplay.Components.Plinko;
 using PlinkoPinball.Gameplay.Core.Plinko;
 using PlinkoPinball.Gameplay.Upgrade;
+using PlinkoPinball.UI;
 
 namespace PlinkoPinball.UI.Mainframe
 {
@@ -23,6 +24,7 @@ namespace PlinkoPinball.UI.Mainframe
         [Header("Runtime Prefabs")]
         [SerializeField] private GameObject plinkoBoardRootPrefab;
         [SerializeField] private GameObject plinkoRuntimeSystemsPrefab;
+        [SerializeField] private CompressionSettings compressionSettings;
 
         [Header("Render Textures")]
         [SerializeField] private RenderTexture pinballRenderTexture;
@@ -61,12 +63,14 @@ namespace PlinkoPinball.UI.Mainframe
             MainframeProcessManager manager,
             GameObject boardRootPrefab,
             GameObject runtimeSystemsPrefab,
+            CompressionSettings compressionSettingsAsset,
             RenderTexture pinballTexture,
             RenderTexture plinkoTexture)
         {
             processManager = manager;
             plinkoBoardRootPrefab = boardRootPrefab;
             plinkoRuntimeSystemsPrefab = runtimeSystemsPrefab;
+            compressionSettings = compressionSettingsAsset;
             pinballRenderTexture = pinballTexture;
             plinkoRenderTexture = plinkoTexture;
 
@@ -116,6 +120,7 @@ namespace PlinkoPinball.UI.Mainframe
             SubscribeToPhaseChanges();
             SubscribeToProcessChanges();
             RegisterPinballRuntime();
+            RebindStatusPresenters();
 
             if (!initialPinballRoundStarted && gameManager.Phase != GamePhase.Plinko)
             {
@@ -167,6 +172,7 @@ namespace PlinkoPinball.UI.Mainframe
                 return;
             }
 
+            EnsurePinballGlobalSystems();
             ConfigurePinballPlinkoBonusWiring();
             ConfigurePinballRenderCamera();
 
@@ -369,6 +375,7 @@ namespace PlinkoPinball.UI.Mainframe
 
         private void RegisterPinballRuntime()
         {
+            EnsurePinballGlobalSystems();
             ConfigurePinballPlinkoBonusWiring();
 
             ScoreSystem scoreSystem = pinballRuntimeRoot.GetComponentInChildren<ScoreSystem>(true);
@@ -385,6 +392,87 @@ namespace PlinkoPinball.UI.Mainframe
             }
 
             gameManager.RegisterPinballScene(scoreSystem, transitionController, roundResettables);
+        }
+
+        private void EnsurePinballGlobalSystems()
+        {
+            if (pinballRuntimeRoot == null)
+            {
+                return;
+            }
+
+            Transform systemsRoot = ResolvePinballSystemsRoot();
+            PlinkoRunSnapshotBuilder snapshotBuilder = GetOrCreatePinballSystem<PlinkoRunSnapshotBuilder>(systemsRoot, "PlinkoRunSnapshotBuilder");
+
+            ScoreSystem scoreSystem = GetOrCreatePinballSystem<ScoreSystem>(systemsRoot, "ScoreSystem");
+            if (scoreSystem == null)
+            {
+                return;
+            }
+
+            CompressionSystem compressionSystem = GetOrCreatePinballSystem<CompressionSystem>(systemsRoot, "CompressionSystem");
+            if (compressionSystem != null)
+            {
+                compressionSystem.ConfigureSettings(compressionSettings);
+                compressionSystem.ConfigureSnapshotBuilder(snapshotBuilder);
+            }
+
+            PinballToPlinkoTransitionController transitionController = GetOrCreatePinballSystem<PinballToPlinkoTransitionController>(systemsRoot, "PinballToPlinkoTransitionController");
+            if (transitionController != null)
+            {
+                transitionController.ConfigureSnapshotBuilder(snapshotBuilder);
+            }
+        }
+
+        private Transform ResolvePinballSystemsRoot()
+        {
+            Transform existing = pinballRuntimeRoot.transform.Find("MainframePinballSystems");
+            if (existing != null)
+            {
+                return existing;
+            }
+
+            GameObject systemsObject = new GameObject("MainframePinballSystems");
+            systemsObject.transform.SetParent(pinballRuntimeRoot.transform, false);
+            systemsObject.transform.localPosition = Vector3.zero;
+            systemsObject.transform.localRotation = Quaternion.identity;
+            systemsObject.transform.localScale = Vector3.one;
+            return systemsObject.transform;
+        }
+
+        private T GetOrCreatePinballSystem<T>(Transform systemsRoot, string objectName) where T : Component
+        {
+            T existing = pinballRuntimeRoot.GetComponentInChildren<T>(true);
+            if (existing != null)
+            {
+                return existing;
+            }
+
+            Transform child = systemsRoot.Find(objectName);
+            GameObject systemObject;
+            if (child != null)
+            {
+                systemObject = child.gameObject;
+            }
+            else
+            {
+                systemObject = new GameObject(objectName);
+                systemObject.transform.SetParent(systemsRoot, false);
+                systemObject.transform.localPosition = Vector3.zero;
+                systemObject.transform.localRotation = Quaternion.identity;
+                systemObject.transform.localScale = Vector3.one;
+            }
+
+            return systemObject.GetComponent<T>() ?? systemObject.AddComponent<T>();
+        }
+
+        private static void RebindStatusPresenters()
+        {
+            TopBarPresenter[] presenters = FindObjectsByType<TopBarPresenter>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (int i = 0; i < presenters.Length; i++)
+            {
+                presenters[i]?.Rebind();
+            }
         }
 
         private void ConfigurePinballPlinkoBonusWiring()

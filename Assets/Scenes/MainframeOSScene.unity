@@ -172,6 +172,7 @@ MonoBehaviour:
   popupDialogPrefab: {fileID: 910000001, guid: 090b4da9b6764c78a56c36da29315572, type: 3}
   plinkoBoardRootPrefab: {fileID: 101591938093668014, guid: da5e5006de62540c6b8e05f2d9de05fb, type: 3}
   plinkoRuntimeSystemsPrefab: {fileID: 5790220704149448561, guid: 4d4f2130697d04cdca4460139cea821a, type: 3}
+  compressionSettings: {fileID: 11400000, guid: 02a89d1461fe3414999e6f118c5f256d, type: 2}
   pinballRenderTexture: {fileID: 8400000, guid: 9b8ad5cc2b192403f8b4e2ab1fec4581, type: 2}
   plinkoRenderTexture: {fileID: 8400000, guid: db466e00b90a246249b0c021ed2602e2, type: 2}
   theme: {fileID: 11400000, guid: eb031e452c7147178001657f387f53db, type: 2}
@@ -2009,7 +2010,7 @@ MonoBehaviour:
   ballPrefab: {fileID: 2631998667298213232, guid: 1ae5f2198ed8d7044ab6a177260cbf2b, type: 3}
   spawnPoint: {fileID: 233292461}
   gravityMultiplier: 3.5
-  maxLinearSpeed: 90.5
+  maxLinearSpeed: 63.35
   applyExtraGravityOnlyWhenDescending: 1
 --- !u!1 &1794275783
 GameObject:

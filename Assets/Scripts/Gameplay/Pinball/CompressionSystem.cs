@@ -40,6 +40,14 @@ namespace PlinkoPinball.Gameplay.Core.Compression
         public event Action<float, float> ProgressChanged;
         public event Action<int> StartBallsGranted;
 
+        public void ConfigureSettings(CompressionSettings compressionSettings)
+        {
+            if (compressionSettings != null)
+            {
+                settings = compressionSettings;
+            }
+        }
+
         public void ConfigureSnapshotBuilder(PlinkoRunSnapshotBuilder builder)
         {
             if (builder != null)
