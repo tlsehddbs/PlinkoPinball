@@ -3,10 +3,6 @@ using PlinkoPinball.Core.TableEvents;
 
 namespace PlinkoPinball.UI
 {
-    /// <summary>
-    /// TableEventBus를 구독해 Pinball 이벤트를 메인프레임 시스템 로그 UI로 전달한다.
-    /// 게임 규칙을 변경하지 않는 표시 전용 Presenter다.
-    /// </summary>
     [DisallowMultipleComponent]
     public sealed class PinballEventLogPresenter : MonoBehaviour
     {
@@ -25,6 +21,7 @@ namespace PlinkoPinball.UI
 
         private void OnEnable()
         {
+            ResolveLogView();
             TableEventBus.OnEvent += HandleTableEvent;
         }
 
@@ -37,25 +34,19 @@ namespace PlinkoPinball.UI
         {
             if (logView == null)
             {
-                return;
+                ResolveLogView();
             }
 
-            if (!ShouldShow(tableEvent))
+            if (logView == null || !ShouldShow(tableEvent))
             {
                 return;
             }
 
-            string message = FormatMessage(tableEvent);
-            logView.AddLog(message);
+            logView.AddLog(FormatMessage(tableEvent));
         }
 
         private bool ShouldShow(TableEvent tableEvent)
         {
-            if (tableEvent.tags == null)
-            {
-                return false;
-            }
-
             if (showCompressionEvents && tableEvent.HasTag("compression"))
             {
                 return true;
@@ -76,7 +67,39 @@ namespace PlinkoPinball.UI
                 return true;
             }
 
-            return false;
+            return ShouldShowUntagged(tableEvent);
+        }
+
+        private bool ShouldShowUntagged(TableEvent tableEvent)
+        {
+            if (tableEvent.tags != null && tableEvent.tags.Length > 0)
+            {
+                return false;
+            }
+
+            return tableEvent.eventType switch
+            {
+                TableEventType.Hit => showScoreEvents,
+                TableEventType.Pass => showChipsetEvents,
+                TableEventType.Switch => showChipsetEvents,
+                TableEventType.Zone => showTimeEvents,
+                TableEventType.Custom => showCompressionEvents || showChipsetEvents,
+                _ => false
+            };
+        }
+
+        private void ResolveLogView()
+        {
+            if (logView != null)
+            {
+                return;
+            }
+
+            logView = GetComponent<PinballEventLogView>();
+            if (logView == null)
+            {
+                logView = GetComponentInChildren<PinballEventLogView>(true);
+            }
         }
 
         private string FormatMessage(TableEvent tableEvent)
@@ -110,7 +133,30 @@ namespace PlinkoPinball.UI
                 return BuildLine(timestamp, "THR", sourceCode, $"SIGNAL +{tableEvent.baseValue:0}");
             }
 
-            return BuildLine(timestamp, "EVT", sourceCode, "SIGNAL DETECTED");
+            return BuildLine(timestamp, GetFallbackChannel(tableEvent.eventType), sourceCode, GetFallbackMessage(tableEvent));
+        }
+
+        private static string GetFallbackChannel(TableEventType eventType)
+        {
+            return eventType switch
+            {
+                TableEventType.Hit => "THR",
+                TableEventType.Pass => "PASS",
+                TableEventType.Switch => "SW",
+                TableEventType.Zone => "ZONE",
+                TableEventType.Custom => "EVT",
+                _ => "EVT"
+            };
+        }
+
+        private static string GetFallbackMessage(TableEvent tableEvent)
+        {
+            if (!string.IsNullOrWhiteSpace(tableEvent.eventId))
+            {
+                return tableEvent.eventId.ToUpperInvariant();
+            }
+
+            return "SIGNAL DETECTED";
         }
 
         private string BuildLine(string timestamp, string channel, string source, string message)

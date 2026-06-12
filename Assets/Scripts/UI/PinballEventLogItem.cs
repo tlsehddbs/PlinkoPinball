@@ -9,7 +9,14 @@ namespace PlinkoPinball.UI
     [DisallowMultipleComponent]
     public sealed class PinballEventLogItem : MonoBehaviour
     {
+        private const int MonospaceWidth = 14;
+
         [SerializeField] private TMP_Text messageText;
+
+        private void Awake()
+        {
+            ConfigureText();
+        }
 
         public void SetTextColor(Color color)
         {
@@ -23,8 +30,24 @@ namespace PlinkoPinball.UI
         {
             if (messageText != null)
             {
-                messageText.text = $"<mspace=20>{message}";
+                ConfigureText();
+                messageText.text = $"<mspace={MonospaceWidth}>{message}</mspace>";
             }
+        }
+
+        private void ConfigureText()
+        {
+            if (messageText == null)
+            {
+                return;
+            }
+
+            messageText.textWrappingMode = TextWrappingModes.NoWrap;
+            messageText.overflowMode = TextOverflowModes.Truncate;
+            messageText.enableAutoSizing = true;
+            messageText.fontSizeMin = 12f;
+            messageText.fontSizeMax = 18f;
+            messageText.characterSpacing = 0f;
         }
     }
 }

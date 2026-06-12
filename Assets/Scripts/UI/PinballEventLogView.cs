@@ -28,6 +28,7 @@ namespace PlinkoPinball.UI
         private string lastRawMessage;
         private int repeatCount;
         private PinballEventLogItem lastItem;
+        private VerticalLayoutGroup cachedLayout;
 
         private void OnEnable()
         {
@@ -56,6 +57,7 @@ namespace PlinkoPinball.UI
             {
                 repeatCount++;
                 lastItem.SetMessage($"{message}  x{repeatCount}");
+                RebuildLayout();
                 return;
             }
 
@@ -70,20 +72,7 @@ namespace PlinkoPinball.UI
             items.Enqueue(item);
             lastItem = item;
 
-            while (items.Count > maxVisibleLogs)
-            {
-                PinballEventLogItem oldItem = items.Dequeue();
-
-                if (oldItem != null)
-                {
-                    if (oldItem == lastItem)
-                    {
-                        lastItem = null;
-                    }
-
-                    Destroy(oldItem.gameObject);
-                }
-            }
+            TrimOverflowLogs();
 
             RebuildLayout();
         }
@@ -132,16 +121,96 @@ namespace PlinkoPinball.UI
                 }
             }
 
-            VerticalLayoutGroup layout = contentRoot.GetComponent<VerticalLayoutGroup>();
-            if (layout != null)
+            cachedLayout = contentRoot.GetComponent<VerticalLayoutGroup>();
+            if (cachedLayout != null)
             {
-                layout.childAlignment = TextAnchor.LowerLeft;
-                layout.childControlWidth = true;
-                layout.childControlHeight = true;
-                layout.childForceExpandWidth = true;
-                layout.childForceExpandHeight = false;
-                layout.reverseArrangement = false;
+                cachedLayout.enabled = true;
+                cachedLayout.childAlignment = TextAnchor.LowerLeft;
+                cachedLayout.childControlWidth = true;
+                cachedLayout.childControlHeight = true;
+                cachedLayout.childForceExpandWidth = true;
+                cachedLayout.childForceExpandHeight = false;
+                cachedLayout.reverseArrangement = false;
             }
+        }
+
+        private void TrimOverflowLogs()
+        {
+            int limit = GetVisibleLogLimit();
+            while (items.Count > limit)
+            {
+                PinballEventLogItem oldItem = items.Dequeue();
+
+                if (oldItem != null)
+                {
+                    if (oldItem == lastItem)
+                    {
+                        lastItem = null;
+                    }
+
+                    Destroy(oldItem.gameObject);
+                }
+            }
+        }
+
+        private int GetVisibleLogLimit()
+        {
+            int limit = Mathf.Max(1, maxVisibleLogs);
+
+            if (!lockContentToViewport || contentRoot == null)
+            {
+                return limit;
+            }
+
+            float contentHeight = contentRoot.rect.height;
+            if (contentHeight <= 0f)
+            {
+                return limit;
+            }
+
+            VerticalLayoutGroup layout = cachedLayout != null ? cachedLayout : contentRoot.GetComponent<VerticalLayoutGroup>();
+            float spacing = layout != null ? layout.spacing : 0f;
+            float padding = layout != null ? layout.padding.top + layout.padding.bottom : 0f;
+            float rowHeight = GetItemHeight();
+
+            if (rowHeight <= 0f)
+            {
+                return limit;
+            }
+
+            float usableHeight = Mathf.Max(0f, contentHeight - padding);
+            int visibleRows = Mathf.FloorToInt((usableHeight + spacing) / (rowHeight + spacing));
+            return Mathf.Clamp(visibleRows, 1, limit);
+        }
+
+        private float GetItemHeight()
+        {
+            if (itemPrefab == null)
+            {
+                return 0f;
+            }
+
+            RectTransform itemRect = itemPrefab.GetComponent<RectTransform>();
+            if (itemRect != null && itemRect.rect.height > 0f)
+            {
+                return itemRect.rect.height;
+            }
+
+            LayoutElement layoutElement = itemPrefab.GetComponent<LayoutElement>();
+            if (layoutElement != null)
+            {
+                if (layoutElement.preferredHeight > 0f)
+                {
+                    return layoutElement.preferredHeight;
+                }
+
+                if (layoutElement.minHeight > 0f)
+                {
+                    return layoutElement.minHeight;
+                }
+            }
+
+            return 24f;
         }
 
         private void RebuildLayout()

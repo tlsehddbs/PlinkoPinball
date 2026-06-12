@@ -641,6 +641,7 @@ namespace PlinkoPinball.UI.Mainframe
             VerticalLayoutGroup layout = content.GetComponent<VerticalLayoutGroup>();
             if (layout != null)
             {
+                layout.enabled = true;
                 layout.childAlignment = TextAnchor.LowerLeft;
                 layout.childControlWidth = true;
                 layout.childControlHeight = true;

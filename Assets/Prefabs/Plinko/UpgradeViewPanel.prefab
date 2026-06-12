@@ -37,7 +37,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 130}
+  m_AnchoredPosition: {x: 0, y: 200}
   m_SizeDelta: {x: -29.999994, y: -440}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5035645043841798385
@@ -256,7 +256,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4279045389
   m_fontColor: {r: 0.05, g: 0.05, b: 0.05, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -354,8 +354,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 145}
-  m_SizeDelta: {x: -30, y: 260}
+  m_AnchoredPosition: {x: 0, y: 210}
+  m_SizeDelta: {x: -30, y: 375}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5116080367230809228
 CanvasRenderer:
@@ -492,6 +492,7 @@ MonoBehaviour:
   lineRoot: {fileID: 951837110904734036}
   nodePrefab: {fileID: -2955772541076787832, guid: 2c159944436317e448871244751109ed, type: 3}
   linePrefab: {fileID: 1670208612705035001, guid: 7dc71d661d52107469638a07598b8a3d, type: 3}
+  theme: {fileID: 0}
   upgradeInfoPanel: {fileID: 6274766792247485786}
   upgradeInfoText: {fileID: 3605575129230649774}
   gridSize: {x: 250, y: 250}
