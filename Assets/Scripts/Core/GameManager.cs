@@ -3,8 +3,9 @@ using System;
 using System.Collections.Generic;
 
 using PlinkoPinball.Services;
+using PlinkoPinball.Core.Flow;
 using PlinkoPinball.Gameplay.Core.Flow;
-using PlinkoPinball.Gameplay.Systems;
+using PlinkoPinball.Gameplay.Upgrade;
 using PlinkoPinball.InputRuntime;
 
 namespace PlinkoPinball.Core
@@ -23,11 +24,18 @@ namespace PlinkoPinball.Core
         [Header("Global Services")]
         [SerializeField] private GameSceneManager gameSceneManager;
         [SerializeField] private GameSessionState sessionState;
+        [SerializeField] private CurrencySystem currencySystem;
+        [SerializeField] private PhaseHandoffService phaseHandoffService;
+        [SerializeField] private UpgradeDatabase upgradeDatabase;
+        [SerializeField] private UpgradeSystem upgradeSystem;
         [SerializeField] private InputRouter inputRouter;
 
         public GamePhase Phase { get; private set; } = GamePhase.None;
+        public float StartTimeSeconds => startTimeSeconds;
         public TimeManager Time { get; private set; }
         public GameSessionState SessionState => sessionState;
+        public CurrencySystem Currency => currencySystem;
+        public UpgradeSystem Upgrade => upgradeSystem;
         public InputRouter InputRouter => inputRouter;
 
         public event Action<GamePhase, GamePhase> OnPhaseChanged;
@@ -38,6 +46,7 @@ namespace PlinkoPinball.Core
         private PinballToPlinkoTransitionController _transitionController;
         private bool _roundEnded;
         private bool _isPaused;
+        
 
         private void Awake()
         {
@@ -49,6 +58,8 @@ namespace PlinkoPinball.Core
 
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            ResolveGlobalServices();
 
             Time = new TimeManager(notifyIntervalSeconds: timeChangedNotifyIntervalSeconds);
             Time.OnTimeOver += HandleTimeOver;
@@ -74,9 +85,10 @@ namespace PlinkoPinball.Core
 
             GamePhase previous = Phase;
             Phase = newPhase;
+            sessionState?.SetPhase(newPhase);
             OnPhaseChanged?.Invoke(previous, newPhase);
 
-            inputRouter.ApplyPhase(newPhase);
+            inputRouter?.ApplyPhase(newPhase);
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             Debug.Log($"[GameManager] Phase => {newPhase}", this);
@@ -86,6 +98,11 @@ namespace PlinkoPinball.Core
         public void StartNewSession()
         {
             sessionState?.ResetSession();
+            if (currencySystem != null)
+            {
+                sessionState?.SetPlayerCurrency(currencySystem.CurrentCurrency);
+            }
+
             gameSceneManager?.LoadMainTable();
         }
 
@@ -159,6 +176,7 @@ namespace PlinkoPinball.Core
 
             int roundIndex = sessionState != null ? sessionState.CurrentRoundIndex : 1;
             int currentScore = _scoreSystem != null ? _scoreSystem.CurrentScore : 0;
+            sessionState?.RecordPinballRoundResult(roundIndex, currentScore);
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             Debug.Log($"[GameManager] Ending round {roundIndex}. Score={currentScore}", this);
@@ -170,8 +188,8 @@ namespace PlinkoPinball.Core
         public void CompletePlinkoAndReturnToPinball()
         {
             sessionState?.AdvanceRound();
-            gameSceneManager?.LoadMainTable();
-            _roundEnded = false;
+            phaseHandoffService?.ClearPlinkoContext();
+            StartPinballRound();
         }
 
         private void HandleTimeOver()
@@ -180,6 +198,76 @@ namespace PlinkoPinball.Core
             Debug.Log("[GameManager] Time Over", this);
 #endif
             EndPinballRoundAndTransitionToPlinko();
+        }
+
+        private void ResolveGlobalServices()
+        {
+            if (gameSceneManager == null)
+            {
+                gameSceneManager = FindFirstObjectByType<GameSceneManager>();
+                if (gameSceneManager == null)
+                {
+                    gameSceneManager = gameObject.AddComponent<GameSceneManager>();
+                }
+            }
+
+            if (sessionState == null)
+            {
+                sessionState = GameSessionState.Instance;
+                if (sessionState == null)
+                {
+                    sessionState = FindFirstObjectByType<GameSessionState>();
+                }
+
+                if (sessionState == null)
+                {
+                    sessionState = gameObject.AddComponent<GameSessionState>();
+                }
+            }
+
+            if (currencySystem == null)
+            {
+                currencySystem = CurrencySystem.Instance;
+                if (currencySystem == null)
+                {
+                    currencySystem = FindFirstObjectByType<CurrencySystem>();
+                }
+
+                if (currencySystem == null)
+                {
+                    currencySystem = gameObject.AddComponent<CurrencySystem>();
+                }
+            }
+
+            if (phaseHandoffService == null)
+            {
+                phaseHandoffService = PhaseHandoffService.Instance;
+                if (phaseHandoffService == null)
+                {
+                    phaseHandoffService = FindFirstObjectByType<PhaseHandoffService>();
+                }
+
+                if (phaseHandoffService == null)
+                {
+                    phaseHandoffService = gameObject.AddComponent<PhaseHandoffService>();
+                }
+            }
+
+            if (upgradeSystem == null)
+            {
+                upgradeSystem = UpgradeSystem.Instance;
+                if (upgradeSystem == null)
+                {
+                    upgradeSystem = FindFirstObjectByType<UpgradeSystem>();
+                }
+
+                if (upgradeSystem == null)
+                {
+                    upgradeSystem = gameObject.AddComponent<UpgradeSystem>();
+                }
+            }
+
+            upgradeSystem.Initialize(upgradeDatabase, sessionState);
         }
     }
 }

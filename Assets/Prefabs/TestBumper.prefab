@@ -11,11 +11,11 @@ GameObject:
   - component: {fileID: 2516781997313802911}
   - component: {fileID: 6673098619961578843}
   - component: {fileID: 1219943089112533886}
-  - component: {fileID: 2953148134094649245}
   - component: {fileID: 4432025590332816959}
   - component: {fileID: 1598793109583244760}
   - component: {fileID: 8539648652224343645}
   - component: {fileID: 5778423591011717520}
+  - component: {fileID: 7550786159439246932}
   m_Layer: 0
   m_Name: TestBumper
   m_TagString: Untagged
@@ -95,29 +95,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &2953148134094649245
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7430023637041184352}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!65 &4432025590332816959
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -151,9 +128,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97babfd8e2e37374a91739dce75c681f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Components.Triggers.BallHitTrigger
-  eventId: bumper.small.hit
+  autoGenerateEventId: 1
+  eventId: hit.testbumper
   baseValue: 3
   tags: []
+  sourceId: 
+  eventSourceOverride: {fileID: 0}
   ballLayer: 10
   cooldownSeconds: 0.05
 --- !u!114 &8539648652224343645
@@ -184,3 +164,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Components.Reactions.LocalEventLoggerReaction
   logEnabled: 1
+--- !u!114 &7550786159439246932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7430023637041184352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eef1a87b56f348ec8163f01664be95f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Components.Reactions.PinballSoundReaction
+  useEventTypeFilter: 0
+  eventType: 0
+  requiredEventId: 
+  requiredTag: 
+  clips:
+  - {fileID: 8300000, guid: 1340ba1fa579f674ab71453241682a8a, type: 3}
+  volume: 1
+  playAtEventPosition: 1
+  spatialBlend: 0
+  randomPitch: 1
+  pitchRange: {x: 0.74, y: 1.17}
+  cooldownSeconds: 0.03

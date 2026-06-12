@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52090fe42095f4f73b6851b2d96beed9, type: 3}
+  m_Name: compression_memory_bridge
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Upgrade.UpgradeDefinition
+  upgradeId: compression_memory_bridge
+  displayName: Compression Memory Bridge
+  description: false
+  category: 
+  flavorText: 
+  requirePrerequisitesMaxLevel: 0
+  isMajorNode: 0
+  baseCost: 80
+  costMultiplier: 1.44
+  maxLevel: 4
+  prerequisites:
+  - {fileID: 11400000, guid: 5792c1ab970c7de498b18cb3393fbe47, type: 2}
+  - {fileID: 11400000, guid: 8782855f68de41e4dae9804db6a57069, type: 2}
+  gridPosition: {x: 1, y: 3}
+  upgradeType: 1
+  valuePerLevel: 1.5

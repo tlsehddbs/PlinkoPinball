@@ -7,8 +7,6 @@ namespace PlinkoPinball.UI
 {
     /// <summary>
     /// TimeManager 이벤트를 구독해 Timerbar를 갱신
-    /// 
-    /// 
     /// </summary>    
     public sealed class TimerBar : MonoBehaviour
     {
@@ -32,7 +30,11 @@ namespace PlinkoPinball.UI
         {
             _gameManager = GameManager.Instance;
 
-            //TODO: 추후 상태변화도 감지할 수 있게
+            if (_gameManager == null || _gameManager.Time == null)
+            {
+                return;
+            }
+
             _gameManager.Time.OnTimeChanged += HandleTimeChanged;
 
             // 초기 갱신
@@ -41,7 +43,7 @@ namespace PlinkoPinball.UI
 
         private void OnDisable()
         {
-            if (_gameManager.Time != null)
+            if (_gameManager != null && _gameManager.Time != null)
                 _gameManager.Time.OnTimeChanged -= HandleTimeChanged;
         }
 

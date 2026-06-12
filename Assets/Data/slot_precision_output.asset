@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52090fe42095f4f73b6851b2d96beed9, type: 3}
+  m_Name: slot_precision_output
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Upgrade.UpgradeDefinition
+  upgradeId: slot_precision_output
+  displayName: Precision Output Register
+  description: true
+  category: 
+  flavorText: 
+  requirePrerequisitesMaxLevel: 0
+  isMajorNode: 0
+  baseCost: 160
+  costMultiplier: 1.52
+  maxLevel: 3
+  prerequisites:
+  - {fileID: 11400000, guid: 6b935dd9c9272a04fb607ead5542835c, type: 2}
+  gridPosition: {x: 6, y: 2}
+  upgradeType: 2
+  valuePerLevel: 4

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f81ae70e4252410b9b307cb17de1a6f, type: 3}
+  m_Name: CRT_Overlay_Profile
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Rendering.CRTOverlayProfile
+  overlayStrength: 0.3
+  tintColor: {r: 0, g: 0, b: 0, a: 1}
+  scanlineStrength: 0.45
+  scanlineCount: 300
+  vignetteStrength: 0.35
+  cornerDarkness: 0.8
+  noiseStrength: 0.537
+  noiseSpeed: 12
+  horizontalJitter: 0.002
+  jitterSpeed: 8
+  glassAlpha: 0.08

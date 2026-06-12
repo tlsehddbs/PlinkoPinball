@@ -1,8 +1,7 @@
-using PlinkoPinball.Core;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace PlinkoPinball.Gameplay.Core.Flow
+namespace PlinkoPinball.Core.Flow
 {
     /// <summary>
     /// 주요 씬 전환을 담당합니다.
@@ -14,8 +13,9 @@ namespace PlinkoPinball.Gameplay.Core.Flow
 
         [Header("Scene Names")]
         [SerializeField] private string mainMenuSceneName = "MainMenu";
-        [SerializeField] private string mainTableSceneName = "MainTable";
-        [SerializeField] private string plinkoSceneName = "PlinkoPhase";
+        [SerializeField] private string mainTableSceneName = "MainframeOSScene";
+        [SerializeField] private string plinkoSceneName = "PlinkoScene";
+        [SerializeField] private bool useMainframeSingleSceneFlow = true;
 
         private void Awake()
         {
@@ -42,6 +42,12 @@ namespace PlinkoPinball.Gameplay.Core.Flow
 
         public void LoadPlinko()
         {
+            if (useMainframeSingleSceneFlow)
+            {
+                GameManager.Instance.SetPhase(GamePhase.Plinko);
+                return;
+            }
+
             SceneManager.LoadScene(plinkoSceneName);
             GameManager.Instance.SetPhase(GamePhase.Plinko);
         }
