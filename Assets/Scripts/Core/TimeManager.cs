@@ -67,8 +67,15 @@ namespace PlinkoPinball.Services
         // 시간 추가
         public void AddTime(float seconds)
         {
-            if (!IsRunning) return;
-            if (seconds <= 0f) return;
+            if (!IsRunning)
+            {
+                return;
+            }
+
+            if (seconds <= 0f)
+            {
+                return;
+            }
 
             RemainingSeconds += seconds;
 
@@ -78,8 +85,15 @@ namespace PlinkoPinball.Services
         // 패널티
         public void AddPenalty(float seconds)
         {
-            if (!IsRunning) return;
-            if (seconds <= 0f) return;
+            if (!IsRunning)
+            {
+                return;
+            }
+
+            if (seconds <= 0f)
+            {
+                return;
+            }
 
             RemainingSeconds = Math.Max(0f, RemainingSeconds - seconds);
 
@@ -91,17 +105,32 @@ namespace PlinkoPinball.Services
         // 매 프레임 호출
         public void Tick(float deltaTime)
         {
-            if (!IsRunning) return;
-            if (IsPaused) return;
-            if (HasTimeOverFired) return;
-            if (deltaTime <= 0f) return;
+            if (!IsRunning)
+            {
+                return;
+            }
+
+            if (IsPaused)
+            {
+                return;
+            }
+
+            if (HasTimeOverFired)
+            {
+                return;
+            }
+            
+            if (deltaTime <= 0f) 
+            {
+                return;
+            }
 
             RemainingSeconds -= deltaTime;
 
             if (RemainingSeconds <= 0f)
             {
                 RemainingSeconds = 0f;
-                
+
                 NotifyTimeChanged(force: true);
                 TryFireTimeOver();
 
@@ -122,14 +151,21 @@ namespace PlinkoPinball.Services
                     // 누적이 간격을 넘으면 broadcast, 누적을 남겨서 드리프트를 줄임
                     _notifyAccumulator -= _notifyIntervalSeconds;
                     NotifyTimeChanged(force: true);
-                } 
+                }
             }
         }
 
         private void TryFireTimeOver()
         {
-            if (HasTimeOverFired) return;
-            if (RemainingSeconds > 0f) return;
+            if (HasTimeOverFired) 
+            {
+                return;
+            }
+
+            if (RemainingSeconds > 0f) 
+            {
+                return;
+            }
 
             HasTimeOverFired = true;
             IsRunning = false;      // 타이머 종료 시점에 자동 정지
@@ -140,7 +176,11 @@ namespace PlinkoPinball.Services
         /// <param name="force">즉시 업데이트가 필요할 경우 사용</param>
         private void NotifyTimeChanged(bool force)
         {
-            if (!force) return;
+            if (!force) 
+            {
+                return;
+            }
+
             OnTimeChanged?.Invoke(RemainingSeconds);
         }
     }

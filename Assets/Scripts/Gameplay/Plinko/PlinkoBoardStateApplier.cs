@@ -96,6 +96,16 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                     reactions[i].Refresh();
                 }
             }
+
+            PlinkoSlotColorReaction[] slotReactions = FindObjectsByType<PlinkoSlotColorReaction>(FindObjectsSortMode.None);
+
+            for (int i = 0; i < slotReactions.Length; i++)
+            {
+                if (slotReactions[i] != null)
+                {
+                    slotReactions[i].Refresh();
+                }
+            }
         }
 
         private void BuildLookup()

@@ -20,7 +20,13 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         [Header("Spawn Rotation")]
         [SerializeField] private bool useSpawnerRotation = true;
 
+        [Header("Pooling")]
+        [SerializeField, Min(0)] private int prewarmCount = 16;
+        [SerializeField, Min(1)] private int maxPoolSize = 128;
+        [SerializeField] private Transform poolRoot;
+
         private readonly List<Vector3> _recentSpawnPositions = new();
+        private readonly Queue<PlinkoBallActor> _pool = new();
         [SerializeField, Min(0)] private int RecentPositionLimit = 32;
 
 
@@ -32,6 +38,17 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         private readonly List<bool> _debugResults = new(); // true = success, false = rejected
         private Vector3 _debugFinalPosition;
         private bool _debugUsedFallback;
+
+        private void Awake()
+        {
+            EnsurePoolRoot();
+            PrewarmPool();
+        }
+
+        public void ConfigureSpawnAnchor(Transform anchor)
+        {
+            spawnAnchor = anchor;
+        }
         
 
         /// <summary>
@@ -47,12 +64,92 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             Vector3 position = FindSpawnPosition();
             Quaternion rotation = useSpawnerRotation ? transform.rotation : Quaternion.identity;
 
-            PlinkoBallActor actor = Instantiate(ballPrefab, position, rotation);
-            actor.Initialize(runController);
+            PlinkoBallActor actor = GetFromPool(position, rotation);
+            Rigidbody body = actor.GetComponent<Rigidbody>();
+            if (body != null)
+            {
+                body.linearVelocity = Vector3.zero;
+                body.angularVelocity = Vector3.zero;
+                body.AddForce(Vector3.down * 3, ForceMode.Impulse);
+            }
+
+            actor.Initialize(runController, ReleaseToPool);
 
             RegisterSpawnPosition(position);
 
             return actor;
+        }
+
+        private void PrewarmPool()
+        {
+            if (ballPrefab == null || prewarmCount <= 0)
+            {
+                return;
+            }
+
+            for (int i = _pool.Count; i < prewarmCount; i++)
+            {
+                PlinkoBallActor actor = CreatePooledBall();
+                actor.gameObject.SetActive(false);
+                _pool.Enqueue(actor);
+            }
+        }
+
+        private PlinkoBallActor GetFromPool(Vector3 position, Quaternion rotation)
+        {
+            EnsurePoolRoot();
+
+            PlinkoBallActor actor = _pool.Count > 0 ? _pool.Dequeue() : CreatePooledBall();
+            Transform actorTransform = actor.transform;
+            actorTransform.SetParent(transform, true);
+            actorTransform.SetPositionAndRotation(position, rotation);
+            actor.gameObject.SetActive(true);
+            return actor;
+        }
+
+        private PlinkoBallActor CreatePooledBall()
+        {
+            PlinkoBallActor actor = Instantiate(ballPrefab, poolRoot);
+            actor.name = ballPrefab.name;
+            return actor;
+        }
+
+        private void ReleaseToPool(PlinkoBallActor actor)
+        {
+            if (actor == null)
+            {
+                return;
+            }
+
+            Rigidbody body = actor.GetComponent<Rigidbody>();
+            if (body != null)
+            {
+                body.linearVelocity = Vector3.zero;
+                body.angularVelocity = Vector3.zero;
+            }
+
+            if (_pool.Count >= maxPoolSize)
+            {
+                Destroy(actor.gameObject);
+                return;
+            }
+
+            EnsurePoolRoot();
+            actor.transform.SetParent(poolRoot, false);
+            actor.gameObject.SetActive(false);
+            _pool.Enqueue(actor);
+        }
+
+        private void EnsurePoolRoot()
+        {
+            if (poolRoot != null)
+            {
+                return;
+            }
+
+            GameObject root = new GameObject("PlinkoBallPool");
+            root.transform.SetParent(transform, false);
+            poolRoot = root.transform;
         }
 
         private Vector3 FindSpawnPosition()
@@ -95,13 +192,13 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
 
         private Vector3 GetRandomPointInArea()
         {
-            Vector3 localOffset = spawnAnchor.position + new Vector3(
+            Vector3 center = spawnAnchor != null ? spawnAnchor.position : transform.position;
+
+            return center + transform.TransformVector(new Vector3(
                 Random.Range(-areaSize.x * 0.5f, areaSize.x * 0.5f),
                 Random.Range(-areaSize.y * 0.5f, areaSize.y * 0.5f),
                 0f
-            );
-
-            return transform.TransformPoint(localOffset);
+            ));
         }
 
         private bool IsFarEnoughFromRecentSpawns(Vector3 candidate)
@@ -134,6 +231,11 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         private void OnDrawGizmos()
         {
             if (!debugDrawSpawnPoints)
+            {
+                return;
+            }
+
+            if (spawnAnchor == null)
             {
                 return;
             }

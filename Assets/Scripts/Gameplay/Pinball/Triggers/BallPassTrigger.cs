@@ -1,66 +1,54 @@
 using UnityEngine;
 using PlinkoPinball.Core.TableEvents;
-using PlinkoPinball.Core.Utility;
 using PlinkoPinball.Gameplay.Core;
 
-namespace PlinkoPinball.Gameplay.Components.Triggers
+namespace PlinkoPinball.Gameplay.Pinball.Triggers
 {
-    /// <summary>
-    /// 공이 Collider을 통과할 때 Pass event 발행
-    /// Lane/Orbit/InLane/OutLane 등
-    /// 
-    /// - TableEventBus로 글로벌 Publish
-    /// - 같은 오브젝트의 로컬 ITableEventReaction들에게 전달 (옵저버)
-    /// </summary>
-    [RequireComponent(typeof(Collider))]
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(Collider))]
     public sealed class BallPassTrigger : MonoBehaviour
     {
         [Header("Event")]
-        [SerializeField] private bool autoGenerateEventId = true;
-        [SerializeField] private string eventId = "pass.none";
-        [SerializeField] private int baseValue = 1;
+        [SerializeField] private string eventId = "pass.undefined";
+        [SerializeField] private int baseValue = 0;
         [SerializeField] private string[] tags;
 
         [Header("Ball Filter")]
-        [Tooltip("공 레이어. -1이면 레이어 필터를 사용하지 않음")]
         [SerializeField] private int ballLayer = -1;
 
         [Header("Rate Limit")]
-        [Tooltip("연타 방지 쿨다운(s). 0이면 제한 없음")]
         [Min(0f)]
-        [SerializeField] private float cooldownSeconds = 0.10f;
+        [SerializeField] private float cooldownSeconds = 0.15f;
 
-        private float _nextAllowedTime;
+        [Header("Debug")]
+        [SerializeField] private bool logEvents = false;
+
         private ITableEventReaction[] _localReactions;
-
-        private void Reset()
-        {
-            var c = GetComponent<Collider>();
-            if (c != null)
-                c.isTrigger = true;
-        }
+        private float _nextAllowedTime;
 
         private void Awake()
         {
-            var c = GetComponent<Collider>();
-            if (c != null && !c.isTrigger)
-                c.isTrigger = true;
-
+            GetComponent<Collider>().isTrigger = true;
             _localReactions = GetComponents<ITableEventReaction>();
         }
 
         private void OnTriggerEnter(Collider other)
         {
             if (cooldownSeconds > 0f && Time.time < _nextAllowedTime)
+            {
                 return;
+            }
 
-            var ballRb = other.attachedRigidbody;
-            if (ballRb == null)
+            Rigidbody ball = other.attachedRigidbody;
+            if (ball == null)
+            {
                 return;
+            }
 
-            if (ballLayer >= 0 && ballRb.gameObject.layer != ballLayer)
+            if (ballLayer >= 0 && ball.gameObject.layer != ballLayer)
+            {
                 return;
+            }
 
             _nextAllowedTime = Time.time + cooldownSeconds;
 
@@ -71,38 +59,41 @@ namespace PlinkoPinball.Gameplay.Components.Triggers
                 baseValue = baseValue,
                 tags = tags,
                 source = transform,
-                position = other.ClosestPoint(transform.position),
+                position = transform.position,
                 time = Time.time,
-                ball = ballRb
+                ball = ball
             };
+
+            if (logEvents)
+            {
+                Debug.Log($"[BallPassTrigger] {eventId} / source={name}", this);
+            }
 
             TableEventBus.Publish(in e);
             NotifyLocal(in e);
         }
 
-
         private void NotifyLocal(in TableEvent e)
         {
-            if (_localReactions == null || _localReactions.Length == 0)
+            if (_localReactions == null)
+            {
                 return;
-
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            Debug.Log($"reaction count = {_localReactions.Length}");
-#endif
+            }
 
             for (int i = 0; i < _localReactions.Length; i++)
-                _localReactions[i].OnTableEvent(in e);
+            {
+                _localReactions[i]?.OnTableEvent(in e);
+            }
         }
 
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            if (autoGenerateEventId)
-                eventId = TableIdentityGenerator.CreateEventId("pass", transform);
-
-            var c = GetComponent<Collider>();
-            if (c != null && !c.isTrigger)
+            Collider c = GetComponent<Collider>();
+            if (c != null)
+            {
                 c.isTrigger = true;
+            }
         }
 #endif
     }

@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2076e951f3185412cb5b7803e709e59e, type: 3}
   m_Name: PixelationSettings
   m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Rendering.PixelationSettings
-  pixelSize: 2
-  colorSteps: 16
+  pixelSize: 1
+  colorSteps: 0
   enabledInSceneView: 1

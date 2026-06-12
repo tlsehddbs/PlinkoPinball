@@ -1,5 +1,6 @@
 using UnityEngine;
 using PlinkoPinball.Core;
+using PlinkoPinball.Gameplay.Core.Flow;
 using PlinkoPinball.UI.Presenters;
 
 namespace PlinkoPinball.Gameplay.Core.Plinko
@@ -9,42 +10,24 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
     /// </summary>
     public sealed class PlinkoSettlementController : MonoBehaviour
     {
-        [SerializeField] private CurrencySystem currencySystem;
         [SerializeField] private PlinkoResultPresenter resultPresenter;
-        [SerializeField] private string returnSceneName = "MainTable";
-
-        private bool _hasPendingReturn;
-
-        public void Start()
-        {
-            if(currencySystem == null)
-            {
-                currencySystem = FindAnyObjectByType<CurrencySystem>();
-            }
-        }
 
         /// <summary>
         /// 플링코 결과를 정산하고 결과 UI를 표시
         /// </summary>
         public void CompleteRun(int roundIndex, int pinballScore, in PlinkoRunResult result)
         {
-            if (currencySystem != null && result.EarnedCurrency > 0)
-            {
-                currencySystem.AddCurrency(result.EarnedCurrency);
-            }
-
             if (resultPresenter != null)
             {
                 resultPresenter.Show(result.EarnedCurrency, result.TotalPinHits, result.BallsResolved);
             }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            Debug.Log(
-                $"[PlinkoSettlement] Round={roundIndex}, PinballScore={pinballScore}, EarnedCurrency={result.EarnedCurrency}",
-                this);
+            Debug.Log($"[PlinkoSettlement] Round={roundIndex}, PinballScore={pinballScore}, EarnedCurrency={result.EarnedCurrency}", this);
 #endif
 
-            _hasPendingReturn = true;
+            GameSessionState.Instance?.RecordPlinkoRunResult(roundIndex, pinballScore, in result);
+
         }
 
         /// <summary>

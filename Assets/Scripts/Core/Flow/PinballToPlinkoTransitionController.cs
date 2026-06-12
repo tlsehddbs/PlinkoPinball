@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using PlinkoPinball.Gameplay.Core.Plinko;
+using PlinkoPinball.Core;
 
 namespace PlinkoPinball.Gameplay.Core.Flow
 {
@@ -10,7 +11,16 @@ namespace PlinkoPinball.Gameplay.Core.Flow
     public sealed class PinballToPlinkoTransitionController : MonoBehaviour
     {
         [SerializeField] private PlinkoRunSnapshotBuilder plinkoSnapshotBuilder;
-        [SerializeField] private string plinkoSceneName = "PlinkoPhase";
+        [SerializeField] private string plinkoSceneName = "PlinkoScene";
+        [SerializeField] private bool loadSceneOnTransition;
+
+        public void ConfigureSnapshotBuilder(PlinkoRunSnapshotBuilder snapshotBuilder)
+        {
+            if (snapshotBuilder != null)
+            {
+                plinkoSnapshotBuilder = snapshotBuilder;
+            }
+        }
 
         /// <summary>
         /// 플링코 씬으로 전환
@@ -19,7 +29,7 @@ namespace PlinkoPinball.Gameplay.Core.Flow
         /// <param name="pinballScore">현재 핀볼 점수</param>
         public void TransitionToPlinko(int roundIndex, int pinballScore)
         {
-            if (plinkoSnapshotBuilder == null)
+            if (ResolveSnapshotBuilder() == null)
             {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 Debug.LogWarning("[PinballToPlinkoTransitionController] Missing snapshot builder.", this);
@@ -37,20 +47,34 @@ namespace PlinkoPinball.Gameplay.Core.Flow
 
             PlinkoRunSnapshot snapshot = plinkoSnapshotBuilder.BuildSnapshot();
 
-            var context = new PlinkoPhaseHandoffContext(
-                roundIndex,
-                pinballScore,
-                snapshot);
+            var context = new PlinkoPhaseHandoffContext(roundIndex, pinballScore, snapshot);
 
             PhaseHandoffService.Instance.SetPlinkoContext(context);
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            Debug.Log(
-                $"[PinballToPlinkoTransitionController] Transitioning to {plinkoSceneName} | Round={roundIndex} | Score={pinballScore}",
-                this);
+            Debug.Log($"[PinballToPlinkoTransitionController] Transitioning to Plinko phase | Round={roundIndex} | Score={pinballScore}", this);
 #endif
 
-            SceneManager.LoadScene("PlinkoTestScene");
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.SetPhase(GamePhase.Plinko);
+            }
+
+            if (loadSceneOnTransition)
+            {
+                SceneManager.LoadScene(plinkoSceneName);
+            }
+        }
+
+        private PlinkoRunSnapshotBuilder ResolveSnapshotBuilder()
+        {
+            if (plinkoSnapshotBuilder != null)
+            {
+                return plinkoSnapshotBuilder;
+            }
+
+            plinkoSnapshotBuilder = PlinkoRunSnapshotBuilder.ResolveFor(this);
+            return plinkoSnapshotBuilder;
         }
     }
 }

@@ -38,23 +38,19 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
             _lastPlayTime = Time.time;
 
             AudioClip clip = clips[Random.Range(0, clips.Length)];
+            if (clip == null)
+            {
+                return;
+            }
 
-            GameObject tempAudio = new GameObject("PinSfx");
-            tempAudio.transform.position = hitPoint;
-
-            AudioSource source = tempAudio.AddComponent<AudioSource>();
-            source.clip = clip;
-            source.volume = volume;
-            source.spatialBlend = 0f;
+            float pitch = 1f;
 
             if (randomPitch)
             {
-                source.pitch = Random.Range(pitchRange.x, pitchRange.y);
+                pitch = Random.Range(pitchRange.x, pitchRange.y);
             }
 
-            source.Play();
-
-            Destroy(tempAudio, clip.length + 0.1f);
+            PlinkoAudioPool.Play(clip, hitPoint, volume, 0f, pitch);
         }
     }
 }

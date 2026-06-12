@@ -67,6 +67,7 @@ namespace PlinkoPinball.Gameplay.Components.Plinko
             if (pinRuntime != null)
             {
                 PlinkoPinModifierData data = pinRuntime.ExportState();
+                
                 return ResolvePinColor(data.StateKind);
             }
 

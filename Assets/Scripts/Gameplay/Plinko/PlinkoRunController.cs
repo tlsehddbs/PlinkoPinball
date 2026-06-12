@@ -78,7 +78,10 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                 return;
             }
 
-            text.text = $"BallSpawned\n{SpawnedBalls}\n\nActiveBalls\n{ActiveBalls}";
+            if (text != null)
+            {
+                text.text = $"BallSpawned\n{SpawnedBalls}\n\nActiveBalls\n{ActiveBalls}";
+            }
 
             TrySpawnAvailableBalls();
             TryCompleteRun();
@@ -177,6 +180,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         private void CompleteRun()
         {
             _isRunning = false;
+            rewardAccumulator?.FlushPendingCurrency();
 
             PlinkoRunResult result = rewardAccumulator != null ? rewardAccumulator.BuildResult() : new PlinkoRunResult(0, 0, 0);
 

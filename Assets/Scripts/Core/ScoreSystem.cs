@@ -59,7 +59,7 @@ namespace PlinkoPinball.Core
         {
             TableEventBus.OnEvent -= HandleTableEvent;
         }
-        
+
 
         /// <summary>
         /// 새 라운드를 위해 점수 초기화
@@ -67,6 +67,7 @@ namespace PlinkoPinball.Core
         public void ResetForRound()
         {
             CurrentScore = 0;
+            OnScoreChanged?.Invoke(CurrentScore);
         }
 
         /// <summary>
@@ -85,7 +86,9 @@ namespace PlinkoPinball.Core
         {
             float clamped = Mathf.Clamp(value, 0.1f, maxMultiplier);
             if (Mathf.Abs(clamped - Multiplier) < 0.0001f)
+            {
                 return;
+            }
 
             Multiplier = clamped;
             OnMultiplierChanged?.Invoke(Multiplier);
@@ -104,7 +107,10 @@ namespace PlinkoPinball.Core
         /// </summary>
         public void CommitBestScoreIfNeeded()
         {
-            if (CurrentScore <= BestScore) return;
+            if (CurrentScore <= BestScore)
+            {
+                return;
+            }
 
             BestScore = CurrentScore;
             PlayerPrefs.SetInt(BestScorePrefsKey, BestScore);
@@ -117,7 +123,9 @@ namespace PlinkoPinball.Core
         private void HandleTableEvent(TableEvent e)
         {
             if (!ShouldScore(e))
+            {
                 return;
+            }
 
             // ModuleRoot가 있는 오브젝트를 찾고 캐싱한다. (없으면 찾고, 있으면 가져옴)
             ModuleRoot module = ModuleRootLookupCache.GetOrFind(e.source);
@@ -128,7 +136,9 @@ namespace PlinkoPinball.Core
             // 실제 점수를 계산하는 로직
             int add = CalculateScoreResult(e.baseValue, Multiplier, moduleMultiplier);
             if (add <= 0)
+            {
                 return;
+            }
 
             CurrentScore += add;
             OnScoreChanged?.Invoke(CurrentScore);
@@ -148,10 +158,14 @@ namespace PlinkoPinball.Core
         private bool ShouldScore(TableEvent e)
         {
             if (!string.IsNullOrEmpty(scoreTag) && !e.HasTag(scoreTag))
+            {
                 return false;
+            }
 
             if (e.baseValue <= 0)
+            {
                 return false;
+            }
 
             return true;
         }

@@ -14,6 +14,9 @@ Shader "PlinkoPinball/URP/SimpleCelShader"
 
         _OutlineColor ("Outline Color", Color) = (0.03, 0.03, 0.025, 1)
         _OutlineWidth ("Outline Width", Range(0, 0.08)) = 0.015
+
+        _EmissionColor ("Emission Color", Color) = (0, 0, 0, 1)
+        _EmissionIntensity ("Emission Intensity", Range(0, 20)) = 0
     }
 
     SubShader
@@ -70,17 +73,18 @@ Shader "PlinkoPinball/URP/SimpleCelShader"
 
                 half4 _OutlineColor;
                 half _OutlineWidth;
+
+                half4 _EmissionColor;
+                half _EmissionIntensity;
             CBUFFER_END
 
             Varyings Vert(Attributes input)
             {
                 Varyings output;
 
-                VertexPositionInputs positionInputs =
-                    GetVertexPositionInputs(input.positionOS.xyz);
+                VertexPositionInputs positionInputs = GetVertexPositionInputs(input.positionOS.xyz);
 
-                VertexNormalInputs normalInputs =
-                    GetVertexNormalInputs(input.normalOS);
+                VertexNormalInputs normalInputs = GetVertexNormalInputs(input.normalOS);
 
                 output.positionCS = positionInputs.positionCS;
                 output.normalWS = normalize(normalInputs.normalWS);
@@ -108,6 +112,9 @@ Shader "PlinkoPinball/URP/SimpleCelShader"
 
                 half rim = pow(1.0h - saturate(dot(normalWS, viewDirWS)), _RimPower);
                 color += _RimColor.rgb * rim * _RimStrength;
+
+                half3 emission = _EmissionColor.rgb * _EmissionIntensity;
+                color += emission;
 
                 return half4(color, _BaseColor.a);
             }
@@ -163,11 +170,9 @@ Shader "PlinkoPinball/URP/SimpleCelShader"
             {
                 Varyings output;
 
-                float3 expandedPositionOS =
-                    input.positionOS.xyz + normalize(input.normalOS) * _OutlineWidth;
+                float3 expandedPositionOS = input.positionOS.xyz + normalize(input.normalOS) * _OutlineWidth;
 
-                VertexPositionInputs positionInputs =
-                    GetVertexPositionInputs(expandedPositionOS);
+                VertexPositionInputs positionInputs = GetVertexPositionInputs(expandedPositionOS);
 
                 output.positionCS = positionInputs.positionCS;
 

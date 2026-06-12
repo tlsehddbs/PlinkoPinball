@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -16,6 +17,8 @@ namespace PlinkoPinball.Gameplay.Components
         [SerializeField] private Vector3 worldOffset = new(0f, 0.75f, 0f);
 
         private Camera _mainCamera;
+        private Coroutine _playRoutine;
+        private Action<FloatingTextView> _releaseRequested;
 
         private void Awake()
         {
@@ -47,6 +50,12 @@ namespace PlinkoPinball.Gameplay.Components
 
         public void Play(string text, Vector3 worldPosition)
         {
+            Play(text, worldPosition, null);
+        }
+
+        public void Play(string text, Vector3 worldPosition, Action<FloatingTextView> releaseRequested)
+        {
+            _releaseRequested = releaseRequested;
             transform.position = worldPosition;
 
             if (label != null)
@@ -59,7 +68,12 @@ namespace PlinkoPinball.Gameplay.Components
                 canvasGroup.alpha = 1f;
             }
 
-            StartCoroutine(PlayRoutine(worldPosition));
+            if (_playRoutine != null)
+            {
+                StopCoroutine(_playRoutine);
+            }
+
+            _playRoutine = StartCoroutine(PlayRoutine(worldPosition));
         }
 
         private IEnumerator PlayRoutine(Vector3 startPosition)
@@ -80,6 +94,14 @@ namespace PlinkoPinball.Gameplay.Components
                 }
 
                 yield return null;
+            }
+
+            _playRoutine = null;
+
+            if (_releaseRequested != null)
+            {
+                _releaseRequested.Invoke(this);
+                yield break;
             }
 
             Destroy(gameObject);

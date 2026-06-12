@@ -1,120 +1,165 @@
 using System.Collections.Generic;
-using PlinkoPinball.Core.TableEvents;
-using PlinkoPinball.Core.Utility;
-using PlinkoPinball.Gameplay.Core;
-using PlinkoPinball.Gameplay.Utility;
 using UnityEngine;
+using PlinkoPinball.Core.TableEvents;
+using PlinkoPinball.Gameplay.Core;
 
-
-namespace PlinkoPinball.Gameplay.Components.Triggers
+namespace PlinkoPinball.Gameplay.Pinball.Triggers
 {
     [DisallowMultipleComponent]
-    public class BallZoneTrigger : MonoBehaviour
+    [RequireComponent(typeof(Collider))]
+    public sealed class BallZoneTrigger : MonoBehaviour
     {
+        [Header("Event IDs")]
+        [SerializeField] private string enterEventId = "zone.undefined.enter";
+        [SerializeField] private string exitEventId = "zone.undefined.exit";
+        [SerializeField] private string tickEventId = "zone.undefined.tick";
+
         [Header("Event")]
-        [SerializeField] private bool autoGenerateEventId = true;
-        [SerializeField] private string eventId = "zone.none";
-        [SerializeField] private TableEventType enterEventType = TableEventType.Custom;
-        [SerializeField] private TableEventType exitEventType = TableEventType.Custom;
         [SerializeField] private int baseValue = 0;
         [SerializeField] private string[] tags;
 
-        [Header("Behavior")]
-        [SerializeField] private bool fireEnter = true;
-        [SerializeField] private bool fireExit = true;
+        [Header("Tick")]
+        [SerializeField] private bool emitTickEvent = false;
+        [Min(0.05f)]
+        [SerializeField] private float tickIntervalSeconds = 0.5f;
 
+        [Header("Ball Filter")]
+        [SerializeField] private int ballLayer = -1;
+
+        [Header("Debug")]
+        [SerializeField] private bool logEvents = false;
+
+        private readonly Dictionary<Rigidbody, float> _nextTickTimes = new();
         private ITableEventReaction[] _localReactions;
-        private readonly HashSet<int> _inside = new HashSet<int>(8);
-
-
-        private void Reset()
-        {
-            var c = GetComponent<Collider>();
-            if (c != null)
-                c.isTrigger = true;
-        }
 
         private void Awake()
         {
-            var c = GetComponent<Collider>();
-            if (c != null && !c.isTrigger)
-                c.isTrigger = true;
-
+            GetComponent<Collider>().isTrigger = true;
             _localReactions = GetComponents<ITableEventReaction>();
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!fireEnter)
+            Rigidbody ball = ResolveBall(other);
+            if (ball == null)
+            {
                 return;
+            }
 
-            if (!BallRigidbodyUnility.TryGetBallRigidbody(other, out var ballRb))
+            _nextTickTimes[ball] = Time.time + tickIntervalSeconds;
+            Emit(enterEventId, ball);
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            if (!emitTickEvent)
+            {
                 return;
+            }
 
-            int id = ballRb.GetInstanceID();
-
-            // 이미 Zone 안에 있는 경우 중복 enter 방지
-            if (!_inside.Add(id))
+            Rigidbody ball = ResolveBall(other);
+            if (ball == null)
+            {
                 return;
+            }
 
-            string enterEventId = TableIdentityGenerator.CreateDerivedEventId(eventId, "enter");
-            Emit(enterEventType, enterEventId, ballRb);
+            if (!_nextTickTimes.TryGetValue(ball, out float nextTick))
+            {
+                _nextTickTimes[ball] = Time.time + tickIntervalSeconds;
+                return;
+            }
+
+            if (Time.time < nextTick)
+            {
+                return;
+            }
+
+            _nextTickTimes[ball] = Time.time + tickIntervalSeconds;
+            Emit(tickEventId, ball);
         }
 
         private void OnTriggerExit(Collider other)
         {
-            if (!fireExit)
+            Rigidbody ball = ResolveBall(other);
+            if (ball == null)
+            {
                 return;
+            }
 
-            if (!BallRigidbodyUnility.TryGetBallRigidbody(other, out var ballRb))
-                return;
-
-            int id = ballRb.GetInstanceID();
-
-            // ball 추적이 안될 경우 exit 무시
-            if (!_inside.Remove(id))
-                return;
-
-            string exitEventId = TableIdentityGenerator.CreateDerivedEventId(eventId, "exit");
-            Emit(exitEventType, exitEventId, ballRb);
+            Emit(exitEventId, ball);
+            _nextTickTimes.Remove(ball);
         }
 
-        private void Emit(TableEventType type, string id, Rigidbody ballRb)
+        private Rigidbody ResolveBall(Collider other)
         {
+            Rigidbody ball = other.attachedRigidbody;
+            if (ball == null)
+            {
+                return null;
+            }
+
+            if (ballLayer >= 0 && ball.gameObject.layer != ballLayer)
+            {
+                return null;
+            }
+
+            return ball;
+        }
+
+        private void Emit(string eventId, Rigidbody ball)
+        {
+            if (string.IsNullOrWhiteSpace(eventId))
+            {
+                return;
+            }
+
             var e = new TableEvent
             {
-                eventId = id,
-                eventType = type,
+                eventId = eventId,
+                eventType = TableEventType.Zone,
                 baseValue = baseValue,
                 tags = tags,
                 source = transform,
                 position = transform.position,
                 time = Time.time,
-                ball = ballRb
+                ball = ball
             };
 
+            if (logEvents)
+            {
+                Debug.Log($"[BallZoneTrigger] {eventId} / source={name}", this);
+            }
+
             TableEventBus.Publish(in e);
+            NotifyLocal(in e);
+        }
 
-            if (_localReactions == null || _localReactions.Length == 0)
+        private void NotifyLocal(in TableEvent e)
+        {
+            if (_localReactions == null)
+            {
                 return;
-
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            Debug.Log($"reaction count = {_localReactions.Length}");
-#endif
+            }
 
             for (int i = 0; i < _localReactions.Length; i++)
-                _localReactions[i].OnTableEvent(in e);
+            {
+                _localReactions[i]?.OnTableEvent(in e);
+            }
         }
 
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            if (autoGenerateEventId)
-                eventId = TableIdentityGenerator.CreateEventId("zone", transform);
-
-            var c = GetComponent<Collider>();
-            if (c != null && !c.isTrigger)
+            Collider c = GetComponent<Collider>();
+            if (c != null)
+            {
                 c.isTrigger = true;
+            }
+
+            if (tickIntervalSeconds < 0.05f)
+            {
+                tickIntervalSeconds = 0.05f;
+            }
         }
 #endif
     }

@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae141651bfea4b829e126eaa39e50426, type: 3}
+  m_Name: MainframeTheme
+  m_EditorClassIdentifier: 
+  font: {fileID: 11400000, guid: 576f66877fae04443a42d34cca817b31, type: 2}
+  accentColor: {r: 0.05, g: 0.05, b: 0.05, a: 1}
+  dimAccentColor: {r: 0.24, g: 0.24, b: 0.24, a: 0.86}
+  warningColor: {r: 0.62, g: 0.12, b: 0.08, a: 1}
+  desktopBackgroundColor: {r: 0, g: 0.36, b: 0.45, a: 1}
+  systemHeaderColor: {r: 0.72, g: 0.72, b: 0.7, a: 1}
+  taskbarBackgroundColor: {r: 0.72, g: 0.72, b: 0.7, a: 1}
+  windowBackgroundColor: {r: 0.78, g: 0.78, b: 0.76, a: 0.96}
+  windowHeaderColor: {r: 0.62, g: 0.62, b: 0.6, a: 1}
+  transparentColor: {r: 0, g: 0, b: 0, a: 0}
+  buttonNormalColor: {r: 0.76, g: 0.76, b: 0.74, a: 1}
+  buttonHighlightedColor: {r: 0.88, g: 0.88, b: 0.86, a: 1}
+  buttonPressedColor: {r: 0.56, g: 0.56, b: 0.54, a: 1}
+  closeNormalColor: {r: 0.74, g: 0.74, b: 0.72, a: 1}
+  closeHighlightedColor: {r: 0.88, g: 0.88, b: 0.86, a: 1}
+  closePressedColor: {r: 0.58, g: 0.18, b: 0.16, a: 1}
+  mainMenuBackgroundColor: {r: 0, g: 0.36, b: 0.45, a: 1}
+  mainMenuPanelSize: {x: 760, y: 430}

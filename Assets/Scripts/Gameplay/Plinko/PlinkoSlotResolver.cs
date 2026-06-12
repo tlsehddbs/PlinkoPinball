@@ -1,5 +1,6 @@
 using UnityEngine;
 using PlinkoPinball.Gameplay.Components.Plinko;
+using PlinkoPinball.Gameplay.Upgrade;
 
 namespace PlinkoPinball.Gameplay.Core.Plinko
 {
@@ -12,8 +13,10 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         [Header("References")]
         [SerializeField] private PlinkoSlotRuntime runtime;
         [SerializeField] private PlinkoBoardContext boardContext;
+        [SerializeField] private UpgradeEffectResolver upgradeEffectResolver;
 
         private Collider _triggerCollider;
+        private IPlinkoSlotReaction[] _reactions;
 
         private void Reset()
         {
@@ -34,10 +37,14 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                 runtime = GetComponentInParent<PlinkoSlotRuntime>();
             }
 
+            _reactions = CollectReactions();
+
             if (boardContext == null)
             {
                 boardContext = FindAnyObjectByType<PlinkoBoardContext>();
             }
+
+            ResolveUpgradeEffectResolver();
         }
 
         private void OnTriggerEnter(Collider other)
@@ -60,18 +67,83 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         private void ResolveSlot(PlinkoBallActor ball)
         {
             PlinkoSlotModifierData modifier = runtime.ExportState();
-            int finalReward = PlinkoRewardCalculator.CalculateSlotReward(runtime.BaseReward, modifier);
+            int effectiveBaseReward = GetBaseReward();
+            int finalReward = PlinkoRewardCalculator.CalculateSlotReward(effectiveBaseReward, modifier);
+            Vector3 hitPoint = ball != null ? ball.transform.position : transform.position;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            Debug.Log($"[PlinkoSlotResolver] Slot={runtime.SlotId}, state={modifier.StateKind}, base={runtime.BaseReward}, valueBonus={modifier.ValueBonus}, multiplier={modifier.Multiplier}, final={finalReward}", this);
+            Debug.Log($"[PlinkoSlotResolver] Slot={runtime.SlotId}, state={modifier.StateKind}, base={effectiveBaseReward}, valueBonus={modifier.ValueBonus}, multiplier={modifier.Multiplier}, final={finalReward}", this);
 #endif
 
             if (boardContext.RewardAccumulator != null)
             {
-                boardContext.RewardAccumulator.RegisterSlotReward(runtime.BaseReward, modifier);
+                boardContext.RewardAccumulator.RegisterSlotReward(ball, effectiveBaseReward, modifier);
             }
 
+            NotifyReactions(ball, hitPoint, in modifier, finalReward);
+
             ball.Resolve();
+        }
+
+        private void NotifyReactions(PlinkoBallActor ball, Vector3 hitPoint, in PlinkoSlotModifierData modifier, int finalReward)
+        {
+            if (_reactions == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < _reactions.Length; i++)
+            {
+                _reactions[i]?.OnSlotResolved(ball, hitPoint, runtime, in modifier, finalReward);
+            }
+        }
+
+        private IPlinkoSlotReaction[] CollectReactions()
+        {
+            IPlinkoSlotReaction[] reactions = GetComponents<IPlinkoSlotReaction>();
+            if (reactions != null && reactions.Length > 0)
+            {
+                return reactions;
+            }
+
+            if (runtime != null)
+            {
+                reactions = runtime.GetComponents<IPlinkoSlotReaction>();
+                if (reactions != null && reactions.Length > 0)
+                {
+                    return reactions;
+                }
+
+                reactions = runtime.GetComponentsInChildren<IPlinkoSlotReaction>(true);
+                if (reactions != null && reactions.Length > 0)
+                {
+                    return reactions;
+                }
+            }
+
+            return System.Array.Empty<IPlinkoSlotReaction>();
+        }
+
+        private int GetBaseReward()
+        {
+            ResolveUpgradeEffectResolver();
+            return upgradeEffectResolver != null ? upgradeEffectResolver.GetBaseSlotValue() : runtime.BaseReward;
+        }
+
+        private void ResolveUpgradeEffectResolver()
+        {
+            if (upgradeEffectResolver != null)
+            {
+                return;
+            }
+
+            upgradeEffectResolver = UpgradeEffectResolver.Instance;
+            if (upgradeEffectResolver != null)
+            {
+                return;
+            }
+
+            upgradeEffectResolver = FindFirstObjectByType<UpgradeEffectResolver>();
         }
 
         [System.Diagnostics.Conditional("UNITY_EDITOR")]

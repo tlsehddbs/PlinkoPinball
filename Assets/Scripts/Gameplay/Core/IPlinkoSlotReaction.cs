@@ -1,16 +1,13 @@
 using UnityEngine;
+using PlinkoPinball.Gameplay.Components.Plinko;
 
-public class IPlinkoSlotReaction : MonoBehaviour
+namespace PlinkoPinball.Gameplay.Core.Plinko
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    /// <summary>
+    /// 플링코 슬롯에 공이 도착해 해결될 때 실행되는 로컬 반응 인터페이스
+    /// </summary>
+    public interface IPlinkoSlotReaction
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        void OnSlotResolved(PlinkoBallActor ball, Vector3 hitPoint, PlinkoSlotRuntime runtime, in PlinkoSlotModifierData modifier, int finalReward);
     }
 }

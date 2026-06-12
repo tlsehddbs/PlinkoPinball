@@ -38,14 +38,9 @@ Shader "Hidden/PlinkoPinball/Pixelation"
                 float2 screenSize = _BlitTexture_TexelSize.zw;
                 float pixelSize = max(1.0, _PixelSize);
 
-                float2 pixelatedUV =
-                    floor(input.texcoord * screenSize / pixelSize)
-                    * pixelSize / screenSize;
+                float2 pixelatedUV = floor(input.texcoord * screenSize / pixelSize) * pixelSize / screenSize;
 
-                half4 color = SAMPLE_TEXTURE2D_X(
-                    _BlitTexture,
-                    sampler_LinearClamp,
-                    pixelatedUV);
+                half4 color = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, pixelatedUV);
 
                 if (_ColorSteps > 1.0)
                 {

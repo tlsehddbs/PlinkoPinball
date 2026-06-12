@@ -1,0 +1,150 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5790220704149448561
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4332960665340154265}
+  - component: {fileID: 2626214763734880441}
+  - component: {fileID: 7095466915563845535}
+  - component: {fileID: 5547486661023791239}
+  - component: {fileID: 5881133696251144844}
+  - component: {fileID: 4681966152616159664}
+  - component: {fileID: 6875436416470339797}
+  - component: {fileID: 3634610224066715242}
+  m_Layer: 0
+  m_Name: RuntimeSystems
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4332960665340154265
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5790220704149448561}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2626214763734880441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5790220704149448561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54b5ddf8962f04222bf51b588dac032a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Core.Plinko.PlinkoBoardRuntimeGenerator
+  layoutRoot: {fileID: 0}
+  pinRoot: {fileID: 0}
+  slotRoot: {fileID: 0}
+  boardDefinition: {fileID: 11400000, guid: 40c8e54ebf75740d9b95e741e6b39e8a, type: 2}
+  pinPrefab: {fileID: 273467198304246948, guid: 0bf207b1d52284f46b5f2a1fa4bfde3f, type: 3}
+  slotPrefab: {fileID: 7467012589910173596, guid: f2a7567528901441587258211dfbae82, type: 3}
+--- !u!114 &7095466915563845535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5790220704149448561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfd1f9b635e374dbe9bafc9ea6a1894d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Core.Plinko.PlinkoBoardStateApplier
+  pinRuntimes: []
+  slotRuntimes: []
+--- !u!114 &5547486661023791239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5790220704149448561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6f2fedcd792c4318aa3faf047b9fd28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Core.Plinko.PlinkoRunController
+  ballSpawner: {fileID: 5881133696251144844}
+  rewardAccumulator: {fileID: 4681966152616159664}
+  settlementController: {fileID: 6875436416470339797}
+  maxActiveBalls: 96
+  spawnInterval: 0.08
+  text: {fileID: 0}
+--- !u!114 &5881133696251144844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5790220704149448561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ede49d31862244fc8e91499c5e6a4dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Core.Plinko.PlinkoBallSpawner
+  ballPrefab: {fileID: -4571125201370721874, guid: 453ac2ed452a2164d9b96e5bb7f0c3e0, type: 3}
+  spawnAnchor: {fileID: 0}
+  areaSize: {x: 10, y: 1, z: 0}
+  minSpawnDistance: 0.1
+  maxPositionAttempts: 100
+  useSpawnerRotation: 0
+  RecentPositionLimit: 64
+  debugDrawSpawnPoints: 1
+  debugSphereRadius: 0.24
+--- !u!114 &4681966152616159664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5790220704149448561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96a49f812143d46c895f268021d5e5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Core.Plinko.PlinkoRewardAccumulator
+  currencySystem: {fileID: 0}
+--- !u!114 &6875436416470339797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5790220704149448561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33ad783864aed438fb0948e1615c395f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Core.Plinko.PlinkoSettlementController
+  resultPresenter: {fileID: 0}
+--- !u!114 &3634610224066715242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5790220704149448561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e0ce2f881bac48ba8a60c1181c5a522, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlinkoPinball.Gameplay.Core.Plinko.PlinkoBoardContext
+  rewardAccumulator: {fileID: 4681966152616159664}

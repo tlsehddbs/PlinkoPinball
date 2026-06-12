@@ -18,7 +18,9 @@ namespace PlinkoPinball.Core.Utility
         public static string ToSlug(string rawName)
         {
             if (string.IsNullOrWhiteSpace(rawName))
+            {
                 return "noname";
+            }
 
             var sb = new StringBuilder(rawName.Length);
             bool previousWasSeparator = false;
@@ -35,7 +37,9 @@ namespace PlinkoPinball.Core.Utility
                 else
                 {
                     if (previousWasSeparator)
+                    {
                         continue;
+                    }
 
                     sb.Append('-');
                     previousWasSeparator = true;
@@ -92,7 +96,9 @@ namespace PlinkoPinball.Core.Utility
         public static string CreateParentBasedGroupId(Transform target)
         {
             if (target == null || target.parent == null)
+            {
                 return string.Empty;
+            }
 
             return ToSlug(target.parent.name);
         }

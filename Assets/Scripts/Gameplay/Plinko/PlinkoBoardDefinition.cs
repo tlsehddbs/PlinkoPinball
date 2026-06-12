@@ -66,7 +66,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         [Header("Spacing")]
         [SerializeField, Min(0.01f)] private float horizontalSpacing = 1.0f;
         [SerializeField, Min(0.01f)] private float verticalSpacing = 1.2f;
-        [SerializeField, Min(0.01f)] private float slotSpacing = 1.2f;
+        [SerializeField, Min(0.01f)] private float slotSpacing = 1.3f;
 
         [Header("Elements")]
         [SerializeField] private List<PlinkoPinDefinition> pins = new List<PlinkoPinDefinition>();
@@ -141,16 +141,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         /// <summary>
         /// Authoring 단계에서 보드 메타데이터와 핀/슬롯 데이터를 함께 갱신
         /// </summary>
-        public void ApplyAuthoringLayout(
-            int newRows,
-            int newColumns,
-            int newSlotCount,
-            bool newStaggerOddRows,
-            float newStaggerRatio,
-            float newPinAreaYOffset,
-            float newSlotAreaYOffset,
-            IReadOnlyList<PlinkoPinDefinition> newPins,
-            IReadOnlyList<PlinkoSlotDefinition> newSlots)
+        public void ApplyAuthoringLayout(int newRows, int newColumns, int newSlotCount, bool newStaggerOddRows, float newStaggerRatio, float newPinAreaYOffset, float newSlotAreaYOffset, IReadOnlyList<PlinkoPinDefinition> newPins, IReadOnlyList<PlinkoSlotDefinition> newSlots)
         {
             rows = Mathf.Max(1, newRows);
             columns = Mathf.Max(2, newColumns);

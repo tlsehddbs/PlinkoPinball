@@ -17,11 +17,11 @@ MonoBehaviour:
   slotCount: 11
   staggerOddRows: 1
   staggerRatio: 0.5
-  pinAreaYOffset: -1
+  pinAreaYOffset: 0
   slotAreaYOffset: -1
   horizontalSpacing: 1
   verticalSpacing: 1.22
-  slotSpacing: 1
+  slotSpacing: 1.1
   pins:
   - pinId: pin.r00.c00
     row: 0
@@ -394,45 +394,45 @@ MonoBehaviour:
   slots:
   - slotId: slot.00
     column: 0
-    localPosition: {x: -5, y: -6.49}
+    localPosition: {x: -5.5, y: -6.49}
     baseReward: 5
   - slotId: slot.01
     column: 1
-    localPosition: {x: -4, y: -6.49}
+    localPosition: {x: -4.4, y: -6.49}
     baseReward: 5
   - slotId: slot.02
     column: 2
-    localPosition: {x: -3, y: -6.49}
+    localPosition: {x: -3.3, y: -6.49}
     baseReward: 5
   - slotId: slot.03
     column: 3
-    localPosition: {x: -2, y: -6.49}
+    localPosition: {x: -2.1999998, y: -6.49}
     baseReward: 5
   - slotId: slot.04
     column: 4
-    localPosition: {x: -1, y: -6.49}
+    localPosition: {x: -1.0999999, y: -6.49}
     baseReward: 5
   - slotId: slot.05
     column: 5
-    localPosition: {x: 0, y: -6.49}
+    localPosition: {x: 0.00000011920929, y: -6.49}
     baseReward: 5
   - slotId: slot.06
     column: 6
-    localPosition: {x: 1, y: -6.49}
+    localPosition: {x: 1.1000001, y: -6.49}
     baseReward: 5
   - slotId: slot.07
     column: 7
-    localPosition: {x: 2, y: -6.49}
+    localPosition: {x: 2.2000003, y: -6.49}
     baseReward: 5
   - slotId: slot.08
     column: 8
-    localPosition: {x: 3, y: -6.49}
+    localPosition: {x: 3.3000002, y: -6.49}
     baseReward: 5
   - slotId: slot.09
     column: 9
-    localPosition: {x: 4, y: -6.49}
+    localPosition: {x: 4.4, y: -6.49}
     baseReward: 5
   - slotId: slot.10
     column: 10
-    localPosition: {x: 5, y: -6.49}
+    localPosition: {x: 5.5, y: -6.49}
     baseReward: 5

@@ -21,8 +21,31 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         public float GlobalSlotMultiplier => globalSlotMultiplier;
         public float ErrorPinRateReduction => errorPinRateReduction;
         public float ErrorSlotRateReduction => errorSlotRateReduction;
+        public int StartBalls => startBalls;
+
+        public event System.Action<int> StartBallsChanged;
 
         private readonly List<PlinkoBonusToken> _tokens = new List<PlinkoBonusToken>(32);
+
+        public static PlinkoRunSnapshotBuilder ResolveFor(Component owner)
+        {
+            if (owner != null)
+            {
+                Transform current = owner.transform;
+                while (current != null)
+                {
+                    PlinkoRunSnapshotBuilder builder = current.GetComponentInChildren<PlinkoRunSnapshotBuilder>(true);
+                    if (builder != null)
+                    {
+                        return builder;
+                    }
+
+                    current = current.parent;
+                }
+            }
+
+            return FindFirstObjectByType<PlinkoRunSnapshotBuilder>();
+        }
 
         public void AddStartBalls(int amount)
         {
@@ -30,7 +53,10 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             {
                 return;
             }
+            
             startBalls += amount;
+            StartBallsChanged?.Invoke(startBalls);
+
             Debug.Log($"[PlinkoRunSnapshotBuilder] AddStartBalls +{amount} => {startBalls}", this);
         }
 
@@ -40,7 +66,9 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             {
                 return;
             }
+
             globalPinMultiplier += amount;
+
             Debug.Log($"[PlinkoRunSnapshotBuilder] AddGlobalPinMultiplier +{amount} => {globalPinMultiplier}", this);
         }
 
@@ -50,7 +78,9 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             {
                 return;
             }
+
             globalSlotMultiplier += amount;
+
             Debug.Log($"[PlinkoRunSnapshotBuilder] AddGlobalSlotMultiplier +{amount} => {globalSlotMultiplier}", this);
         }
 
@@ -60,7 +90,9 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             {
                 return;
             }
+
             errorPinRateReduction = Mathf.Clamp01(errorPinRateReduction + amount);
+
             Debug.Log($"[PlinkoRunSnapshotBuilder] AddErrorPinRateReduction +{amount} => {errorPinRateReduction}", this);
         }
 
@@ -70,7 +102,9 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             {
                 return;
             }
+
             errorSlotRateReduction = Mathf.Clamp01(errorSlotRateReduction + amount);
+
             Debug.Log($"[PlinkoRunSnapshotBuilder] AddErrorSlotRateReduction +{amount} => {errorSlotRateReduction}", this);
         }
 
@@ -86,6 +120,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             }
 
             _tokens.Add(new PlinkoBonusToken(tokenType, amount, stackCount));
+
             Debug.Log($"[PlinkoRunSnapshotBuilder] AddToken type={tokenType}, amount={amount}, stack={stackCount}, totalTokens={_tokens.Count}", this);
         }
 
@@ -94,7 +129,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
         /// </summary>
         public PlinkoRunSnapshot BuildSnapshot()
         {
-            int seed = Random.Range(int.MinValue, int.MaxValue);
+            int seed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             StringBuilder sb = new StringBuilder();
@@ -112,6 +147,7 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
                 PlinkoBonusToken token = _tokens[i];
                 sb.AppendLine($"  Token[{i}] = {token.TokenType}, amount={token.Amount}, stack={token.StackCount}");
             }
+
             Debug.Log(sb.ToString(), this);
 #endif
 
@@ -137,6 +173,8 @@ namespace PlinkoPinball.Gameplay.Core.Plinko
             errorPinRateReduction = 0f;
             errorSlotRateReduction = 0f;
             _tokens.Clear();
+
+            StartBallsChanged?.Invoke(startBalls);
         }
     }
 }
